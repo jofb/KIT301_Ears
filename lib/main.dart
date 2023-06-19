@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
           toolbarHeight: 32,
           backgroundColor: Colors.blueGrey,
           elevation: 0,
-          bottom: const TabBar( //hit the little arrow on line 46, hide all this garbage styling
+          bottom: const TabBar( //hit the little arrow on this line, hide all this garbage styling
             labelColor: Colors.blueGrey,
             unselectedLabelColor: Colors.white,
             indicatorSize: TabBarIndicatorSize.label,
