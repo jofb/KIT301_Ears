@@ -41,18 +41,18 @@ class _MyHomePageState extends State<MyHomePage> {
           toolbarHeight: 32,
           backgroundColor: Colors.blueGrey,
           elevation: 0,
-          bottom: const TabBar( //hit the little arrow on this line, hide all this garbage styling
+          bottom: TabBar( //hit the little arrow on this line, hide all this garbage styling
             labelColor: Colors.blueGrey,
-            unselectedLabelColor: Colors.white,
+            unselectedLabelColor: Theme.of(context).scaffoldBackgroundColor,
             indicatorSize: TabBarIndicatorSize.label,
             indicator: BoxDecoration(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10)
               ),
-              color: Colors.white
+              color: Theme.of(context).scaffoldBackgroundColor
               ),
-            tabs: [
+            tabs: const [
               SizedBox(
                 height: 60,
                 child: Tab(
