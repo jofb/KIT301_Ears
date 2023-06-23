@@ -42,55 +42,49 @@ class _MyHomePageState extends State<MyHomePage> {
           toolbarHeight: 32,
           backgroundColor: Colors.blueGrey,
           elevation: 0,
-          bottom: TabBar( //hit the little arrow on this line, hide all this garbage styling
-            labelColor: Colors.blueGrey,
-            unselectedLabelColor: Theme.of(context).scaffoldBackgroundColor,
-            indicatorSize: TabBarIndicatorSize.label,
-            indicator: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10)
-              ),
-              color: Theme.of(context).scaffoldBackgroundColor
-              ),
-            tabs: const [
-              SizedBox(
-                //height: 60, // (toby) setting height here causes it to overlap with the burger menu
-                child: Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Others",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  )
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(80), // (toby) this sets the distance between the BurgerMenu and TabBar
+            child: TabBar( //hit the little arrow on this line, hide all this garbage styling
+              labelColor: Colors.blueGrey,
+              unselectedLabelColor: Theme.of(context).scaffoldBackgroundColor,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicator: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10)
                 ),
-              ),
-              SizedBox(
-               // height: 60, // (toby) setting height here causes it to overlap with the burger menu
-                child: Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Questions and Statements",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  )
+                color: Theme.of(context).scaffoldBackgroundColor
                 ),
-              ),
-              SizedBox(
-                //height: 60, // (toby) setting height here causes it to overlap with the burger menu
-                child: Tab(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Invitation to Speak",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ),
-              ),
-              ]
+              tabs: const [
+                    Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Others",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ),
+                Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Questions and Statements",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ),
+                Tab(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Invitation to Speak",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ),
+                ]
+            ),
           ),
         ),
         body: const TabBarView(
@@ -106,6 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class BurgerMenu extends StatelessWidget {
+  const BurgerMenu({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -113,9 +109,9 @@ class BurgerMenu extends StatelessWidget {
 
         padding: EdgeInsets.zero,
         children: [
-          Container(
+          const SizedBox(
             height: 90,
-            child: const DrawerHeader(
+            child: DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blueGrey,
               ),
