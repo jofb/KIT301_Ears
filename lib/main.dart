@@ -110,28 +110,40 @@ class BurgerMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+          Container(
+            height: 90,
+            child: const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blueGrey,
+              ),
+              child: Text(''),
             ),
-            child: Text('Other Categories'),
           ),
           ListTile(
-            title: const Text('Manual'),
+            title: const Text('Override Language',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
-              // Update the state of the app
-              // ...
+              // Bring up language override menu
             },
           ),
           ListTile(
-            title: const Text('History'),
+            title: const Text('View Manual',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
-              // Update the state of the app
-              // ...
+              // Open Manual PDF
+            },
+          ),
+          ListTile(
+            title: const Text('View Answer History',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigate to answer history page
             },
           ),
         ],
