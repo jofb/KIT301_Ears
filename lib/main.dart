@@ -37,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        drawer: BurgerMenu(), // custom widget
         appBar: AppBar(
           toolbarHeight: 32,
           backgroundColor: Colors.blueGrey,
@@ -54,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             tabs: [
               SizedBox(
-                height: 60,
+                //height: 60, // (toby) setting height here causes it to overlap with the burger menu
                 child: Tab(
                   child: Align(
                     alignment: Alignment.center,
@@ -66,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(
-                height: 60,
+               // height: 60, // (toby) setting height here causes it to overlap with the burger menu
                 child: Tab(
                   child: Align(
                     alignment: Alignment.center,
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(
-                height: 60,
+                //height: 60, // (toby) setting height here causes it to overlap with the burger menu
                 child: Tab(
                   child: Align(
                     alignment: Alignment.center,
@@ -99,6 +100,41 @@ class _MyHomePageState extends State<MyHomePage> {
             InvitationTab(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class BurgerMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text('Other Categories'),
+          ),
+          ListTile(
+            title: const Text('Manual'),
+            onTap: () {
+              Navigator.pop(context);
+              // Update the state of the app
+              // ...
+            },
+          ),
+          ListTile(
+            title: const Text('History'),
+            onTap: () {
+              Navigator.pop(context);
+              // Update the state of the app
+              // ...
+            },
+          ),
+        ],
       ),
     );
   }
