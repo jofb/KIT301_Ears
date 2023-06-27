@@ -41,7 +41,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
     initCategories();
   }
 
-  int _selectedIndex = 0;
+  int _selectedCategoryIndex = 0;
   int _selectedItemIndex = -1;
 
   @override
@@ -91,18 +91,18 @@ class _QuestionsTabState extends State<QuestionsTab> {
                         title: Text(
                           _categoryList[index].categoryName,
                           style: TextStyle(
-                            color: index == _selectedIndex ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
+                            color: index == _selectedCategoryIndex ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
                             fontWeight: FontWeight.bold
                           ),
                         ),
-                        selected: index == _selectedIndex,
+                        selected: index == _selectedCategoryIndex,
                         selectedTileColor: Colors.redAccent[100],
-                        trailing: index == _selectedIndex
+                        trailing: index == _selectedCategoryIndex
                             ? Icon(Icons.arrow_forward_ios_rounded, color: Theme.of(context).scaffoldBackgroundColor)
                             : null,
                         onTap: () {
                           setState(() {
-                            _selectedIndex = index;
+                            _selectedCategoryIndex = index;
                             _selectedItemIndex = -1;
                           });
                         },
@@ -134,8 +134,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    List<Question> _CategoryItems = _categoryList[_selectedIndex].questions;
-                      final isLastItem = index == _CategoryItems.length - 1;
+                    List<Question> categoryItems = _categoryList[_selectedCategoryIndex].questions;
+                      final isLastItem = index == categoryItems.length - 1;
                       return Container(
                         margin: EdgeInsets.fromLTRB(8, 8, 8, isLastItem ? 8 : 0),
                         decoration: BoxDecoration(
@@ -151,7 +151,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           title: Text(
-                            _CategoryItems[index].short,
+                            categoryItems[index].short,
                             style: TextStyle(
                               color: index == _selectedItemIndex ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
                               fontWeight: FontWeight.bold
@@ -160,6 +160,16 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           selected: index == _selectedItemIndex,
                           selectedTileColor: Colors.redAccent[100],
                           onTap: () {
+                            setState(() {
+                              _selectedItemIndex = index;
+                              Future.delayed(const Duration(seconds: 5), () {
+                                setState(() {
+                                  _selectedItemIndex = -1;
+                                });
+                              });
+                            });
+                          },
+                          onLongPress: () {
                             setState(() {
                               _selectedItemIndex = index;
                             });
@@ -179,10 +189,10 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                       return true;
                                     },
                                     child: Padding(
-                                      padding: EdgeInsets.all(4),
+                                      padding: const EdgeInsets.all(4),
                                       child: Container(
-                                        width: MediaQuery.of(context).size.width * 0.7, // Adjust width as needed
-                                        height: MediaQuery.of(context).size.height * 0.7, // Adjust height as needed
+                                        width: MediaQuery.of(context).size.width * 0.7, //Gets dimension of the screen * 70%
+                                        height: MediaQuery.of(context).size.height * 0.7, //Gets dimension of the screen * 70%
                                         decoration: BoxDecoration(
                                           border: Border.all(
                                             color: Colors.grey,
@@ -195,7 +205,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              _CategoryItems[index].short,
+                                              categoryItems[index].short,
                                               style: const TextStyle(
                                                 fontSize: 20.0,
                                                 fontWeight: FontWeight.bold,
@@ -203,7 +213,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                             ),
                                             const SizedBox(height: 20.0),
                                             Text(
-                                              _CategoryItems[index].full,
+                                              categoryItems[index].full,
                                               style: const TextStyle(fontSize: 16.0),
                                             ),
                                             const SizedBox(height: 20.0),
@@ -270,7 +280,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                         ),
                       );
                   },
-                  itemCount: _categoryList[_selectedIndex].questions.length,               
+                  itemCount: _categoryList[_selectedCategoryIndex].questions.length,               
                 ),
               )
             ),
