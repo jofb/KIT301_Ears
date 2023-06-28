@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kit301_ears/invitationTab.dart';
-import 'package:kit301_ears/qAndSTab.dart';
-import 'package:kit301_ears/othersTab.dart';
+import 'package:kit301_ears/invitation_tab.dart';
+import 'package:kit301_ears/questions_tab.dart';
+import 'package:kit301_ears/others_tab.dart';
 
 void main() {
   runApp(const MyApp());

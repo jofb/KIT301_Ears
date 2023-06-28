@@ -11,7 +11,7 @@ class _OthersTabState extends State<OthersTab> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center, //ttest
       children: const <Widget>[
         Text("Others Page")
       ],
