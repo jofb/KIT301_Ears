@@ -44,47 +44,19 @@ class _MyHomePageState extends State<MyHomePage> {
           elevation: 0,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(80), // (toby) this sets the distance between the BurgerMenu and TabBar
-            child: TabBar( //hit the little arrow on this line, hide all this garbage styling
-              labelColor: Colors.blueGrey,
-              unselectedLabelColor: Theme.of(context).scaffoldBackgroundColor,
-              indicatorSize: TabBarIndicatorSize.label,
-              indicator: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10)
-                ),
-                color: Theme.of(context).scaffoldBackgroundColor
-                ),
-              tabs: const [
-                    Tab(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Others",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ),
-                Tab(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Questions and Statements",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ),
-                Tab(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Invitation to Speak",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ),
-                ]
-            ),
+            child: TabBar(
+                //hit the little arrow on this line, hide all this garbage styling
+                labelColor: Colors.blueGrey,
+                unselectedLabelColor: Theme.of(context).scaffoldBackgroundColor,
+                indicatorSize: TabBarIndicatorSize.label,
+                indicator: BoxDecoration(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                    color: Theme.of(context).scaffoldBackgroundColor),
+                tabs: const [
+                  NavigationTab(text: "Others"),
+                  NavigationTab(text: "Questions and Statements"),
+                  NavigationTab(text: "Invitation to Speak"),
+                ]),
           ),
         ),
         body: const TabBarView(
@@ -99,6 +71,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+// custom navigation tab for tab menu
+class NavigationTab extends StatelessWidget {
+  const NavigationTab({
+    super.key,
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tab(
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
 class BurgerMenu extends StatelessWidget {
   const BurgerMenu({super.key});
 
@@ -106,7 +101,6 @@ class BurgerMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-
         padding: EdgeInsets.zero,
         children: [
           const SizedBox(
@@ -119,24 +113,21 @@ class BurgerMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Override Language',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            title: const Text('Override Language', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Bring up language override menu
             },
           ),
           ListTile(
-            title: const Text('View Manual',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            title: const Text('View Manual', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Open Manual PDF
             },
           ),
           ListTile(
-            title: const Text('View Answer History',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            title: const Text('View Answer History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Navigate to answer history page
