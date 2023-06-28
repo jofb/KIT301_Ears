@@ -30,6 +30,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     super.initState();
   }
 
+  // opens recorder resources
   Future openRecorder() async {
     // get microphone permissions
     // TODO this should trigger at start of application
