@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'audio_recorder.dart';
 
 class InvitationTab extends StatefulWidget {
   const InvitationTab({super.key});
@@ -13,7 +14,8 @@ class _InvitationTabState extends State<InvitationTab> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: const <Widget>[
-        Text("Invitation to Speak Page")
+        Text("Invitation to Speak Page"),
+        AudioRecorder(),
       ],
     );
   }
