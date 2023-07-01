@@ -25,7 +25,7 @@ class Question {
     full = json['full_question'],
     short = json['short_question'],
     type = json['type'],
-    id = json['id'];
+    id = json['identifier'];
 
   Question(this.full, this.short, this.type, this.id);
   
