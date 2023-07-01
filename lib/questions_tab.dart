@@ -1,7 +1,53 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:kit301_ears/category.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
+
+class CategoriesModel extends ChangeNotifier {
+  
+  CollectionReference collection =
+      FirebaseFirestore.instance.collection('Categories');
+
+  CategoriesModel() {
+    getCollection();
+  }
+
+  Future getCollection() async {
+    var dir = await getApplicationDocumentsDirectory();
+
+    notifyListeners();
+
+    var query = await collection.get();
+
+    for (var category in query.docs) {
+      var questions = await category.reference.collection('Items').get();
+      // get the questions as a list of maps
+      var questionsList = questions.docs.map((doc) => doc.data());
+      // convert to a map object
+      var categoryData = {
+        'category_name': category.get('category_name'),
+        'questions': questionsList.toList()
+      };
+
+      // encode as json
+      String jsonString = json.encode(categoryData);
+      // attempt to save to file
+      var file = File("${dir.path}/${categoryData['category_name']}.json");
+      await file.writeAsString(jsonString);
+      print('json file saved');
+    }
+    update();
+  }
+
+  void update() {
+    notifyListeners();
+  }
+}
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -13,21 +59,17 @@ class QuestionsTab extends StatefulWidget {
 class _QuestionsTabState extends State<QuestionsTab> {
   List<Category> _categoryList = [];
 
-  Future initCategories() async{
+  Future initCategories() async {
+    final dir = await getApplicationDocumentsDirectory();
     List<Category> tempCategoryList = [];
 
-    final manifestContent = await rootBundle.loadString('AssetManifest.json');
-    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-
-    final categoryPaths = manifestMap.keys
-        .where((String key) => key.contains('categories/'))
-        .where((String key) => key.contains('.json'))
-        .toList();
-
-    for (var path in categoryPaths) {
-      final rawJson = await rootBundle.loadString(path);
-      final category = Category.fromJson(jsonDecode(rawJson));
-      tempCategoryList.add(category);
+    await for (var file in dir.list()) {
+      if (file is File && file.path.endsWith(".json")) {
+        final json = await file.readAsString();
+        print(json);
+        final category = Category.fromJson(jsonDecode(json));
+        tempCategoryList.add(category);
+      }
     }
 
     setState(() {
@@ -36,9 +78,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
   }
 
   @override
-  void initState() {    
+  void initState() {
     super.initState();
-    initCategories();
+    CategoriesModel().addListener(() {
+      initCategories(); 
+      setState(() {});
+    });
   }
 
   int _selectedCategoryIndex = 0;
@@ -48,7 +93,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
   Widget build(BuildContext context) {
     if (_categoryList.isEmpty) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: Colors.blueGrey,
+        ),
       );
     }
     return Row(
@@ -59,10 +106,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
             padding: const EdgeInsets.all(8),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 2
-                ),
+                border: Border.all(color: Colors.grey, width: 2),
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Card(
@@ -77,10 +121,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                     return Container(
                       margin: EdgeInsets.fromLTRB(8, 8, 8, isLastItem ? 8 : 0),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 2
-                          ),
+                        border: Border.all(color: Colors.grey, width: 2),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: ListTile(
@@ -91,14 +132,17 @@ class _QuestionsTabState extends State<QuestionsTab> {
                         title: Text(
                           _categoryList[index].categoryName,
                           style: TextStyle(
-                            color: index == _selectedCategoryIndex ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
-                            fontWeight: FontWeight.bold
-                          ),
+                              color: index == _selectedCategoryIndex
+                                  ? Theme.of(context).scaffoldBackgroundColor
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                         selected: index == _selectedCategoryIndex,
                         selectedTileColor: Colors.redAccent[100],
                         trailing: index == _selectedCategoryIndex
-                            ? Icon(Icons.arrow_forward_ios_rounded, color: Theme.of(context).scaffoldBackgroundColor)
+                            ? Icon(Icons.arrow_forward_ios_rounded,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor)
                             : null,
                         onTap: () {
                           setState(() {
@@ -119,30 +163,26 @@ class _QuestionsTabState extends State<QuestionsTab> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
             child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 2
-                  ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Card(
-                margin: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 2),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    List<Question> categoryItems = _categoryList[_selectedCategoryIndex].questions;
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      List<Question> categoryItems =
+                          _categoryList[_selectedCategoryIndex].questions;
                       final isLastItem = index == categoryItems.length - 1;
                       return Container(
-                        margin: EdgeInsets.fromLTRB(8, 8, 8, isLastItem ? 8 : 0),
+                        margin:
+                            EdgeInsets.fromLTRB(8, 8, 8, isLastItem ? 8 : 0),
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 2
-                            ),
+                          border: Border.all(color: Colors.grey, width: 2),
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: ListTile(
@@ -153,9 +193,10 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           title: Text(
                             categoryItems[index].short,
                             style: TextStyle(
-                              color: index == _selectedItemIndex ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
-                              fontWeight: FontWeight.bold
-                            ),
+                                color: index == _selectedItemIndex
+                                    ? Theme.of(context).scaffoldBackgroundColor
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                           selected: index == _selectedItemIndex,
                           selectedTileColor: Colors.redAccent[100],
@@ -191,18 +232,25 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(4),
                                       child: Container(
-                                        width: MediaQuery.of(context).size.width * 0.7, //Gets dimension of the screen * 70%
-                                        height: MediaQuery.of(context).size.height * 0.7, //Gets dimension of the screen * 70%
+                                        width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                            0.7, //Gets dimension of the screen * 70%
+                                        height: MediaQuery.of(context)
+                                                .size
+                                                .height *
+                                            0.7, //Gets dimension of the screen * 70%
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                            color: Colors.grey,
-                                            width: 2
-                                            ),
-                                          borderRadius: BorderRadius.circular(8.0),
+                                              color: Colors.grey, width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
                                         ),
-                                        padding: const EdgeInsets.fromLTRB(30.0, 25.0, 30.0, 25.0),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            30.0, 25.0, 30.0, 25.0),
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               categoryItems[index].short,
@@ -214,11 +262,14 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                             const SizedBox(height: 20.0),
                                             Text(
                                               categoryItems[index].full,
-                                              style: const TextStyle(fontSize: 16.0),
+                                              style: const TextStyle(
+                                                  fontSize: 16.0),
                                             ),
                                             const SizedBox(height: 20.0),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 ElevatedButton(
                                                   onPressed: () {
@@ -227,43 +278,60 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                     });
                                                     Navigator.of(context).pop();
                                                   },
-                                                  style: ElevatedButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
                                                       vertical: 30.0,
                                                       horizontal: 60.0,
                                                     ),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
                                                     ),
-                                                    backgroundColor: Colors.redAccent,
-                                                    ),
+                                                    backgroundColor:
+                                                        Colors.redAccent,
+                                                  ),
                                                   child: const Text(
                                                     'Cancel',
-                                                    style: TextStyle(fontSize: 18.0),
+                                                    style: TextStyle(
+                                                        fontSize: 18.0),
                                                   ),
                                                 ),
                                                 ElevatedButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
-                                                    Future.delayed(const Duration(seconds: 5), () {
+                                                    Future.delayed(
+                                                        const Duration(
+                                                            seconds: 5), () {
                                                       setState(() {
                                                         _selectedItemIndex = -1;
                                                       });
                                                     });
                                                   },
-                                                  style: ElevatedButton.styleFrom(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      vertical: 30.0,
-                                                      horizontal: 60.0,
-                                                    ),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10.0),
-                                                    ),
-                                                    backgroundColor: Colors.green
-                                                  ),
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            vertical: 30.0,
+                                                            horizontal: 60.0,
+                                                          ),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
+                                                          backgroundColor:
+                                                              Colors.green),
                                                   child: const Text(
                                                     'Confirm',
-                                                    style: TextStyle(fontSize: 18.0),
+                                                    style: TextStyle(
+                                                        fontSize: 18.0),
                                                   ),
                                                 ),
                                               ],
@@ -279,11 +347,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           },
                         ),
                       );
-                  },
-                  itemCount: _categoryList[_selectedCategoryIndex].questions.length,               
-                ),
-              )
-            ),
+                    },
+                    itemCount:
+                        _categoryList[_selectedCategoryIndex].questions.length,
+                  ),
+                )),
           ),
         ),
       ],
