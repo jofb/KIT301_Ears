@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:kit301_ears/invitation_tab.dart';
 import 'package:kit301_ears/questions_tab.dart';
 import 'package:kit301_ears/others_tab.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var app = await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print("\n\nConnected to Firebase App ${app.options.projectId}\n\n");
+  
   runApp(const MyApp());
 }
 

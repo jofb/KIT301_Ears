@@ -30,6 +30,11 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
+    
+    path_provider:
+
+    firebase_core:
+    cloud_firestore:
 
     # audio recording and playback
     flutter_sound:
