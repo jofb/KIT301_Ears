@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:kit301_ears/invitation_tab.dart';
-import 'package:kit301_ears/questions_tab.dart';
-import 'package:kit301_ears/others_tab.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
 import 'category.dart';
+import 'others_tab.dart';
+import 'invitation_tab.dart';
+import 'questions_tab.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
