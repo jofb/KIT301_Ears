@@ -5,31 +5,31 @@
             "full_question": "What is the capital of France?",
             "short_question": "Capital of France",
             "type": "theOGGanster",
-            "id": "01"
+            "identifier": "01"
         },
         {
             "full_question": "What is the capital of Germany?",
             "short_question": "Capital of Germany",
             "type": "theOGGanster",
-            "id": "02"
+            "identifier": "02"
         },
         {
             "full_question": "What is the capital of Italy?",
             "short_question": "Capital of Italy",
             "type": "theOGGanster",
-            "id": "03"
+            "identifier": "03"
         },
         {
             "full_question": "What is the capital of Spain?",
             "short_question": "Capital of Spain",
             "type": "theOGGanster",
-            "id": "04"
+            "identifier": "04"
         },
         {
             "full_question": "What is the capital of Portugal?",
             "short_question": "Capital of Portugal",
             "type": "theOGGanster",
-            "id": "05"
+            "identifier": "05"
         }
     ]
 }

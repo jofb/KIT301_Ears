@@ -21,11 +21,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
   @override
   void initState() {
     // open the recorder
-    openRecorder().then((value) {
-      setState(() {
-        _recorderIsInitialized = true;
-      });
-    });
+    // TODO uncomment below to enable recorder
+    // openRecorder().then((value) {
+    //   setState(() {
+    //     _recorderIsInitialized = true;
+    //   });
+    // });
 
     super.initState();
   }
@@ -56,9 +57,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
     final session = await AudioSession.instance;
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.record,
-      avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.allowBluetooth | AVAudioSessionCategoryOptions.defaultToSpeaker,
+      avAudioSessionCategoryOptions:
+          AVAudioSessionCategoryOptions.allowBluetooth |
+              AVAudioSessionCategoryOptions.defaultToSpeaker,
       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
-      avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
+      avAudioSessionRouteSharingPolicy:
+          AVAudioSessionRouteSharingPolicy.defaultPolicy,
       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
       androidAudioAttributes: const AndroidAudioAttributes(
         contentType: AndroidAudioContentType.speech,
@@ -76,7 +80,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
   void startRecorder() {
     // needs a file path, a codec, and an audio source
     print('hello');
-    _recorder.startRecorder(codec: _codec, toFile: _filePath, audioSource: AudioSource.microphone).then((value) {
+    _recorder
+        .startRecorder(
+            codec: _codec,
+            toFile: _filePath,
+            audioSource: AudioSource.microphone)
+        .then((value) {
       setState(() {});
     });
   }
@@ -112,7 +121,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
               if (recordFn != null) recordFn();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: (_recorder.isRecording) ? Colors.red : Colors.green,
+              backgroundColor:
+                  (_recorder.isRecording) ? Colors.red : Colors.green,
             ),
             child: Text(_recorder.isRecording ? 'Stop' : 'Record'),
           ),

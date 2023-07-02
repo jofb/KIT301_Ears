@@ -7,47 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
-
-class CategoriesModel extends ChangeNotifier {
-  
-  CollectionReference collection =
-      FirebaseFirestore.instance.collection('Categories');
-
-  CategoriesModel() {
-    getCollection();
-  }
-
-  Future getCollection() async {
-    var dir = await getApplicationDocumentsDirectory();
-
-    notifyListeners();
-
-    var query = await collection.get();
-
-    for (var category in query.docs) {
-      var questions = await category.reference.collection('Items').get();
-      // get the questions as a list of maps
-      var questionsList = questions.docs.map((doc) => doc.data());
-      // convert to a map object
-      var categoryData = {
-        'category_name': category.get('category_name'),
-        'questions': questionsList.toList()
-      };
-
-      // encode as json
-      String jsonString = json.encode(categoryData);
-      // attempt to save to file
-      var file = File("${dir.path}/${categoryData['category_name']}.json");
-      await file.writeAsString(jsonString);
-      print('json file saved');
-    }
-    update();
-  }
-
-  void update() {
-    notifyListeners();
-  }
-}
+import 'package:provider/provider.dart';
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -57,41 +17,17 @@ class QuestionsTab extends StatefulWidget {
 }
 
 class _QuestionsTabState extends State<QuestionsTab> {
-  List<Category> _categoryList = [];
-
-  Future initCategories() async {
-    final dir = await getApplicationDocumentsDirectory();
-    List<Category> tempCategoryList = [];
-
-    await for (var file in dir.list()) {
-      if (file is File && file.path.endsWith(".json")) {
-        final json = await file.readAsString();
-        print(json);
-        final category = Category.fromJson(jsonDecode(json));
-        tempCategoryList.add(category);
-      }
-    }
-
-    setState(() {
-      _categoryList = tempCategoryList;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    CategoriesModel().addListener(() {
-      initCategories(); 
-      setState(() {});
-    });
-  }
-
   int _selectedCategoryIndex = 0;
   int _selectedItemIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    if (_categoryList.isEmpty) {
+    return Consumer<CategoriesModel>(builder: buildTab);
+  }
+
+  @override
+  Widget buildTab(BuildContext context, CategoriesModel model, _) {
+    if (model.categories.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
           color: Colors.blueGrey,
@@ -117,7 +53,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    final isLastItem = index == _categoryList.length - 1;
+                    final isLastItem = index == model.categories.length - 1;
                     return Container(
                       margin: EdgeInsets.fromLTRB(8, 8, 8, isLastItem ? 8 : 0),
                       decoration: BoxDecoration(
@@ -130,7 +66,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         title: Text(
-                          _categoryList[index].categoryName,
+                          model.categories[index].categoryName,
                           style: TextStyle(
                               color: index == _selectedCategoryIndex
                                   ? Theme.of(context).scaffoldBackgroundColor
@@ -153,7 +89,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                       ),
                     );
                   },
-                  itemCount: _categoryList.length,
+                  itemCount: model.categories.length,
                 ),
               ),
             ),
@@ -176,7 +112,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       List<Question> categoryItems =
-                          _categoryList[_selectedCategoryIndex].questions;
+                          model.categories[_selectedCategoryIndex].questions;
                       final isLastItem = index == categoryItems.length - 1;
                       return Container(
                         margin:
@@ -348,8 +284,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                         ),
                       );
                     },
-                    itemCount:
-                        _categoryList[_selectedCategoryIndex].questions.length,
+                    itemCount: model
+                        .categories[_selectedCategoryIndex].questions.length,
                   ),
                 )),
           ),
