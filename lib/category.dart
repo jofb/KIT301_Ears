@@ -43,11 +43,31 @@ class CategoriesModel extends ChangeNotifier {
       FirebaseFirestore.instance.collection('Categories');
 
   List<Category> categories = [];
+  late final Directory categoryDirectory;
 
   CategoriesModel() {
-    initCategories();
+    initModel();
     // TODO do we want to load the collection on startup everytime?
     // loadCollection();
+  }
+
+  Future initModel() async {
+    await initFilePath();
+    initCategories();
+  }
+
+  // initializes the global file path for categories
+  // if doing audio can also do here
+  Future initFilePath() async {
+    if (kIsWeb) return;
+    const String categoryPath = 'categories';
+    final appDir = await getApplicationDocumentsDirectory();
+    final dir = Directory('${appDir.path}/$categoryPath');
+    // ensure categories directory exists
+    if (!await Directory(dir.path).exists()) {
+      await Directory(dir.path).create();
+    }
+    categoryDirectory = dir;
   }
 
   // initializes category list
@@ -75,9 +95,9 @@ class CategoriesModel extends ChangeNotifier {
       }
     } else {
       // other devices grab from documents directory (app data)
-      final dir = await getApplicationDocumentsDirectory();
+      // final dir = await getApplicationDocumentsDirectory();
       // TODO this should be different based on where we place the category data
-      await for (var file in dir.list()) {
+      await for (var file in categoryDirectory.list()) {
         // get all json files in the directory then add them to the list
         if (file is File && file.path.endsWith(".json")) {
           final json = await file.readAsString();
@@ -95,8 +115,6 @@ class CategoriesModel extends ChangeNotifier {
   Future loadCollection() async {
     // don't load anything if in web
     if (kIsWeb) return;
-    var dir = await getApplicationDocumentsDirectory();
-    print("I'm loading the database");
 
     var query = await collection.get();
 
@@ -114,7 +132,8 @@ class CategoriesModel extends ChangeNotifier {
       // encode as json
       String jsonString = json.encode(categoryData);
       // finally save to file
-      var file = File("${dir.path}/${categoryData['category_name']}.json");
+      // using id as file name
+      var file = File("${categoryDirectory.path}/category_${category.id}.json");
       await file.writeAsString(jsonString);
     }
     initCategories();
