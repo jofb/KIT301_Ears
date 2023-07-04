@@ -24,7 +24,11 @@ class _OthersTabState extends State<OthersTab> {
         ElevatedButton(
           onPressed: () => {model.loadCollection()},
           child: Text("Update Question Files"),
-        )
+        ),
+        ElevatedButton(
+          onPressed: () => {model.clearCollection()},
+          child: Text("Clear Question Files"),
+        ),
       ],
     );
   }

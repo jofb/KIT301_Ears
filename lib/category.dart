@@ -139,6 +139,17 @@ class CategoriesModel extends ChangeNotifier {
     initCategories();
   }
 
+  // clears the directory containing category files
+  void clearCollection() async {
+    if (categoryDirectory.existsSync()) {
+      for (var file in categoryDirectory.listSync()) {
+        file.deleteSync();
+      }
+    }
+    categories.clear();
+    print('categories cache cleared');
+  }
+
   void update() {
     notifyListeners();
   }
