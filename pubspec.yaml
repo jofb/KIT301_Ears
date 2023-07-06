@@ -30,7 +30,7 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    
+
     path_provider:
 
     firebase_core:
@@ -39,6 +39,9 @@ dependencies:
     # audio recording and playback
     flutter_sound:
     audio_session:
+
+    # ml
+    tflite_flutter:
 
     permission_handler:
 
