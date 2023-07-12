@@ -46,37 +46,61 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState!.openDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      // initialIndex: 2, // change default tab to inv to speak
       length: 3,
       child: Scaffold(
-        drawer: BurgerMenu(), // custom widget
+        key: _scaffoldKey,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           toolbarHeight: 32,
           backgroundColor: Colors.blueGrey,
           elevation: 0,
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(
-                80), // (toby) this sets the distance between the BurgerMenu and TabBar
-            child: TabBar(
-                //hit the little arrow on this line, hide all this garbage styling
-                labelColor: Colors.blueGrey,
-                unselectedLabelColor: Theme.of(context).scaffoldBackgroundColor,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicator: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
+            preferredSize: const Size.fromHeight(30),
+            child: Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 30),
+                  child: TabBar(
+                    labelColor: Colors.blueGrey,
+                    unselectedLabelColor:
+                        Theme.of(context).scaffoldBackgroundColor,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                    color: Theme.of(context).scaffoldBackgroundColor),
-                tabs: const [
-                  NavigationTab(text: "Others"),
-                  NavigationTab(text: "Questions and Statements"),
-                  NavigationTab(text: "Invitation to Speak"),
-                ]),
+                        topRight: Radius.circular(10),
+                      ),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    tabs: const [
+                      NavigationTab(text: "Others"),
+                      NavigationTab(text: "Questions and Statements"),
+                      NavigationTab(text: "Invitation to Speak"),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.menu),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  onPressed: () {
+                    _openDrawer();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
+        drawer: const BurgerMenu(),
         body: const TabBarView(
           children: [
             OthersTab(),
@@ -122,12 +146,18 @@ class BurgerMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const SizedBox(
-            height: 90,
+            height: 70,
             child: DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blueGrey,
               ),
-              child: Text(''),
+              child: Text(
+                'EARS Project',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              )
             ),
           ),
           ListTile(
