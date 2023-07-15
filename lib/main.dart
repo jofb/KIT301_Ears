@@ -7,6 +7,7 @@ import 'category.dart';
 import 'others_tab.dart';
 import 'invitation_tab.dart';
 import 'questions_tab.dart';
+import 'audio_procesing/language.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,8 +24,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => CategoriesModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CategoriesModel()),
+        ChangeNotifierProvider(create: (context) => LanguageModel()),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -46,7 +50,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _openDrawer() {
     _scaffoldKey.currentState!.openDrawer();
@@ -148,17 +152,16 @@ class BurgerMenu extends StatelessWidget {
           const SizedBox(
             height: 70,
             child: DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-              ),
-              child: Text(
-                'EARS Project',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey,
                 ),
-              )
-            ),
+                child: Text(
+                  'EARS Project',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                )),
           ),
           ListTile(
             title: const Text('Override Language',

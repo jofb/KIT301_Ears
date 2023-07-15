@@ -1,18 +1,18 @@
 [
     {
-        "lang_code": "et",
-        "full_text": "Estonian"
+        "code": "et",
+        "text": "Estonian"
     },
     {
-        "lang_code": "mn",
-        "full_text": "Mongolian"
+        "code": "mn",
+        "text": "Mongolian"
     },
     {
-        "lang_code": "tm",
-        "full_text": "Tamil"
+        "code": "tm",
+        "text": "Tamil"
     },
     {
-        "lang_code": "tr",
-        "full_text": "Turkish"
+        "code": "tr",
+        "text": "Turkish"
     }
 ]

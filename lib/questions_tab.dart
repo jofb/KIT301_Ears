@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:kit301_ears/audio_procesing/language.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,12 +24,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CategoriesModel>(builder: buildTab);
+    return Consumer2<CategoriesModel, LanguageModel>(builder: buildTab);
   }
 
   @override
-  Widget buildTab(BuildContext context, CategoriesModel model, _) {
-    if (model.categories.isEmpty) {
+  Widget buildTab(
+      BuildContext context, CategoriesModel categoriesModel, language, _) {
+    if (categoriesModel.categories.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
           color: Colors.blueGrey,
@@ -54,7 +56,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    final isLastItem = index == model.categories.length - 1;
+                    final isLastItem =
+                        index == categoriesModel.categories.length - 1;
                     return Container(
                       margin: EdgeInsets.fromLTRB(8, 8, 8, isLastItem ? 8 : 0),
                       decoration: BoxDecoration(
@@ -67,7 +70,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         title: Text(
-                          model.categories[index].categoryName,
+                          categoriesModel.categories[index].categoryName,
                           style: TextStyle(
                               color: index == _selectedCategoryIndex
                                   ? Theme.of(context).scaffoldBackgroundColor
@@ -90,7 +93,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                       ),
                     );
                   },
-                  itemCount: model.categories.length,
+                  itemCount: categoriesModel.categories.length,
                 ),
               ),
             ),
@@ -112,8 +115,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      List<Question> categoryItems =
-                          model.categories[_selectedCategoryIndex].questions;
+                      List<Question> categoryItems = categoriesModel
+                          .categories[_selectedCategoryIndex].questions;
                       final isLastItem = index == categoryItems.length - 1;
                       return Container(
                         margin:
@@ -285,7 +288,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                         ),
                       );
                     },
-                    itemCount: model
+                    itemCount: categoriesModel
                         .categories[_selectedCategoryIndex].questions.length,
                   ),
                 )),

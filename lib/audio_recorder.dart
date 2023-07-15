@@ -6,7 +6,10 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 
 class AudioRecorder extends StatefulWidget {
-  const AudioRecorder({super.key});
+  const AudioRecorder({super.key, required this.onFinished});
+
+  final int recordingTime = 8;
+  final Function onFinished;
 
   @override
   State<AudioRecorder> createState() => _AudioRecorderState();
@@ -22,11 +25,11 @@ class _AudioRecorderState extends State<AudioRecorder> {
   void initState() {
     // open the recorder
     // TODO uncomment below to enable recorder
-    // openRecorder().then((value) {
-    //   setState(() {
-    //     _recorderIsInitialized = true;
-    //   });
-    // });
+    openRecorder().then((value) {
+      setState(() {
+        _recorderIsInitialized = true;
+      });
+    });
 
     super.initState();
   }
@@ -79,7 +82,6 @@ class _AudioRecorderState extends State<AudioRecorder> {
   // record audio to file
   void startRecorder() {
     // needs a file path, a codec, and an audio source
-    print('hello');
     _recorder
         .startRecorder(
             codec: _codec,
@@ -94,6 +96,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   void stopRecorder() async {
     await _recorder.stopRecorder().then((value) {
       setState(() {});
+      widget.onFinished();
     });
   }
 
@@ -116,9 +119,15 @@ class _AudioRecorderState extends State<AudioRecorder> {
       child: Column(
         children: [
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final recordFn = getRecorderFunction();
-              if (recordFn != null) recordFn();
+              if (recordFn != null) {
+                recordFn();
+                // then we can stop the recorder in 8s if needed
+                Future.delayed(Duration(seconds: widget.recordingTime), () {
+                  if (_recorder.isRecording) stopRecorder();
+                });
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor:
