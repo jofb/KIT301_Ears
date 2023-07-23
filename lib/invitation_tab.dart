@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'audio_procesing/language.dart';
+import 'audio_procesing/spectrogram.dart';
 import 'audio_recorder.dart';
 
 class InvitationTab extends StatefulWidget {
@@ -79,7 +80,7 @@ class _InvitationTabState extends State<InvitationTab> {
             },
             child: Text('Turkish'),
           ),
-        ),
+        )
       ],
     );
   }

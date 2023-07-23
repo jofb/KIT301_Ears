@@ -6,9 +6,7 @@ import 'dart:typed_data';
 const melBreakFreqHertz = 700.0;
 const melHighFreq = 1127.0;
 
-/// TODO voice activity deteciton and filtering on recorded audio
-
-// TODO add fn description
+// convert ms time to number of frames given sample rate and ms
 int msFrames(int sampleRate, int ms) {
   return ((sampleRate.toDouble()) * 1e-3 * (ms.toDouble())).toInt();
 }
@@ -204,4 +202,124 @@ Matrix melSpectrogram(List<double> signal) {
 
   /* Apply the cmvn and return */
   return cmvn(logMelSpectrogram);
+}
+
+// removes silence from signal using rms based framewise VAD decisions
+List<double> removeSilence(signal, int rate) {
+  const windowMS = 10;
+  final windowFrames = ((windowMS * rate) / 1000).floor();
+
+  // get the binary vad decisions (tells us which frames should be dropped)
+  final List<bool> vadDecisions =
+      framewiseVAD(signal, rate, windowMS, minNonSpeech: 300, strength: 0.1);
+
+  // convert the signal to same frames used in vad decisions
+  final windows = nonOverlapFrame(signal, windowFrames);
+
+  // finally, reshape to match the vad decisions
+  List<double> output = [];
+  for (int i = 0; i < windows.length; i++) {
+    if (vadDecisions[i]) {
+      output.addAll(windows[i]);
+    }
+  }
+
+  return output;
+}
+
+// transforms input signal into non overlapping frames
+List<List<double>> nonOverlapFrame(signal, int length) {
+  /// transforms input signal into non overlapping frames with input length (no padding)
+  /// example: nonOverlapFrame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3)
+  /// output: [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+  List<List<double>> frames = [];
+  int start = 0;
+  while (start + length <= signal.length) {
+    frames.add(signal.sublist(start, start + length));
+    start += length;
+  }
+
+  return frames;
+}
+
+List<double> rootMeanSquare(List<List<double>> input, length) {
+  // square, two maps to cover both lists
+  final square = input.map((e) => e.map((num) => num.abs() * num.abs()));
+  // mean, sum rows then take the mean
+  final mean = square.map((e) => e.reduce((a, b) => a + b) / e.length);
+  // root, simple sqrt map on each element
+  final root = mean.map((e) => sqrt(e));
+
+  return root.toList();
+}
+
+// used by VAD decisions to invert binary decision if the run is too short
+List<bool> invertShortConsecutive(List<bool> input, int minLength) {
+  if (minLength == 0) return input;
+  // convert list of bools into ints ( [true, true, false] -> [1, 1, 0])
+  final mask = input.map((e) => e ? 1 : 0).toList();
+
+  // run length encoding
+  List<int> pos = [];
+  List<int> lens = [];
+  int len = 0;
+  int current = mask[0];
+
+  // convert a mask to two arrays which describe runs of numbers and their positions/lengths
+  // eg [0, 0, 0, 1, 1, 0, 0] -> [0, 3, 5] (positions of runs) & [3, 2, 2] (lengths of runs)
+  pos.add(0);
+  for (int j = 0; j < mask.length; j++) {
+    if (current != mask[j]) {
+      pos.add(j);
+      lens.add(len);
+      len = 0;
+      current = mask[j];
+    }
+    len++;
+  }
+  lens.add(len);
+
+  // need to create a new mask where either the runs are too short, or they were originally true
+  final originalValues = pos.map((index) => mask[index] == 1).toList();
+  final tooShort = lens.map((e) => e < minLength).toList();
+  List<bool> trueOrTooShort = [];
+  for (int i = 0; i < originalValues.length; i++) {
+    trueOrTooShort.add(originalValues[i] | tooShort[i]);
+  }
+
+  // finally create the new mask and fill it with correct values
+  List<bool> newMask = [];
+  for (int j = 0; j < pos.length; j++) {
+    newMask.addAll(List.filled(lens[j], trueOrTooShort[j]));
+  }
+
+  return newMask;
+}
+
+List<bool> framewiseVAD(signal, sampleRate, frameSteps,
+    {minNonSpeech = 0, strength = 0.05, minRMS = 1e-3, timeAxis = 0}) {
+  // partition into non-overlapping frames
+  final frameStep = msFrames(sampleRate, frameSteps);
+  final frames = nonOverlapFrame(signal, frameStep);
+
+  // compute RMS and mean RMS over frames
+  final rms = rootMeanSquare(frames, frameStep);
+
+  // cant reduce on an empty list
+  if (rms.isEmpty) return [];
+
+  // mean rms
+  final sum = rms.reduce((a, b) => a + b);
+  final meanRMS = sum / rms.length;
+
+  // compute VAD decisions using the threshhold
+  final threshhold = strength * max<double>(minRMS, meanRMS);
+  // list of booleans to determine which of the rms are greater than threshold
+  List<bool> decisions = List.generate(rms.length, (i) => rms[i] > threshhold);
+
+  // check if there are too short sequences of positive VAD decisions, if there are then generate a new mask
+  final minNonSpeechFrames = msFrames(sampleRate, minNonSpeech) ~/ frameStep;
+  decisions = invertShortConsecutive(decisions, minNonSpeechFrames);
+
+  return decisions;
 }
