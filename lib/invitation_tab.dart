@@ -35,54 +35,20 @@ class _InvitationTabState extends State<InvitationTab> {
         Text(
             "Invitation to Speak Page - Current Language: ${language.getText()} (${language.getCode()})"),
         AudioRecorder(
-          onFinished: () {
-            print('I AM FINISHED RECORDING');
+          onFinished: () async {
+            print('Finished recording. Predicting language...');
 
+            // TODO this really isn't neccessary since it breaks on web anyway
             if (kIsWeb) {
               language.setLanguage(2);
               return;
             }
-            predictLanguage('my_file.wav');
-            // TODO run inference and then update the language model
+            // get the lang index and then update the language provider
+            int langIndex = await predictLanguage('my_file.wav');
+            language.setLanguage(langIndex);
             // note that importing the ml stuff WILL break the web version of the app.
           },
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(0);
-            },
-            child: Text('Estonian'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(1);
-            },
-            child: Text('Mongolian'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(2);
-            },
-            child: Text('Tamil'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(3);
-            },
-            child: Text('Turkish'),
-          ),
-        )
       ],
     );
   }

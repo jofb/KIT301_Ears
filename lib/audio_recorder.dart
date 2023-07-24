@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
@@ -19,12 +20,11 @@ class _AudioRecorderState extends State<AudioRecorder> {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   bool _recorderIsInitialized = false;
   String _filePath = 'my_file.wav';
-  Codec _codec = Codec.pcm16WAV; // TODO look into alternative codecs
+  Codec _codec = Codec.aacADTS; // TODO look into alternative codecs
 
   @override
   void initState() {
     // open the recorder
-    // TODO uncomment below to enable recorder
     openRecorder().then((value) {
       setState(() {
         _recorderIsInitialized = true;
@@ -80,12 +80,13 @@ class _AudioRecorderState extends State<AudioRecorder> {
   }
 
   // record audio to file
-  void startRecorder() {
+  void startRecorder() async {
+    final tempDir = await getTemporaryDirectory();
     // needs a file path, a codec, and an audio source
     _recorder
         .startRecorder(
-            codec: _codec,
-            toFile: _filePath,
+            // codec: _codec,
+            toFile: '${tempDir.path}/$_filePath',
             audioSource: AudioSource.microphone)
         .then((value) {
       setState(() {});
@@ -113,22 +114,24 @@ class _AudioRecorderState extends State<AudioRecorder> {
     super.dispose();
   }
 
+  void onPressedFn() async {
+    final recordFn = getRecorderFunction();
+    if (recordFn != null) {
+      recordFn();
+      // stop recording early everytime if needed
+      Future.delayed(Duration(seconds: widget.recordingTime), () {
+        if (_recorder.isRecording) stopRecorder();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         children: [
           ElevatedButton(
-            onPressed: () async {
-              final recordFn = getRecorderFunction();
-              if (recordFn != null) {
-                recordFn();
-                // then we can stop the recorder in 8s if needed
-                Future.delayed(Duration(seconds: widget.recordingTime), () {
-                  if (_recorder.isRecording) stopRecorder();
-                });
-              }
-            },
+            onPressed: onPressedFn,
             style: ElevatedButton.styleFrom(
               backgroundColor:
                   (_recorder.isRecording) ? Colors.red : Colors.green,
