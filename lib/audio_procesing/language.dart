@@ -17,7 +17,7 @@ class LanguageModel extends ChangeNotifier {
 
   void initLabels() async {
     // can load from assets here if needed
-    final rawJson = await rootBundle.loadString('ml/label_maps.json');
+    final rawJson = await rootBundle.loadString('assets/ml/label_maps.json');
     final list = await jsonDecode(rawJson).toList();
     // goofy deserialization of json to list
     for (var lang in list) {
