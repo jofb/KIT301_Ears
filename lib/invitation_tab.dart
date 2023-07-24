@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'audio_procesing/language.dart';
 import 'audio_procesing/spectrogram.dart';
 import 'audio_recorder.dart';
+import 'audio_procesing/ml_inference.dart';
 
 class InvitationTab extends StatefulWidget {
   const InvitationTab({super.key});
@@ -41,6 +42,7 @@ class _InvitationTabState extends State<InvitationTab> {
               language.setLanguage(2);
               return;
             }
+            predictLanguage('my_file.wav');
             // TODO run inference and then update the language model
             // note that importing the ml stuff WILL break the web version of the app.
           },

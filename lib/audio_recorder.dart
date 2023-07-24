@@ -18,8 +18,8 @@ class AudioRecorder extends StatefulWidget {
 class _AudioRecorderState extends State<AudioRecorder> {
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   bool _recorderIsInitialized = false;
-  String _filePath = 'my_file';
-  Codec _codec = Codec.aacADTS; // TODO look into alternative codecs
+  String _filePath = 'my_file.wav';
+  Codec _codec = Codec.pcm16WAV; // TODO look into alternative codecs
 
   @override
   void initState() {
