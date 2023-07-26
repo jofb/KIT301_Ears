@@ -45,42 +45,6 @@ class _InvitationTabState extends State<InvitationTab> {
             // note that importing the ml stuff WILL break the web version of the app.
           },
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(0);
-            },
-            child: Text('Estonian'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(1);
-            },
-            child: Text('Mongolian'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(2);
-            },
-            child: Text('Tamil'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              language.setLanguage(3);
-            },
-            child: Text('Turkish'),
-          ),
-        )
       ],
     );
   }

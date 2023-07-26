@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-// would like to hear thoughts on this
+// Language model for screens to consume
 class LanguageModel extends ChangeNotifier {
   // store the language mapper here too
-  late int langIndex;
+  int langIndex = 0;
   List<Map<String, String>> labels = [];
 
   LanguageModel() {
-    langIndex = 0;
     initLabels();
   }
 
@@ -34,10 +33,12 @@ class LanguageModel extends ChangeNotifier {
   }
 
   String getCode() {
+    if (labels.isEmpty) return '';
     return labels[langIndex]['code']!;
   }
 
   String getText() {
+    if (labels.isEmpty) return '';
     return labels[langIndex]['text']!;
   }
 
@@ -45,7 +46,61 @@ class LanguageModel extends ChangeNotifier {
     return labels.map((e) => e['text']!).toList();
   }
 
+  String indexToString(int index) {
+    if (labels.isEmpty) return '';
+    return "${labels[index]['text']!} (${labels[index]['code']!})";
+  }
+
   void update() {
     notifyListeners();
+  }
+}
+
+class LanguageDialog extends StatelessWidget {
+  const LanguageDialog({super.key, required this.language});
+
+  final LanguageModel language;
+
+  @override
+  Widget build(BuildContext context) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          content: SizedBox(
+            width: 300,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Change Language',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: language.labels.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(language.indexToString(index)),
+                      onTap: () {
+                        language.setLanguage(index);
+                        setState(() {});
+                      },
+                      selected: language.langIndex == index,
+                      selectedTileColor: Theme.of(context).primaryColor,
+                      selectedColor: Theme.of(context).scaffoldBackgroundColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
