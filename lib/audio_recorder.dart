@@ -95,7 +95,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   // stops current recorder
   void stopRecorder() async {
     await _recorder.stopRecorder().then((value) {
-      setState(() {});
+      setState(() {}); //test.darty
       widget.onFinished();
     });
   }
