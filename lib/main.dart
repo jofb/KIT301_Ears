@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           toolbarHeight: 32,
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: Theme.of(context).primaryColor,
           elevation: 0,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(30),
