@@ -72,29 +72,39 @@ class LanguageDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(6.0),
                   child: Text(
                     'Change Language',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: language.labels.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(language.indexToString(index)),
-                      onTap: () {
-                        language.setLanguage(index);
-                        setState(() {});
-                      },
-                      selected: language.langIndex == index,
-                      selectedTileColor: Theme.of(context).primaryColor,
-                      selectedColor: Theme.of(context).scaffoldBackgroundColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                    );
-                  },
+                SingleChildScrollView(
+                  child: Container(
+                    constraints: BoxConstraints(maxHeight: 300),
+                    child: Material(
+                      // wrapping in container fixes issue with selected background going out of bounds
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: language.labels.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(language.indexToString(index)),
+                            onTap: () {
+                              language.setLanguage(index);
+                              setState(() {});
+                            },
+                            selected: language.langIndex == index,
+                            selectedTileColor: Theme.of(context).primaryColor,
+                            selectedColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
