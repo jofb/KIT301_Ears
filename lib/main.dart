@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.blueGrey,
         ),
         home: const MyHomePage(title: 'EARS Project'),
       ),
@@ -145,6 +145,10 @@ class BurgerMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<LanguageModel>(builder: buildMenu);
+  }
+
+  Widget buildMenu(context, LanguageModel language, _) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -164,11 +168,16 @@ class BurgerMenu extends StatelessWidget {
                 )),
           ),
           ListTile(
-            title: const Text('Override Language',
+            title: const Text('Change Language',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Bring up language override menu
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return LanguageDialog(language: language);
+                  });
             },
           ),
           ListTile(
