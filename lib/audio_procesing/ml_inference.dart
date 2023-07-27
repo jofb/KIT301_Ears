@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:ml_linalg/linalg.dart';
@@ -23,6 +25,8 @@ Future<List<double>> loadAudio(String path) async {
   final tempDir = await getTemporaryDirectory();
   final wavFile = await Wav.readFile("${tempDir.path}/$path");
   final List<double> signal = wavFile.toMono();
+  // delete the file
+  File("${tempDir.path}/$path").delete();
 
   return signal;
 }

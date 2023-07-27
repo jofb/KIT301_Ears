@@ -85,9 +85,10 @@ class _AudioRecorderState extends State<AudioRecorder> {
     // needs a file path, a codec, and an audio source
     _recorder
         .startRecorder(
-            // codec: _codec,
-            toFile: '${tempDir.path}/$_filePath',
-            audioSource: AudioSource.microphone)
+      // codec: _codec,
+      toFile: '${tempDir.path}/$_filePath',
+      audioSource: AudioSource.microphone,
+    )
         .then((value) {
       setState(() {});
     });
@@ -96,7 +97,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   // stops current recorder
   void stopRecorder() async {
     await _recorder.stopRecorder().then((value) {
-      setState(() {}); //test.darty
+      setState(() {});
       widget.onFinished();
     });
   }
