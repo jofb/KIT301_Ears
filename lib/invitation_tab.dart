@@ -28,24 +28,14 @@ class _InvitationTabState extends State<InvitationTab> {
         ),
       );
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-            "Invitation to Speak Page - Current Language: ${language.getText()} (${language.getCode()})"),
-        AudioRecorder(
-          onFinished: () {
-            print('I AM FINISHED RECORDING');
+    return AudioRecorder(onFinished: () {
+      print('I AM FINISHED RECORDING');
 
-            if (kIsWeb) {
-              language.setLanguage(2);
-              return;
-            }
-            // TODO run inference and then update the language model
-            // note that importing the ml stuff WILL break the web version of the app.
-          },
-        ),
-      ],
-    );
+      if (kIsWeb) {
+        language.setLanguage(2);
+        return;
+      }
+      // run inference here
+    });
   }
 }

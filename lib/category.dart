@@ -122,16 +122,18 @@ class CategoriesModel extends ChangeNotifier {
 
     for (var category in query.docs) {
       // items is a collection inside of the category, need to fetch that
-      var items = await category.reference.collection('Items').orderBy("identifier").get();
-      
+      var items = await category.reference
+          .collection('Items')
+          .orderBy("identifier")
+          .get();
+
       // get the questions as a list of maps
       var questions = List<Map<String, dynamic>>.empty(growable: true);
       for (var q in items.docs) {
         var que = q.data();
         questions.add(que);
       }
-      
-      
+
       // convert to a map object
       var categoryData = {
         'category_name': category.get('category_name'),

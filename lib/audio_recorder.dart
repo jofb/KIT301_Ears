@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
+import 'package:rive/rive.dart';
 
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({super.key, required this.onFinished});
@@ -20,14 +23,33 @@ class _AudioRecorderState extends State<AudioRecorder> {
   bool _recorderIsInitialized = false;
   String _filePath = 'my_file';
   Codec _codec = Codec.aacADTS; // TODO look into alternative codecs
+  // animation state
+  Artboard? _artboard;
+  SMIInput<bool>? _trigger;
 
   @override
   void initState() {
-    // open the recorder
-    // TODO uncomment below to enable recorder
+    // open the audio recorder
     openRecorder().then((value) {
       setState(() {
         _recorderIsInitialized = true;
+      });
+    });
+
+    rootBundle.load('assets/animation/fin.riv').then((data) async {
+      final file = RiveFile.import(data);
+
+      final artboard = file.mainArtboard;
+      var controller =
+          StateMachineController.fromArtboard(artboard, 'State Machine 1');
+
+      if (controller != null) {
+        artboard.addController(controller);
+        _trigger = controller.findInput('Press');
+      }
+
+      setState(() {
+        _artboard = artboard;
       });
     });
 
@@ -113,30 +135,49 @@ class _AudioRecorderState extends State<AudioRecorder> {
     super.dispose();
   }
 
+  void toggleAnimation() {
+    setState(() {
+      _trigger?.value = true; // what ? //^= this is a trigger apparently
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () async {
-              final recordFn = getRecorderFunction();
-              if (recordFn != null) {
-                recordFn();
-                // then we can stop the recorder in 8s if needed
-                Future.delayed(Duration(seconds: widget.recordingTime), () {
-                  if (_recorder.isRecording) stopRecorder();
-                });
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  (_recorder.isRecording) ? Colors.red : Colors.green,
+    // return widget.child();
+    if (_artboard == null) return Placeholder();
+    return Stack(
+      children: [
+        Positioned.fill(
+          bottom: 32,
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                // start or stop audio recorder
+                final recordFn = getRecorderFunction();
+                if (recordFn != null) {
+                  recordFn();
+                  // then we can stop the recorder in 8s if needed
+                  Future.delayed(Duration(seconds: widget.recordingTime), () {
+                    if (_recorder.isRecording) {
+                      // stop animation and recorder
+                      stopRecorder();
+                      toggleAnimation();
+                    }
+                  });
+                }
+                // set animation state
+                toggleAnimation();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                side: BorderSide.none,
+                shadowColor: Colors.transparent,
+              ),
+              child: Rive(artboard: _artboard!, fit: BoxFit.cover),
             ),
-            child: Text(_recorder.isRecording ? 'Stop' : 'Record'),
           ),
-        ],
-      ),
+        )
+      ],
     );
   }
 }

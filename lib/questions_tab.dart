@@ -24,8 +24,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
   final player = AudioPlayer();
 
   @override
-  void dispose() async{
-    await player.dispose();
+  void dispose() {
+    player.dispose();
     super.dispose();
   }
 
@@ -89,8 +89,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           child: ListView.builder(
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              final isLastItem =
-                                  index == categoriesModel.categories.length - 1;
+                              final isLastItem = index ==
+                                  categoriesModel.categories.length - 1;
                               return Container(
                                 margin: EdgeInsets.fromLTRB(
                                     8, 8, 8, isLastItem ? 8 : 0),
@@ -153,37 +153,41 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 List<Question> categoryItems = categoriesModel
-                                    .categories[_selectedCategoryIndex].questions;
+                                    .categories[_selectedCategoryIndex]
+                                    .questions;
                                 final isLastItem =
                                     index == categoryItems.length - 1;
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(
                                       8, 8, 8, isLastItem ? 8 : 0),
                                   decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: Colors.grey, width: 2),
+                                    border: Border.all(
+                                        color: Colors.grey, width: 2),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: ListTile(
                                     tileColor: Colors.grey[300],
-                            
                                     title: Text(
                                       categoryItems[index].short,
                                       style: TextStyle(
                                           color: index == _selectedItemIndex
-                                              ? Theme.of(context).scaffoldBackgroundColor
+                                              ? Theme.of(context)
+                                                  .scaffoldBackgroundColor
                                               : Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     selected: index == _selectedItemIndex,
                                     selectedTileColor: Colors.redAccent[100],
-                                    onTap: () async{
+                                    onTap: () async {
                                       try {
-                                        await player.play(AssetSource("audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3"));
-                                        print(player.play(AssetSource("audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3")));
+                                        await player.play(AssetSource(
+                                            "audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3"));
+                                        print(player.play(AssetSource(
+                                            "audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3")));
                                       } catch (e) {
                                         print(e);
-                                        await player.play(AssetSource("audio/001.mp3"));
+                                        await player
+                                            .play(AssetSource("audio/001.mp3"));
                                       }
                                     },
                                     onLongPress: () {
@@ -192,11 +196,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                       });
                                       showDialog(
                                         context: context,
-                                        barrierColor: Colors.black.withOpacity(0.75),
+                                        barrierColor:
+                                            Colors.black.withOpacity(0.75),
                                         builder: (BuildContext context) {
                                           return Dialog(
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
                                             child: WillPopScope(
                                               onWillPop: () async {
@@ -206,7 +212,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                 return true;
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.all(4),
+                                                padding:
+                                                    const EdgeInsets.all(4),
                                                 child: Container(
                                                   width: MediaQuery.of(context)
                                                           .size
@@ -226,7 +233,10 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                   ),
                                                   padding:
                                                       const EdgeInsets.fromLTRB(
-                                                          30.0, 25.0, 30.0, 25.0),
+                                                          30.0,
+                                                          25.0,
+                                                          30.0,
+                                                          25.0),
                                                   child: Column(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -244,7 +254,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                       const SizedBox(
                                                           height: 20.0),
                                                       Text(
-                                                        categoryItems[index].full,
+                                                        categoryItems[index]
+                                                            .full,
                                                         style: const TextStyle(
                                                             fontSize: 16.0),
                                                       ),
@@ -265,13 +276,15 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                                       context)
                                                                   .pop();
                                                             },
-                                                            style: ElevatedButton
-                                                                .styleFrom(
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
                                                               padding:
                                                                   const EdgeInsets
                                                                       .symmetric(
                                                                 vertical: 30.0,
-                                                                horizontal: 60.0,
+                                                                horizontal:
+                                                                    60.0,
                                                               ),
                                                               shape:
                                                                   RoundedRectangleBorder(
@@ -287,7 +300,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                             child: const Text(
                                                               'Cancel',
                                                               style: TextStyle(
-                                                                  fontSize: 18.0),
+                                                                  fontSize:
+                                                                      18.0),
                                                             ),
                                                           ),
                                                           ElevatedButton(
@@ -297,7 +311,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                                   .pop();
                                                               Future.delayed(
                                                                   const Duration(
-                                                                      seconds: 5),
+                                                                      seconds:
+                                                                          5),
                                                                   () {
                                                                 setState(() {
                                                                   _selectedItemIndex =
@@ -327,7 +342,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                                             child: const Text(
                                                               'Confirm',
                                                               style: TextStyle(
-                                                                  fontSize: 18.0),
+                                                                  fontSize:
+                                                                      18.0),
                                                             ),
                                                           ),
                                                         ],
