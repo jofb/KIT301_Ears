@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.utas.ears.kit301_ears">
+
    <application
         android:label="kit301_ears"
         android:name="${applicationName}"

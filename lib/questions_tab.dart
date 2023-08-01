@@ -1,53 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:kit301_ears/category.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+//import 'package:kit301_ears/audio_procesing/language.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'dart:async';
+import 'category.dart';
 
-class CategoriesModel extends ChangeNotifier {
-  
-  CollectionReference collection =
-      FirebaseFirestore.instance.collection('Categories');
-
-  CategoriesModel() {
-    getCollection();
-  }
-
-  Future getCollection() async {
-    var dir = await getApplicationDocumentsDirectory();
-
-    notifyListeners();
-
-    var query = await collection.get();
-
-    for (var category in query.docs) {
-      var questions = await category.reference.collection('Items').get();
-      // get the questions as a list of maps
-      var questionsList = questions.docs.map((doc) => doc.data());
-      // convert to a map object
-      var categoryData = {
-        'category_name': category.get('category_name'),
-        'questions': questionsList.toList()
-      };
-
-      // encode as json
-      String jsonString = json.encode(categoryData);
-      // attempt to save to file
-      var file = File("${dir.path}/${categoryData['category_name']}.json");
-      await file.writeAsString(jsonString);
-      print('json file saved');
-    }
-    update();
-  }
-
-  void update() {
-    notifyListeners();
-  }
-}
+final player = AudioPlayer();
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -88,6 +51,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   int _selectedCategoryIndex = 0;
   int _selectedItemIndex = -1;
+
+  @override
+  void dispose() async{
+    await player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,15 +169,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           ),
                           selected: index == _selectedItemIndex,
                           selectedTileColor: Colors.redAccent[100],
-                          onTap: () {
-                            setState(() {
-                              _selectedItemIndex = index;
-                              Future.delayed(const Duration(seconds: 5), () {
-                                setState(() {
-                                  _selectedItemIndex = -1;
-                                });
-                              });
-                            });
+                          onTap: () async{
+                            print("This is the player id of button clicked: ${player.playerId}");
+                            //await player.setSource(AssetSource("audio/filtered_audio.wav"));
+                            //await player.resume();
+                            await player.play(AssetSource("audio/00${categoryItems[index].id}.mp3"));
                           },
                           onLongPress: () {
                             setState(() {
@@ -262,6 +227,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                             const SizedBox(height: 20.0),
                                             Text(
                                               categoryItems[index].full,
+                                              style: const TextStyle(
+                                                  fontSize: 16.0),
+                                            ),
+                                            Text(
+                                              categoryItems[index].audioId,
                                               style: const TextStyle(
                                                   fontSize: 16.0),
                                             ),
