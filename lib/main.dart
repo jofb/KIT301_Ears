@@ -154,7 +154,7 @@ class BurgerMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const SizedBox(
-            height: 70,
+            height: 94,
             child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.blueGrey,
@@ -225,7 +225,7 @@ class BurgerMenu extends StatelessWidget {
           ~B^  .!G5!!^    :B7:.   .           P~     YJ  .57.  .YG   Y5:^!7?7!^^::^!??!:            .
           !B?:. ~B^        ~5.               ^G~:    5?  ^B.   :YY!!Y?       .::^::.
         .PI3K4R7~.        .!P?~^~~.      :7YG5JJP.  ~G:  !Y~.    .         ....::^^~~!!!!7YJ!7Y?!!!~.
-      .Y7!:    ~G5!      .!!7PGJ77^      ....   7G.  ^57.  ^!77!!!!!!!!!!!~~^^::....     .^  :~. ~P5^
+      .Y7!:    ~G5!      .!!7PGJ77^      ....   7G.  ^57.  ^!2L!N35!!!!!!~~^^::....     .^  :~. ~P5^
       ^G^      ?Y.YY        ^G~.::.              ?P    ^??!:..............::^^~~!!!!77777!!!^.  ^G7
         Y5:   ..YJ 7P        .JY!~JG?         ^!!^:P7      .:^~!!!!!!~~~~^^::....           .~YY. .5^
         Y5:   ^G!  PY           .?Y^            .~YGP                                          ?G. ^5

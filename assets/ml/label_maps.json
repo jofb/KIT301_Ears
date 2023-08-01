@@ -46,5 +46,13 @@
     {
         "code": "tr",
         "text": "Turkish"
+    },
+    {
+        "code": "fr",
+        "text": "French"
+    },
+    {
+        "code": "de",
+        "text": "German"
     }
 ]

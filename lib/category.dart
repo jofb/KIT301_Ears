@@ -8,14 +8,17 @@ import 'package:flutter/foundation.dart';
 class Category {
   final String categoryName;
   final List<Question> questions;
+  final String identifier;
 
   Category.fromJson(Map<String, dynamic> json)
       : categoryName = json['category_name'],
+        identifier = json['identifier'],
         questions = List<Question>.from(
             json['questions'].map((question) => Question.fromJson(question)));
 
   Map<String, dynamic> toJson() => {
         'category_name': categoryName,
+        'identifier': identifier,
         'questions': questions,
       };
 }
@@ -24,17 +27,17 @@ class Question {
   final String full;
   final String short;
   final String type;
-  final String id;
-  late String audioId;
+  final String audioId;
+  final String identifier;
 
   Question.fromJson(Map<String, dynamic> json)
       : full = json['full_question'],
         short = json['short_question'],
         type = json['type'],
-        id = json['identifier'],
+        identifier = json['identifier'],
         audioId = json['audioId'];
 
-  Question(this.full, this.short, this.type, this.id);
+  Question(this.full, this.short, this.type, this.identifier, this.audioId);
 }
 
 class CategoriesModel extends ChangeNotifier {
@@ -125,13 +128,14 @@ class CategoriesModel extends ChangeNotifier {
       var questions = List<Map<String, dynamic>>.empty(growable: true);
       for (var q in items.docs) {
         var que = q.data();
-        que['audioId'] = q.id;
         questions.add(que);
       }
+      
       
       // convert to a map object
       var categoryData = {
         'category_name': category.get('category_name'),
+        'identifier': category.get('identifier'),
         'questions': questions.toList()
       };
 

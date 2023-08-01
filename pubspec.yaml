@@ -82,6 +82,8 @@ flutter:
         - assets/ml/
         - assets/animation/
         - assets/audio/
+        - assets/audio/fr/
+        - assets/audio/de/
 
     # For details regarding adding assets from package dependencies, see
     # https://flutter.dev/assets-and-images/#from-packages
