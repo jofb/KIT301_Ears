@@ -179,7 +179,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     print("This is the player id of button clicked: ${player.playerId}");
                                     //await player.setSource(AssetSource("audio/filtered_audio.wav"));
                                     //await player.resume();
-                                    await player.play(AssetSource("audio/00${categoryItems[index].id}.mp3"));
+                                    await player.play(AssetSource("audio/00${categoryItems[index].audioId}.mp3"));
                                   },
                                   onLongPress: () {
                                     setState(() {
