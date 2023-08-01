@@ -8,6 +8,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+
 class Category {
   final String categoryName;
   final List<Question> questions;
@@ -28,12 +34,14 @@ class Question {
   final String short;
   final String type;
   final String id;
+  late String audioId;
 
   Question.fromJson(Map<String, dynamic> json)
       : full = json['full_question'],
         short = json['short_question'],
         type = json['type'],
-        id = json['identifier'];
+        id = json['identifier'],
+        audioId = json['audioId'];
 
   Question(this.full, this.short, this.type, this.id);
 }
@@ -120,11 +128,16 @@ class CategoriesModel extends ChangeNotifier {
 
     for (var category in query.docs) {
       // items is a collection inside of the category, need to fetch that
-      var items = await category.reference.collection('Items').get();
+      var items = await category.reference.collection('Items').orderBy("identifier").get();
+      
       // get the questions as a list of maps
-
-      var questions = items.docs.map((doc) => doc.data());
-
+      var questions = List<Map<String, dynamic>>.empty(growable: true);
+      for (var q in items.docs) {
+        var que = q.data();
+        que['audioId'] = q.id;
+        questions.add(que);
+      }
+      
       // convert to a map object
       var categoryData = {
         'category_name': category.get('category_name'),

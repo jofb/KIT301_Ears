@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:kit301_ears/audio_procesing/language.dart';
-import 'firebase_options.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:async';
 import 'category.dart';
+
+final player = AudioPlayer();
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -21,6 +22,12 @@ class QuestionsTab extends StatefulWidget {
 class _QuestionsTabState extends State<QuestionsTab> {
   int _selectedCategoryIndex = 0;
   int _selectedItemIndex = -1;
+
+  @override
+  void dispose() async{
+    await player.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,30 +164,22 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 ),
                                 child: ListTile(
                                   tileColor: Colors.grey[300],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
+                          
                                   title: Text(
                                     categoryItems[index].short,
                                     style: TextStyle(
                                         color: index == _selectedItemIndex
-                                            ? Theme.of(context)
-                                                .scaffoldBackgroundColor
+                                            ? Theme.of(context).scaffoldBackgroundColor
                                             : Colors.black,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   selected: index == _selectedItemIndex,
                                   selectedTileColor: Colors.redAccent[100],
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedItemIndex = index;
-                                      Future.delayed(const Duration(seconds: 5),
-                                          () {
-                                        setState(() {
-                                          _selectedItemIndex = -1;
-                                        });
-                                      });
-                                    });
+                                  onTap: () async{
+                                    print("This is the player id of button clicked: ${player.playerId}");
+                                    //await player.setSource(AssetSource("audio/filtered_audio.wav"));
+                                    //await player.resume();
+                                    await player.play(AssetSource("audio/00${categoryItems[index].id}.mp3"));
                                   },
                                   onLongPress: () {
                                     setState(() {
@@ -188,13 +187,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     });
                                     showDialog(
                                       context: context,
-                                      barrierColor:
-                                          Colors.black.withOpacity(0.75),
+                                      barrierColor: Colors.black.withOpacity(0.75),
                                       builder: (BuildContext context) {
                                         return Dialog(
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
+                                            borderRadius: BorderRadius.circular(8),
                                           ),
                                           child: WillPopScope(
                                             onWillPop: () async {
