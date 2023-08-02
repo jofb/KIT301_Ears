@@ -39,6 +39,8 @@ dependencies:
     # audio recording and playback
     flutter_sound:
     audio_session:
+    audioplayers:
+    logger:
 
     # ml
     tflite_flutter:
@@ -81,9 +83,9 @@ flutter:
         - assets/categories/
         - assets/ml/
         - assets/animation/
-
-    # An image asset can refer to one or more resolution-specific "variants", see
-    # https://flutter.dev/assets-and-images/#resolution-aware
+        - assets/audio/
+        - assets/audio/fr/
+        - assets/audio/de/
 
     # For details regarding adding assets from package dependencies, see
     # https://flutter.dev/assets-and-images/#from-packages

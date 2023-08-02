@@ -1,24 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
-import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 
 class Category {
   final String categoryName;
   final List<Question> questions;
+  final String identifier;
 
   Category.fromJson(Map<String, dynamic> json)
       : categoryName = json['category_name'],
+        identifier = json['identifier'],
         questions = List<Question>.from(
             json['questions'].map((question) => Question.fromJson(question)));
 
   Map<String, dynamic> toJson() => {
         'category_name': categoryName,
+        'identifier': identifier,
         'questions': questions,
       };
 }
@@ -27,15 +27,17 @@ class Question {
   final String full;
   final String short;
   final String type;
-  final String id;
+  final String audioId;
+  final String identifier;
 
   Question.fromJson(Map<String, dynamic> json)
       : full = json['full_question'],
         short = json['short_question'],
         type = json['type'],
-        id = json['identifier'];
+        identifier = json['identifier'],
+        audioId = json['audioId'];
 
-  Question(this.full, this.short, this.type, this.id);
+  Question(this.full, this.short, this.type, this.identifier, this.audioId);
 }
 
 class CategoriesModel extends ChangeNotifier {
@@ -120,14 +122,22 @@ class CategoriesModel extends ChangeNotifier {
 
     for (var category in query.docs) {
       // items is a collection inside of the category, need to fetch that
-      var items = await category.reference.collection('Items').get();
-      // get the questions as a list of maps
+      var items = await category.reference
+          .collection('Items')
+          .orderBy("identifier")
+          .get();
 
-      var questions = items.docs.map((doc) => doc.data());
+      // get the questions as a list of maps
+      var questions = List<Map<String, dynamic>>.empty(growable: true);
+      for (var q in items.docs) {
+        var que = q.data();
+        questions.add(que);
+      }
 
       // convert to a map object
       var categoryData = {
         'category_name': category.get('category_name'),
+        'identifier': category.get('identifier'),
         'questions': questions.toList()
       };
 

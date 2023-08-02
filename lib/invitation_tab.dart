@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:rive/rive.dart';
 
 import 'audio_procesing/language.dart';
 import 'audio_procesing/spectrogram.dart';
@@ -29,27 +30,21 @@ class _InvitationTabState extends State<InvitationTab> {
         ),
       );
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-            "Invitation to Speak Page - Current Language: ${language.getText()} (${language.getCode()})"),
-        AudioRecorder(
-          onFinished: () async {
-            print('Finished recording. Predicting language...');
 
-            // TODO this really isn't neccessary since it breaks on web anyway
-            if (kIsWeb) {
-              language.setLanguage(2);
-              return;
-            }
-            // get the lang index and then update the language provider
-            int langIndex = await predictLanguage('my_file.wav');
-            language.setLanguage(langIndex);
-            // note that importing the ml stuff WILL break the web version of the app.
-          },
-        ),
-      ],
+    return AudioRecorder(
+      onFinished: () async {
+        print('Finished recording. Predicting language...');
+
+        // TODO this really isn't neccessary since it breaks on web anyway
+        if (kIsWeb) {
+          language.setLanguage(2);
+          return;
+        }
+        // get the lang index and then update the language provider
+        int langIndex = await predictLanguage('my_file.wav');
+        language.setLanguage(langIndex);
+        // note that importing the ml stuff WILL break the web version of the app.
+      },
     );
   }
 }

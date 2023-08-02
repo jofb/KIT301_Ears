@@ -1,35 +1,41 @@
 {
     "category_name": "My Cool Category One",
+    "identifier": "01",
     "questions": [
         {
             "full_question": "What is the capital of France?",
             "short_question": "Capital of France",
             "type": "theOGGanster",
-            "identifier": "01"
+            "identifier": "01",
+            "audioId": "001"
         },
         {
             "full_question": "What is the capital of Germany?",
             "short_question": "Capital of Germany",
             "type": "theOGGanster",
-            "identifier": "02"
+            "identifier": "02",
+            "audioId": "001"
         },
         {
             "full_question": "What is the capital of Italy?",
             "short_question": "Capital of Italy",
             "type": "theOGGanster",
-            "identifier": "03"
+            "identifier": "03",
+            "audioId": "001"
         },
         {
             "full_question": "What is the capital of Spain?",
             "short_question": "Capital of Spain",
             "type": "theOGGanster",
-            "identifier": "04"
+            "identifier": "04",
+            "audioId": "001"
         },
         {
             "full_question": "What is the capital of Portugal?",
             "short_question": "Capital of Portugal",
             "type": "theOGGanster",
-            "identifier": "05"
+            "identifier": "05",
+            "audioId": "001"
         }
     ]
 }

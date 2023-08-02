@@ -155,9 +155,11 @@ class _LanguageDialogState extends State<LanguageDialog> {
                           return ListTile(
                             title: Text(_languageList[_searchIndexes[index]]),
                             onTap: () {
+                              // set the language then pop the dialog
                               widget.language
                                   .setLanguage(_searchIndexes[index]);
                               setState(() {});
+                              Navigator.pop(context);
                             },
                             selected: widget.language.langIndex ==
                                 _searchIndexes[index],
