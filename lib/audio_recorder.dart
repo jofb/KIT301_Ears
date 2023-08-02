@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audio_session/audio_session.dart';
@@ -19,7 +20,8 @@ class AudioRecorder extends StatefulWidget {
 }
 
 class _AudioRecorderState extends State<AudioRecorder> {
-  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  final FlutterSoundRecorder _recorder =
+      FlutterSoundRecorder(logLevel: Level.error);
   bool _recorderIsInitialized = false;
   String _filePath = 'my_file';
   Codec _codec = Codec.aacADTS; // TODO look into alternative codecs
@@ -36,6 +38,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
       });
     });
 
+    // load the animation asset
     rootBundle.load('assets/animation/fin.riv').then((data) async {
       final file = RiveFile.import(data);
 
@@ -52,7 +55,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
         _artboard = artboard;
       });
     });
-
+    setState(() {});
     super.initState();
   }
 
@@ -103,6 +106,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   // record audio to file
   void startRecorder() {
+    print('START RECORDING');
     // needs a file path, a codec, and an audio source
     _recorder
         .startRecorder(
@@ -137,14 +141,19 @@ class _AudioRecorderState extends State<AudioRecorder> {
 
   void toggleAnimation() {
     setState(() {
-      _trigger?.value = true; // what ? //^= this is a trigger apparently
+      _trigger?.value = true; // trigger the state machine
     });
   }
 
   @override
   Widget build(BuildContext context) {
     // return widget.child();
-    if (_artboard == null) return Placeholder();
+    if (_artboard == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Stack(
       children: [
         Positioned.fill(

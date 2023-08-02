@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:rive/rive.dart';
 
 import 'audio_procesing/language.dart';
 import 'audio_procesing/spectrogram.dart';
@@ -28,14 +29,16 @@ class _InvitationTabState extends State<InvitationTab> {
         ),
       );
     }
-    return AudioRecorder(onFinished: () {
-      print('I AM FINISHED RECORDING');
+    return AudioRecorder(
+      onFinished: () {
+        print('I AM FINISHED RECORDING');
 
-      if (kIsWeb) {
-        language.setLanguage(2);
-        return;
-      }
-      // run inference here
-    });
+        if (kIsWeb) {
+          language.setLanguage(2);
+          return;
+        }
+        // run inference here
+      },
+    );
   }
 }
