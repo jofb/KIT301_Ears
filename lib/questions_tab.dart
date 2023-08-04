@@ -23,6 +23,44 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   final player = AudioPlayer();
 
+  void playAudio(String langCode, String id, index) async {
+    // stop current future if needed
+    if (player.state == PlayerState.playing) await player.stop();
+    setState(() {
+      _selectedItemIndex = index;
+    });
+    // create the audio path and then check if it exists
+    String path = "audio/$langCode/${langCode}_$id.mp3";
+    if (await assetExists((path)) != null) {
+      // play audio
+      player.play(AssetSource(path));
+    } else {
+      // play default if null
+      print("Playing default audio");
+      player.play(AssetSource("audio/001.mp3"));
+    }
+  }
+
+  Future assetExists(String path) async {
+    try {
+      return await rootBundle.load(path);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    player.onPlayerComplete.listen((e) {
+      print('Audio player complete');
+      setState(() {
+        _selectedItemIndex = -1;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   void dispose() {
     player.dispose();
@@ -178,18 +216,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     ),
                                     selected: index == _selectedItemIndex,
                                     selectedTileColor: Colors.redAccent[100],
-                                    onTap: () async {
-                                      try {
-                                        await player.play(AssetSource(
-                                            "audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3"));
-                                        print(player.play(AssetSource(
-                                            "audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3")));
-                                      } catch (e) {
-                                        print(e);
-                                        await player
-                                            .play(AssetSource("audio/001.mp3"));
-                                      }
-                                    },
+                                    onTap: () => playAudio(language.getCode(),
+                                        categoryItems[index].audioId, index),
                                     onLongPress: () {
                                       setState(() {
                                         _selectedItemIndex = index;
@@ -199,160 +227,17 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                         barrierColor:
                                             Colors.black.withOpacity(0.75),
                                         builder: (BuildContext context) {
-                                          return Dialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: WillPopScope(
-                                              onWillPop: () async {
-                                                setState(() {
-                                                  _selectedItemIndex = -1;
-                                                });
-                                                return true;
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4),
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.7, //Gets dimension of the screen * 70%
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.7, //Gets dimension of the screen * 70%
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey,
-                                                        width: 2),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0),
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          30.0,
-                                                          25.0,
-                                                          30.0,
-                                                          25.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        categoryItems[index]
-                                                            .short,
-                                                        style: const TextStyle(
-                                                          fontSize: 20.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 20.0),
-                                                      Text(
-                                                        categoryItems[index]
-                                                            .full,
-                                                        style: const TextStyle(
-                                                            fontSize: 16.0),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 20.0),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                _selectedItemIndex =
-                                                                    -1;
-                                                              });
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                vertical: 30.0,
-                                                                horizontal:
-                                                                    60.0,
-                                                              ),
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                              ),
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .redAccent,
-                                                            ),
-                                                            child: const Text(
-                                                              'Cancel',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      18.0),
-                                                            ),
-                                                          ),
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              Future.delayed(
-                                                                  const Duration(
-                                                                      seconds:
-                                                                          5),
-                                                                  () {
-                                                                setState(() {
-                                                                  _selectedItemIndex =
-                                                                      -1;
-                                                                });
-                                                              });
-                                                            },
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .symmetric(
-                                                                      vertical:
-                                                                          30.0,
-                                                                      horizontal:
-                                                                          60.0,
-                                                                    ),
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10.0),
-                                                                    ),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .green),
-                                                            child: const Text(
-                                                              'Confirm',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      18.0),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                          return ConfirmationDialog(
+                                            question: categoryItems[index],
+                                            playAudio: () => playAudio(
+                                                language.getCode(),
+                                                categoryItems[index].audioId,
+                                                index),
+                                            onPop: () {
+                                              setState(() {
+                                                _selectedItemIndex = -1;
+                                              });
+                                            },
                                           );
                                         },
                                       );
@@ -374,6 +259,113 @@ class _QuestionsTabState extends State<QuestionsTab> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class ConfirmationDialog extends StatelessWidget {
+  const ConfirmationDialog({
+    super.key,
+    required this.onPop,
+    required this.question,
+    required this.playAudio,
+  });
+
+  final Question question;
+  final Function onPop;
+  final Function playAudio;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WillPopScope(
+        onWillPop: () async {
+          onPop();
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            width: MediaQuery.of(context).size.width *
+                0.7, //Gets dimension of the screen * 70%
+            height: MediaQuery.of(context).size.height *
+                0.7, //Gets dimension of the screen * 70%
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.fromLTRB(30.0, 25.0, 30.0, 25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  question.short,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                Text(
+                  question.full,
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        onPop();
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 30.0,
+                          horizontal: 60.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        playAudio();
+                        // Future.delayed(const Duration(seconds: 5), () {
+                        //   //playAudio();
+                        // });
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 30.0,
+                            horizontal: 60.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Colors.green),
+                      child: const Text(
+                        'Confirm',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
