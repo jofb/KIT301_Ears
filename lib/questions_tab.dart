@@ -190,11 +190,25 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
+                                // list of questions + current question
                                 List<Question> categoryItems = categoriesModel
                                     .categories[_selectedCategoryIndex]
                                     .questions;
+                                final Question question = categoryItems[index];
+                                // used for styling
                                 final isLastItem =
                                     index == categoryItems.length - 1;
+                                // should a special widget be used?
+                                final type = question.type;
+                                Function followUpWidget = () {};
+                                switch (type) {
+                                  case 'yesno':
+                                    followUpWidget = () {
+                                      print(
+                                          'ah but i am a yes/no optional question!');
+                                    };
+                                    break;
+                                }
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(
                                       8, 8, 8, isLastItem ? 8 : 0),
@@ -216,8 +230,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     ),
                                     selected: index == _selectedItemIndex,
                                     selectedTileColor: Colors.redAccent[100],
-                                    onTap: () => playAudio(language.getCode(),
-                                        categoryItems[index].audioId, index),
+                                    onTap: () {
+                                      // play audio
+                                      playAudio(language.getCode(),
+                                          question.audioId, index);
+                                      // then create the follow up widget
+                                      followUpWidget();
+                                    },
                                     onLongPress: () {
                                       setState(() {
                                         _selectedItemIndex = index;
@@ -228,11 +247,14 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                             Colors.black.withOpacity(0.75),
                                         builder: (BuildContext context) {
                                           return ConfirmationDialog(
-                                            question: categoryItems[index],
-                                            playAudio: () => playAudio(
-                                                language.getCode(),
-                                                categoryItems[index].audioId,
-                                                index),
+                                            question: question,
+                                            onTap: () {
+                                              // play audio
+                                              playAudio(language.getCode(),
+                                                  question.audioId, index);
+                                              // then create the follow up widget
+                                              followUpWidget();
+                                            },
                                             onPop: () {
                                               setState(() {
                                                 _selectedItemIndex = -1;
@@ -263,17 +285,26 @@ class _QuestionsTabState extends State<QuestionsTab> {
   }
 }
 
+class YesNoDialog extends StatelessWidget {
+  const YesNoDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
 class ConfirmationDialog extends StatelessWidget {
   const ConfirmationDialog({
     super.key,
     required this.onPop,
     required this.question,
-    required this.playAudio,
+    required this.onTap,
   });
 
   final Question question;
   final Function onPop;
-  final Function playAudio;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -340,7 +371,7 @@ class ConfirmationDialog extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        playAudio();
+                        onTap();
                         // Future.delayed(const Duration(seconds: 5), () {
                         //   //playAudio();
                         // });
