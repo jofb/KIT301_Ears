@@ -8,17 +8,17 @@ import 'package:flutter/foundation.dart';
 class Category {
   final String categoryName;
   final List<Question> questions;
-  final String identifier;
+  // final String identifier;
 
   Category.fromJson(Map<String, dynamic> json)
       : categoryName = json['category_name'],
-        identifier = json['identifier'],
+        // identifier = json['identifier'],
         questions = List<Question>.from(
             json['questions'].map((question) => Question.fromJson(question)));
 
   Map<String, dynamic> toJson() => {
         'category_name': categoryName,
-        'identifier': identifier,
+        // 'identifier': identifier,
         'questions': questions,
       };
 }
@@ -103,6 +103,7 @@ class CategoriesModel extends ChangeNotifier {
         // get all json files in the directory then add them to the list
         if (file is File && file.path.endsWith(".json")) {
           final json = await file.readAsString();
+          print(json);
           final category = Category.fromJson(jsonDecode(json));
           tempCategoryList.add(category);
         }

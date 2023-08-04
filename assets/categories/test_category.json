@@ -5,35 +5,35 @@
         {
             "full_question": "What is the capital of France?",
             "short_question": "Capital of France",
-            "type": "theOGGanster",
+            "type": "yesno",
             "identifier": "01",
             "audioId": "001"
         },
         {
             "full_question": "What is the capital of Germany?",
             "short_question": "Capital of Germany",
-            "type": "theOGGanster",
+            "type": "text",
             "identifier": "02",
             "audioId": "001"
         },
         {
             "full_question": "What is the capital of Italy?",
             "short_question": "Capital of Italy",
-            "type": "theOGGanster",
+            "type": "text",
             "identifier": "03",
             "audioId": "001"
         },
         {
             "full_question": "What is the capital of Spain?",
             "short_question": "Capital of Spain",
-            "type": "theOGGanster",
+            "type": "text",
             "identifier": "04",
             "audioId": "001"
         },
         {
             "full_question": "What is the capital of Portugal?",
             "short_question": "Capital of Portugal",
-            "type": "theOGGanster",
+            "type": "yesno",
             "identifier": "05",
             "audioId": "001"
         }
