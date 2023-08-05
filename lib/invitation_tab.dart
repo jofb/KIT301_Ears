@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kit301_ears/answers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:rive/rive.dart';
 
 import 'audio_procesing/language.dart';
-import 'audio_procesing/spectrogram.dart';
 import 'audio_recorder.dart';
 
 class InvitationTab extends StatefulWidget {
@@ -17,11 +16,12 @@ class InvitationTab extends StatefulWidget {
 class _InvitationTabState extends State<InvitationTab> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageModel>(builder: buildTab);
+    return Consumer2<LanguageModel, AnswersModel>(builder: buildTab);
   }
 
   @override
-  Widget buildTab(BuildContext context, language, _) {
+  Widget buildTab(BuildContext context, LanguageModel language,
+      AnswersModel answersModel, _) {
     if (language.labels.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
@@ -35,8 +35,12 @@ class _InvitationTabState extends State<InvitationTab> {
 
         if (kIsWeb) {
           language.setLanguage(2);
-          return;
+          // return;
         }
+        // once inference is run we can create a new answers history for the language ...
+        // TODO
+        answersModel.newHistory(language.toString());
+
         // run inference here
       },
     );

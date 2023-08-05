@@ -42,6 +42,11 @@ class LanguageModel extends ChangeNotifier {
     return labels[langIndex]['text']!;
   }
 
+  @override
+  String toString() {
+    return "${labels[langIndex]['text']!} (${labels[langIndex]['code']})";
+  }
+
   List<String> getTextList() {
     return labels.map((e) => "${e['text']!} (${e['code']!})").toList();
   }

@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kit301_ears/audio_procesing/language.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+
 import 'category.dart';
+import 'answers.dart';
+import 'audio_procesing/language.dart';
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -69,12 +71,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<CategoriesModel, LanguageModel>(builder: buildTab);
+    return Consumer3<CategoriesModel, LanguageModel, AnswersModel>(
+        builder: buildTab);
   }
 
   @override
   Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
-      LanguageModel language, _) {
+      LanguageModel language, AnswersModel answersModel, _) {
     if (categoriesModel.categories.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
@@ -203,9 +206,17 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 Function followUpWidget = () {};
                                 switch (type) {
                                   case 'yesno':
-                                    followUpWidget = () {
-                                      print(
-                                          'ah but i am a yes/no optional question!');
+                                    followUpWidget = () async {
+                                      // get the answer from the dialog
+                                      var response = await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const YesNoDialog();
+                                          });
+
+                                      // append to answers history
+                                      answersModel.addAnswer(
+                                          question, response);
                                     };
                                     break;
                                 }
@@ -290,7 +301,63 @@ class YesNoDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WillPopScope(
+        onWillPop: () async {
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            width: MediaQuery.of(context).size.width *
+                0.7, //Gets dimension of the screen * 70%
+            height: MediaQuery.of(context).size.height *
+                0.7, //Gets dimension of the screen * 70%
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.fromLTRB(30.0, 25.0, 30.0, 25.0),
+            child: Column(
+              children: [
+                Text('yes or no??'),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop('yes'),
+                  child: Text('yeah'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30.0,
+                      horizontal: 60.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop('no'),
+                  child: Text('nah'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30.0,
+                      horizontal: 60.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -372,9 +439,6 @@ class ConfirmationDialog extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                         onTap();
-                        // Future.delayed(const Duration(seconds: 5), () {
-                        //   //playAudio();
-                        // });
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
