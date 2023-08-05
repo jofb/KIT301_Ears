@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:ml_linalg/linalg.dart';
 import 'package:scidart/numdart.dart';
-import 'package:provider/provider.dart';
 
 void predictLanguage() async {
   final signal = loadAudio();

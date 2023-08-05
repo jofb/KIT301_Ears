@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/services.dart';
-import 'package:rive/rive.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
