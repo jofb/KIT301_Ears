@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/services.dart';
-import 'package:rive/rive.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +7,7 @@ import 'category.dart';
 import 'others_tab.dart';
 import 'invitation_tab.dart';
 import 'questions_tab.dart';
+import 'answers.dart';
 import 'audio_procesing/language.dart';
 
 void main() async {
@@ -30,6 +29,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => CategoriesModel()),
         ChangeNotifierProvider(create: (context) => LanguageModel()),
+        ChangeNotifierProvider(create: (context) => AnswersModel()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

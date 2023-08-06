@@ -1,14 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:kit301_ears/audio_procesing/language.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+
 import 'category.dart';
+import 'answers.dart';
+import 'audio_procesing/language.dart';
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -23,6 +21,44 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   final player = AudioPlayer();
 
+  void playAudio(String langCode, String id, index) async {
+    // stop current future if needed
+    if (player.state == PlayerState.playing) await player.stop();
+    setState(() {
+      _selectedItemIndex = index;
+    });
+    // create the audio path and then check if it exists
+    String path = "audio/$langCode/${langCode}_$id.mp3";
+    if (await assetExists((path)) != null) {
+      // play audio
+      player.play(AssetSource(path));
+    } else {
+      // play default if null
+      print("Playing default audio");
+      player.play(AssetSource("audio/001.mp3"));
+    }
+  }
+
+  Future assetExists(String path) async {
+    try {
+      return await rootBundle.load(path);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    player.onPlayerComplete.listen((e) {
+      print('Audio player complete');
+      setState(() {
+        _selectedItemIndex = -1;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   void dispose() {
     player.dispose();
@@ -31,12 +67,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<CategoriesModel, LanguageModel>(builder: buildTab);
+    return Consumer3<CategoriesModel, LanguageModel, AnswersModel>(
+        builder: buildTab);
   }
 
   @override
   Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
-      LanguageModel language, _) {
+      LanguageModel language, AnswersModel answersModel, _) {
     if (categoriesModel.categories.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
@@ -152,11 +189,33 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
+                                // list of questions + current question
                                 List<Question> categoryItems = categoriesModel
                                     .categories[_selectedCategoryIndex]
                                     .questions;
+                                final Question question = categoryItems[index];
+                                // used for styling
                                 final isLastItem =
                                     index == categoryItems.length - 1;
+                                // should a special widget be used?
+                                final type = question.type;
+                                Function followUpWidget = () {};
+                                switch (type) {
+                                  case 'yesno':
+                                    followUpWidget = () async {
+                                      // get the answer from the dialog
+                                      var response = await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return const YesNoDialog();
+                                          });
+
+                                      // append to answers history
+                                      answersModel.addAnswer(
+                                          question, response);
+                                    };
+                                    break;
+                                }
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(
                                       8, 8, 8, isLastItem ? 8 : 0),
@@ -178,17 +237,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     ),
                                     selected: index == _selectedItemIndex,
                                     selectedTileColor: Colors.redAccent[100],
-                                    onTap: () async {
-                                      try {
-                                        await player.play(AssetSource(
-                                            "audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3"));
-                                        print(player.play(AssetSource(
-                                            "audio/${language.getCode()}/${language.getCode()}_${categoryItems[index].audioId}.mp3")));
-                                      } catch (e) {
-                                        print(e);
-                                        await player
-                                            .play(AssetSource("audio/001.mp3"));
-                                      }
+                                    onTap: () {
+                                      // play audio
+                                      playAudio(language.getCode(),
+                                          question.audioId, index);
+                                      // then create the follow up widget
+                                      followUpWidget();
                                     },
                                     onLongPress: () {
                                       setState(() {
@@ -199,160 +253,20 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                         barrierColor:
                                             Colors.black.withOpacity(0.75),
                                         builder: (BuildContext context) {
-                                          return Dialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: WillPopScope(
-                                              onWillPop: () async {
-                                                setState(() {
-                                                  _selectedItemIndex = -1;
-                                                });
-                                                return true;
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4),
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.7, //Gets dimension of the screen * 70%
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.7, //Gets dimension of the screen * 70%
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.grey,
-                                                        width: 2),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.0),
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          30.0,
-                                                          25.0,
-                                                          30.0,
-                                                          25.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        categoryItems[index]
-                                                            .short,
-                                                        style: const TextStyle(
-                                                          fontSize: 20.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 20.0),
-                                                      Text(
-                                                        categoryItems[index]
-                                                            .full,
-                                                        style: const TextStyle(
-                                                            fontSize: 16.0),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 20.0),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                _selectedItemIndex =
-                                                                    -1;
-                                                              });
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                vertical: 30.0,
-                                                                horizontal:
-                                                                    60.0,
-                                                              ),
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                              ),
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .redAccent,
-                                                            ),
-                                                            child: const Text(
-                                                              'Cancel',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      18.0),
-                                                            ),
-                                                          ),
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              Future.delayed(
-                                                                  const Duration(
-                                                                      seconds:
-                                                                          5),
-                                                                  () {
-                                                                setState(() {
-                                                                  _selectedItemIndex =
-                                                                      -1;
-                                                                });
-                                                              });
-                                                            },
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .symmetric(
-                                                                      vertical:
-                                                                          30.0,
-                                                                      horizontal:
-                                                                          60.0,
-                                                                    ),
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10.0),
-                                                                    ),
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .green),
-                                                            child: const Text(
-                                                              'Confirm',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      18.0),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                          return ConfirmationDialog(
+                                            question: question,
+                                            onTap: () {
+                                              // play audio
+                                              playAudio(language.getCode(),
+                                                  question.audioId, index);
+                                              // then create the follow up widget
+                                              followUpWidget();
+                                            },
+                                            onPop: () {
+                                              setState(() {
+                                                _selectedItemIndex = -1;
+                                              });
+                                            },
                                           );
                                         },
                                       );
@@ -374,6 +288,175 @@ class _QuestionsTabState extends State<QuestionsTab> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class YesNoDialog extends StatelessWidget {
+  const YesNoDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WillPopScope(
+        onWillPop: () async {
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            width: MediaQuery.of(context).size.width *
+                0.7, //Gets dimension of the screen * 70%
+            height: MediaQuery.of(context).size.height *
+                0.7, //Gets dimension of the screen * 70%
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.fromLTRB(30.0, 25.0, 30.0, 25.0),
+            child: Column(
+              children: [
+                Text('yes or no??'),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop('yes'),
+                  child: Text('yeah'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30.0,
+                      horizontal: 60.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop('no'),
+                  child: Text('nah'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30.0,
+                      horizontal: 60.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ConfirmationDialog extends StatelessWidget {
+  const ConfirmationDialog({
+    super.key,
+    required this.onPop,
+    required this.question,
+    required this.onTap,
+  });
+
+  final Question question;
+  final Function onPop;
+  final Function onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WillPopScope(
+        onWillPop: () async {
+          onPop();
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            width: MediaQuery.of(context).size.width *
+                0.7, //Gets dimension of the screen * 70%
+            height: MediaQuery.of(context).size.height *
+                0.7, //Gets dimension of the screen * 70%
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.fromLTRB(30.0, 25.0, 30.0, 25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  question.short,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                Text(
+                  question.full,
+                  style: const TextStyle(fontSize: 16.0),
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        onPop();
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 30.0,
+                          horizontal: 60.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        onTap();
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 30.0,
+                            horizontal: 60.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Colors.green),
+                      child: const Text(
+                        'Confirm',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

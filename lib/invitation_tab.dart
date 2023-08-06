@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kit301_ears/answers.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:rive/rive.dart';
 
 import 'audio_procesing/language.dart';
-import 'audio_procesing/spectrogram.dart';
 import 'audio_recorder.dart';
 import 'audio_procesing/ml_inference.dart';
 
@@ -18,11 +17,12 @@ class InvitationTab extends StatefulWidget {
 class _InvitationTabState extends State<InvitationTab> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageModel>(builder: buildTab);
+    return Consumer2<LanguageModel, AnswersModel>(builder: buildTab);
   }
 
   @override
-  Widget buildTab(BuildContext context, language, _) {
+  Widget buildTab(BuildContext context, LanguageModel language,
+      AnswersModel answersModel, _) {
     if (language.labels.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
@@ -38,12 +38,13 @@ class _InvitationTabState extends State<InvitationTab> {
         // TODO this really isn't neccessary since it breaks on web anyway
         if (kIsWeb) {
           language.setLanguage(2);
-          return;
+          // return;
         }
         // get the lang index and then update the language provider
         int langIndex = await predictLanguage('my_file.wav');
         language.setLanguage(langIndex);
         // note that importing the ml stuff WILL break the web version of the app.
+        answersModel.newHistory(language.toString());
       },
     );
   }

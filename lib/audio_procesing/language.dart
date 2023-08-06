@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 // Language model for screens to consume
 class LanguageModel extends ChangeNotifier {
@@ -40,6 +39,11 @@ class LanguageModel extends ChangeNotifier {
   String getText() {
     if (labels.isEmpty) return '';
     return labels[langIndex]['text']!;
+  }
+
+  @override
+  String toString() {
+    return "${labels[langIndex]['text']!} (${labels[langIndex]['code']})";
   }
 
   List<String> getTextList() {
