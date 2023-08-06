@@ -24,7 +24,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
       FlutterSoundRecorder(logLevel: Level.error);
   bool _recorderIsInitialized = false;
   String _filePath = 'my_file';
-  Codec _codec = Codec.aacADTS; // TODO look into alternative codecs
+  Codec _codec = Codec.pcm16; // TODO look into alternative codecs
   // animation state
   Artboard? _artboard;
   SMIInput<bool>? _trigger;

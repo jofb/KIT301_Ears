@@ -8,17 +8,17 @@ import 'package:flutter/foundation.dart';
 class Category {
   final String categoryName;
   final List<Question> questions;
-  // final String identifier;
+  final String identifier;
 
   Category.fromJson(Map<String, dynamic> json)
       : categoryName = json['category_name'],
-        // identifier = json['identifier'],
+        identifier = json['identifier'],
         questions = List<Question>.from(
             json['questions'].map((question) => Question.fromJson(question)));
 
   Map<String, dynamic> toJson() => {
         'category_name': categoryName,
-        // 'identifier': identifier,
+        'identifier': identifier,
         'questions': questions,
       };
 }
@@ -49,8 +49,6 @@ class CategoriesModel extends ChangeNotifier {
 
   CategoriesModel() {
     initModel();
-    // TODO do we want to load the collection on startup everytime?
-    // loadCollection();
   }
 
   Future initModel() async {
@@ -74,7 +72,7 @@ class CategoriesModel extends ChangeNotifier {
 
   // initializes category list
   Future initCategories() async {
-    print("I'm initializing categories");
+    print("Initializing categories");
     List<Category> tempCategoryList = [];
 
     // if in web, just load from assets for testing
@@ -96,19 +94,17 @@ class CategoriesModel extends ChangeNotifier {
         tempCategoryList.add(category);
       }
     } else {
-      // other devices grab from documents directory (app data)
-      // final dir = await getApplicationDocumentsDirectory();
-      // TODO this should be different based on where we place the category data
       await for (var file in categoryDirectory.list()) {
         // get all json files in the directory then add them to the list
         if (file is File && file.path.endsWith(".json")) {
           final json = await file.readAsString();
-          print(json);
           final category = Category.fromJson(jsonDecode(json));
           tempCategoryList.add(category);
         }
       }
     }
+    // sort categories list by identifiers
+    tempCategoryList.sort((a, b) =>  int.parse(a.identifier).compareTo(int.parse(b.identifier)));
 
     categories = tempCategoryList;
     update();
@@ -118,14 +114,15 @@ class CategoriesModel extends ChangeNotifier {
   Future loadCollection() async {
     // don't load anything if in web
     if (kIsWeb) return;
-
-    var query = await collection.get();
+    
+    // get the categories
+    var query = await collection.orderBy('identifier').get();
 
     for (var category in query.docs) {
       // items is a collection inside of the category, need to fetch that
       var items = await category.reference
           .collection('Items')
-          .orderBy("identifier")
+          .orderBy('identifier')
           .get();
 
       // get the questions as a list of maps
@@ -160,7 +157,7 @@ class CategoriesModel extends ChangeNotifier {
       }
     }
     categories.clear();
-    print('categories cache cleared');
+    print('Categories cache cleared');
   }
 
   void update() {

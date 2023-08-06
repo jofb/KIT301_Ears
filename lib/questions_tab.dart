@@ -71,7 +71,6 @@ class _QuestionsTabState extends State<QuestionsTab> {
         builder: buildTab);
   }
 
-  @override
   Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
       LanguageModel language, AnswersModel answersModel, _) {
     if (categoriesModel.categories.isEmpty) {
@@ -81,217 +80,242 @@ class _QuestionsTabState extends State<QuestionsTab> {
         ),
       );
     }
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Positioned(
-          top: 20,
-          child: Container(
-            child: OutlinedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) {
-                    return LanguageDialog(
-                      language: language,
-                    );
-                  },
-                );
-              },
-              child: Text('Current language: ${language.getText()}'),
-            ),
-          ),
-        ),
-        Column(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 2),
-                          borderRadius: BorderRadius.circular(10.0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+              child: OutlinedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return LanguageDialog(
+                        language: language,
+                      );
+                    },
+                  );
+                },
+                child: Text('Current language: ${language.getText()}',
+                        style: TextStyle(fontSize: 16)
                         ),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          margin: EdgeInsets.zero,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final isLastItem = index ==
-                                  categoriesModel.categories.length - 1;
-                              return Container(
-                                margin: EdgeInsets.fromLTRB(
-                                    8, 8, 8, isLastItem ? 8 : 0),
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 2),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: ListTile(
-                                  tileColor: Colors.grey[300],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  title: Text(
-                                    categoriesModel
-                                        .categories[index].categoryName,
-                                    style: TextStyle(
-                                        color: index == _selectedCategoryIndex
-                                            ? Theme.of(context)
-                                                .scaffoldBackgroundColor
-                                            : Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  selected: index == _selectedCategoryIndex,
-                                  selectedTileColor: Colors.redAccent[100],
-                                  trailing: index == _selectedCategoryIndex
-                                      ? Icon(Icons.arrow_forward_ios_rounded,
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor)
-                                      : null,
-                                  onTap: () {
-                                    setState(() {
-                                      _selectedCategoryIndex = index;
-                                      _selectedItemIndex = -1;
-                                    });
-                                  },
-                                ),
-                              );
-                            },
-                            itemCount: categoriesModel.categories.length,
-                          ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+              child: OutlinedButton(
+                onPressed: () {
+                  player.stop();
+                }, 
+                child: Row(
+                  children: [
+                    const Text('Stop audio',
+                        style: TextStyle(fontSize: 16)
                         ),
+                    Icon(
+                      Icons.stop_circle_outlined,
+                      color: Colors.redAccent[100],
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                      child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 2),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Card(
-                            margin: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                // list of questions + current question
-                                List<Question> categoryItems = categoriesModel
-                                    .categories[_selectedCategoryIndex]
-                                    .questions;
-                                final Question question = categoryItems[index];
-                                // used for styling
-                                final isLastItem =
-                                    index == categoryItems.length - 1;
-                                // should a special widget be used?
-                                final type = question.type;
-                                Function followUpWidget = () {};
-                                switch (type) {
-                                  case 'yesno':
-                                    followUpWidget = () async {
-                                      // get the answer from the dialog
-                                      var response = await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return const YesNoDialog();
-                                          });
-
-                                      // append to answers history
-                                      answersModel.addAnswer(
-                                          question, response);
-                                    };
-                                    break;
-                                }
-                                return Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      8, 8, 8, isLastItem ? 8 : 0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 2),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: ListTile(
-                                    tileColor: Colors.grey[300],
-                                    title: Text(
-                                      categoryItems[index].short,
-                                      style: TextStyle(
-                                          color: index == _selectedItemIndex
-                                              ? Theme.of(context)
-                                                  .scaffoldBackgroundColor
-                                              : Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    selected: index == _selectedItemIndex,
-                                    selectedTileColor: Colors.redAccent[100],
-                                    onTap: () {
-                                      // play audio
-                                      playAudio(language.getCode(),
-                                          question.audioId, index);
-                                      // then create the follow up widget
-                                      followUpWidget();
-                                    },
-                                    onLongPress: () {
-                                      setState(() {
-                                        _selectedItemIndex = index;
-                                      });
-                                      showDialog(
-                                        context: context,
-                                        barrierColor:
-                                            Colors.black.withOpacity(0.75),
-                                        builder: (BuildContext context) {
-                                          return ConfirmationDialog(
-                                            question: question,
-                                            onTap: () {
-                                              // play audio
-                                              playAudio(language.getCode(),
-                                                  question.audioId, index);
-                                              // then create the follow up widget
-                                              followUpWidget();
-                                            },
-                                            onPop: () {
-                                              setState(() {
-                                                _selectedItemIndex = -1;
-                                              });
-                                            },
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              itemCount: categoriesModel
-                                  .categories[_selectedCategoryIndex]
-                                  .questions
-                                  .length,
-                            ),
-                          )),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
+        ),
+        Expanded(
+          flex: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 2),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      margin: EdgeInsets.zero,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final isLastItem = index ==
+                              categoriesModel.categories.length - 1;
+                          return Container(
+                            margin: EdgeInsets.fromLTRB(
+                                8, 8, 8, isLastItem ? 8 : 0),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.grey, width: 2),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ListTile(
+                              tileColor: Colors.grey[300],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              title: Text(
+                                categoriesModel
+                                    .categories[index].categoryName,
+                                style: TextStyle(
+                                    color: index == _selectedCategoryIndex
+                                        ? Theme.of(context)
+                                            .scaffoldBackgroundColor
+                                        : Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                    ),
+                              ),
+                              selected: index == _selectedCategoryIndex,
+                              selectedTileColor: Colors.redAccent[100],
+                              trailing: index == _selectedCategoryIndex
+                                  ? Icon(Icons.arrow_forward_ios_rounded,
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor)
+                                  : null,
+                              onTap: () {
+                                setState(() {
+                                  _selectedCategoryIndex = index;
+                                  _selectedItemIndex = -1;
+                                });
+                              },
+                            ),
+                          );
+                        },
+                        itemCount: categoriesModel.categories.length,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 2),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            // list of questions + current question
+                            List<Question> questions = categoriesModel
+                                .categories[_selectedCategoryIndex]
+                                .questions;
+                            final Question question = questions[index];
+                            // used for styling
+                            final isLastItem =
+                                index == questions.length - 1;
+                            // should a special widget be used?
+                            final type = question.type;
+                            Function followUpWidget = () {};
+                            switch (type) {
+                              case 'yesno':
+                                followUpWidget = () async {
+                                  // get the answer from the dialog
+                                  var response = await showDialog(
+                                      barrierColor: Colors.black.withOpacity(0.75),
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const YesNoDialog();
+                                      });
+                                      
+                                  if(response != null) {
+                                    // append to answers history
+                                    answersModel.addAnswer(
+                                        question, response);
+                                  }
+                                };
+                                break;
+                            }
+                            return Container(
+                              margin: EdgeInsets.fromLTRB(
+                                  8, 8, 8, isLastItem ? 8 : 0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.grey, width: 2),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: ListTile(
+                                tileColor: Colors.grey[300],
+                                title: Text(
+                                  questions[index].short,
+                                  style: TextStyle(
+                                      color: index == _selectedItemIndex
+                                          ? Theme.of(context)
+                                              .scaffoldBackgroundColor
+                                          : Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                selected: index == _selectedItemIndex,
+                                selectedTileColor: Colors.redAccent[100],
+                                onTap: () {
+                                  // play audio
+                                  playAudio(language.getCode(),
+                                      question.audioId, index);
+                                  // then create the follow up widget
+                                  followUpWidget();
+                                },
+                                onLongPress: () {
+                                  setState(() {
+                                    _selectedItemIndex = index;
+                                  });
+                                  showDialog(
+                                    context: context,
+                                    barrierColor:
+                                        Colors.black.withOpacity(0.75),
+                                    builder: (BuildContext context) {
+                                      return ConfirmationDialog(
+                                        question: question,
+                                        onTap: () {
+                                          // play audio
+                                          playAudio(language.getCode(),
+                                              question.audioId, index);
+                                          // then create the follow up widget
+                                          followUpWidget();
+                                        },
+                                        onPop: () {
+                                          setState(() {
+                                            _selectedItemIndex = -1;
+                                          });
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          itemCount: categoriesModel
+                              .categories[_selectedCategoryIndex]
+                              .questions
+                              .length,
+                        ),
+                      )),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 }
 
+// Yes/No optional follow up dialog for questions 
 class YesNoDialog extends StatelessWidget {
   const YesNoDialog({super.key});
 
