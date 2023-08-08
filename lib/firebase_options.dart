@@ -50,20 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDKqORYTm1AT8JKZDIQNLQnQaQVG0AC7o4',
-    appId: '1:591526552474:web:a9059505d0b76b85aad023',
-    messagingSenderId: '591526552474',
-    projectId: 'ears-system',
-    authDomain: 'ears-system.firebaseapp.com',
-    storageBucket: 'ears-system.appspot.com',
-    measurementId: 'G-DX3F18MK5N',
+    apiKey: 'AIzaSyAmHbTwjH5SY0rD3M6ls0eUH8s8ujFXsiQ',
+    appId: '1:57640903727:web:b1a4cbe9036ef8fc5a92da',
+    messagingSenderId: '57640903727',
+    projectId: 'ears-system-43ae2',
+    authDomain: 'ears-system-43ae2.firebaseapp.com',
+    storageBucket: 'ears-system-43ae2.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBiRNV7PTETUUYl-g4T1VaBBfgfOIESbKQ',
-    appId: '1:591526552474:android:dbb50e65bb46f066aad023',
-    messagingSenderId: '591526552474',
-    projectId: 'ears-system',
-    storageBucket: 'ears-system.appspot.com',
+    apiKey: 'AIzaSyALsUibvYBxi2GrdaoI313YvcbEpONKb5M',
+    appId: '1:57640903727:android:b687ee03dfd7c1515a92da',
+    messagingSenderId: '57640903727',
+    projectId: 'ears-system-43ae2',
+    storageBucket: 'ears-system-43ae2.appspot.com',
   );
 }
