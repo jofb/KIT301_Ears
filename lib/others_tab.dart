@@ -20,23 +20,27 @@ class _OthersTabState extends State<OthersTab> {
   Widget buildTab(BuildContext context, CategoriesModel model,
       AnswersModel answersModel, _) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center, //ttest
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Others Page"),
           ElevatedButton(
-            onPressed: () => {model.loadCollection()},
+            onPressed: () => model.loadCollection(),
             child: Text("Update Question Files"),
           ),
           ElevatedButton(
-            onPressed: () => {model.clearCollection()},
+            onPressed: () => model.clearCollection(),
             child: Text("Clear Question Files"),
+          ),
+          ElevatedButton(
+            onPressed: () => answersModel.clearHistory(),
+            child: Text("Clear Answer History"),
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Text(
               answersModel.toString(),
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 25),
             ),
           ),
@@ -47,6 +51,14 @@ class _OthersTabState extends State<OthersTab> {
                 return ListTile(
                   title: Text(history[index].question.full),
                   subtitle: Text(history[index].response),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete,
+                        color: Theme.of(context).colorScheme.error),
+                    onPressed: () {
+                      _showDeleteConfirmation(
+                          context, answersModel, history[index]);
+                    },
+                  ),
                 );
               },
               itemCount: answersModel.history.length,
@@ -54,6 +66,37 @@ class _OthersTabState extends State<OthersTab> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmation(
+      BuildContext context, AnswersModel answersModel, Answer answer) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Answer'),
+          content: Text('Are you sure you want to delete this answer?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                answersModel.removeAnswer(answer);
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'Confirm',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

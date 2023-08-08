@@ -24,9 +24,9 @@ class _InvitationTabState extends State<InvitationTab> {
   Widget buildTab(BuildContext context, LanguageModel language,
       AnswersModel answersModel, _) {
     if (language.labels.isEmpty) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(
-          color: Colors.blueGrey,
+          color: Theme.of(context).colorScheme.primary,
         ),
       );
     }

@@ -61,9 +61,11 @@ class LanguageModel extends ChangeNotifier {
 }
 
 class LanguageDialog extends StatefulWidget {
-  const LanguageDialog({super.key, required this.language});
+  const LanguageDialog(
+      {super.key, required this.language, required this.onFinished});
 
   final LanguageModel language;
+  final Function onFinished;
 
   @override
   State<LanguageDialog> createState() => _LanguageDialogState();
@@ -163,6 +165,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
                               widget.language
                                   .setLanguage(_searchIndexes[index]);
                               setState(() {});
+                              widget.onFinished();
                               Navigator.pop(context);
                             },
                             selected: widget.language.langIndex ==

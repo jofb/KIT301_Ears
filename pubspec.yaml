@@ -57,6 +57,7 @@ dependencies:
     cupertino_icons: ^1.0.2
     rive: ^0.11.4
     flutter_launcher_icons: ^0.13.1
+    intl: ^0.17.0
 
 dev_dependencies:
     flutter_test:
@@ -96,6 +97,7 @@ flutter:
         - assets/audio/
         - assets/audio/fr/
         - assets/audio/de/
+        - assets/audio/zh-cn/
 
     # For details regarding adding assets from package dependencies, see
     # https://flutter.dev/assets-and-images/#from-packages

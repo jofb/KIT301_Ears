@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'category.dart';
 
 // tracks answer history for questions that require responses
@@ -29,10 +31,22 @@ class AnswersModel extends ChangeNotifier {
 
   @override
   String toString() {
-    return "(${dateTime.toString()}) | ${language} Answers History";
+    final formattedDateStart = DateFormat('E d MMMM yyyy ').format(dateTime);
+    final formattedDateMid = "at";
+    final formattedDateEnd = DateFormat(' h:mm a').format(dateTime);
+    return "$formattedDateStart$formattedDateMid$formattedDateEnd\n$language Answers History";
   }
 
-  // TODO
+  void clearHistory() {
+    history.clear();
+    update();
+  }
+
+  void removeAnswer(Answer answer) {
+    history.remove(answer);
+    update();
+  }
+  // TODOs
   // share?
   // clear?
   // remove?
