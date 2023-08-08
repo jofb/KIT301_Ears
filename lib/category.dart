@@ -132,6 +132,9 @@ class CategoriesModel extends ChangeNotifier {
         questions.add(que);
       }
 
+      //identifier is a string, need to order by it but as a int
+      questions.sort((a, b) => int.parse(a['identifier']).compareTo(int.parse(b['identifier'])));
+
       // convert to a map object
       var categoryData = {
         'category_name': category.get('category_name'),

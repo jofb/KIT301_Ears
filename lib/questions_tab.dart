@@ -172,9 +172,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               selected: index == _selectedCategoryIndex,
                               selectedTileColor: Colors.redAccent[100],
                               trailing: index == _selectedCategoryIndex
-                                  ? Icon(Icons.arrow_forward_ios_rounded,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor)
+                                  ? Transform.scale(
+                                      scale: 1.5,
+                                      child: Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                      ),
+                                    )
                                   : null,
                               onTap: () {
                                 setState(() {
@@ -256,6 +260,15 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 ),
                                 selected: index == _selectedItemIndex,
                                 selectedTileColor: Colors.redAccent[100],
+                                trailing: index == _selectedItemIndex
+                                  ? Transform.scale(
+                                      scale: 1.5,
+                                      child: Icon(
+                                        Icons.volume_up_outlined,
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                      ),
+                                    )
+                                  : null,
                                 onTap: () {
                                   // play audio
                                   playAudio(language.getCode(),
@@ -334,37 +347,72 @@ class YesNoDialog extends StatelessWidget {
               border: Border.all(color: Colors.grey, width: 2),
               borderRadius: BorderRadius.circular(8.0),
             ),
-            padding: const EdgeInsets.fromLTRB(30.0, 25.0, 30.0, 25.0),
+            padding: const EdgeInsets.fromLTRB(30.0, 50.0, 30.0, 25.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('yes or no??'),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop('yes'),
-                  child: Text('yeah'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 30.0,
-                      horizontal: 60.0,
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    backgroundColor: Colors.green,
+                    children: <TextSpan>[
+                      TextSpan(text: 'Select '),
+                      TextSpan(
+                        text: 'No',
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
+                      TextSpan(text: ' or '),
+                      TextSpan(
+                        text: 'Yes',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ],
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop('no'),
-                  child: Text('nah'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 30.0,
-                      horizontal: 60.0,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, 'No');
+                      },
+                       style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 80.0,
+                          horizontal: 100.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                      child: const Text(
+                        'No',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, 'Yes');
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 80.0,
+                            horizontal: 100.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Colors.green),
+                      child: const Text(
+                        'Yes',
+                        style: TextStyle(fontSize: 18.0),
+                      ),
                     ),
-                    backgroundColor: Colors.redAccent,
-                  ),
+                  ],
                 )
               ],
             ),
@@ -436,8 +484,8 @@ class ConfirmationDialog extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                          vertical: 30.0,
-                          horizontal: 60.0,
+                          vertical: 50.0,
+                          horizontal: 80.0,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -456,8 +504,8 @@ class ConfirmationDialog extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 30.0,
-                            horizontal: 60.0,
+                            vertical: 50.0,
+                            horizontal: 80.0,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
