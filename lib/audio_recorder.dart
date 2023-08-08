@@ -111,10 +111,9 @@ class _AudioRecorderState extends State<AudioRecorder> {
     // needs a file path, a codec, and an audio source
     _recorder
         .startRecorder(
-      // codec: _codec,
-      toFile: '${tempDir.path}/$_filePath',
-      audioSource: AudioSource.microphone,
-    )
+            codec: _codec,
+            toFile: _filePath,
+            audioSource: AudioSource.microphone)
         .then((value) {
       setState(() {});
     });
