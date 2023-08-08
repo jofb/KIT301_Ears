@@ -76,9 +76,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
   Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
       LanguageModel language, AnswersModel answersModel, _) {
     if (categoriesModel.categories.isEmpty) {
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(
-          color: Colors.blueGrey,
+          color: Theme.of(context).colorScheme.primary,
         ),
       );
     }
@@ -97,6 +97,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
                     builder: (_) {
                       return LanguageDialog(
                         language: language,
+                        onFinished: () {
+                          answersModel.newHistory(language.toString());
+                        },
                       );
                     },
                   );
@@ -110,14 +113,17 @@ class _QuestionsTabState extends State<QuestionsTab> {
               child: OutlinedButton(
                 onPressed: () {
                   player.stop();
+                  setState(() {
+                    _selectedItemIndex = -1;
+                  });
                 },
                 child: Row(
                   children: [
-                    const Text('Stop audio', style: TextStyle(fontSize: 16)),
                     Icon(
                       Icons.stop_circle_outlined,
-                      color: Colors.redAccent[100],
+                      color: Theme.of(context).colorScheme.error,
                     ),
+                    const Text('Stop audio', style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
@@ -170,13 +176,15 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     fontSize: 20),
                               ),
                               selected: index == _selectedCategoryIndex,
-                              selectedTileColor: Colors.redAccent[100],
+                              selectedTileColor:
+                                  Theme.of(context).colorScheme.error,
                               trailing: index == _selectedCategoryIndex
                                   ? Transform.scale(
                                       scale: 1.5,
                                       child: Icon(
                                         Icons.arrow_forward_ios_rounded,
-                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
                                       ),
                                     )
                                   : null,
@@ -259,16 +267,18 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 selected: index == _selectedItemIndex,
-                                selectedTileColor: Colors.redAccent[100],
+                                selectedTileColor:
+                                    Theme.of(context).colorScheme.error,
                                 trailing: index == _selectedItemIndex
-                                  ? Transform.scale(
-                                      scale: 1.5,
-                                      child: Icon(
-                                        Icons.volume_up_outlined,
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                      ),
-                                    )
-                                  : null,
+                                    ? Transform.scale(
+                                        scale: 1.5,
+                                        child: Icon(
+                                          Icons.volume_up_outlined,
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                        ),
+                                      )
+                                    : null,
                                 onTap: () {
                                   // play audio
                                   playAudio(language.getCode(),
@@ -379,7 +389,7 @@ class YesNoDialog extends StatelessWidget {
                       onPressed: () {
                         Navigator.pop(context, 'No');
                       },
-                       style: ElevatedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           vertical: 80.0,
                           horizontal: 100.0,
@@ -490,7 +500,7 @@ class ConfirmationDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                       child: const Text(
                         'Cancel',

@@ -20,6 +20,28 @@ void main() async {
   runApp(const MyApp());
 }
 
+// used to create a material colour swatch from a colour
+// https://medium.com/@nickysong/creating-a-custom-color-swatch-in-flutter-554bcdcb27f3
+MaterialColor createMaterialColor(Color color) {
+  List strengths = <double>[.05];
+  Map<int, Color> swatch = {};
+  final int r = color.red, g = color.green, b = color.blue;
+
+  for (int i = 1; i < 10; i++) {
+    strengths.add(0.1 * i);
+  }
+  for (var strength in strengths) {
+    final double ds = 0.5 - strength;
+    swatch[(strength * 1000).round()] = Color.fromRGBO(
+      r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+      g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+      b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+      1,
+    );
+  }
+  return MaterialColor(color.value, swatch);
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -35,6 +57,11 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blueGrey,
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.blueGrey,
+            accentColor: Color(0xffDC7B19),
+            errorColor: Colors.redAccent[100],
+          ),
         ),
         home: const MyHomePage(title: 'EARS Project'),
       ),
@@ -67,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           toolbarHeight: 32,
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(30),
@@ -77,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 35),
                   child: TabBar(
-                    labelColor: Colors.blueGrey,
+                    labelColor: Theme.of(context).colorScheme.primary,
                     unselectedLabelColor:
                         Theme.of(context).scaffoldBackgroundColor,
                     indicatorSize: TabBarIndicatorSize.label,
@@ -147,21 +174,22 @@ class BurgerMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LanguageModel>(builder: buildMenu);
+    return Consumer2<LanguageModel, AnswersModel>(builder: buildMenu);
   }
 
-  Widget buildMenu(context, LanguageModel language, _) {
+  Widget buildMenu(
+      context, LanguageModel language, AnswersModel answersModel, _) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const SizedBox(
+          SizedBox(
             height: 94,
             child: DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.blueGrey,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                child: Text(
+                child: const Text(
                   'EARS Project',
                   style: TextStyle(
                     color: Colors.white,
@@ -178,7 +206,12 @@ class BurgerMenu extends StatelessWidget {
               showDialog(
                   context: context,
                   builder: (_) {
-                    return LanguageDialog(language: language);
+                    return LanguageDialog(
+                      language: language,
+                      onFinished: () {
+                        answersModel.newHistory(language.toString());
+                      },
+                    );
                   });
             },
           ),

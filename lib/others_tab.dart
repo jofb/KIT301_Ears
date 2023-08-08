@@ -53,9 +53,10 @@ class _OthersTabState extends State<OthersTab> {
                   subtitle: Text(history[index].response),
                   trailing: IconButton(
                     icon: Icon(Icons.delete,
-                        color: Colors.redAccent),
+                        color: Theme.of(context).colorScheme.error),
                     onPressed: () {
-                      _showDeleteConfirmation(context, answersModel, history[index]);
+                      _showDeleteConfirmation(
+                          context, answersModel, history[index]);
                     },
                   ),
                 );
@@ -68,7 +69,8 @@ class _OthersTabState extends State<OthersTab> {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, AnswersModel answersModel, Answer answer) {
+  void _showDeleteConfirmation(
+      BuildContext context, AnswersModel answersModel, Answer answer) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -87,8 +89,9 @@ class _OthersTabState extends State<OthersTab> {
                 answersModel.removeAnswer(answer);
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('Confirm',
-                  style: TextStyle(color: Colors.redAccent),
+              child: Text(
+                'Confirm',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
           ],
