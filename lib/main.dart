@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         drawer: const BurgerMenu(),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
             OthersTab(),
             QuestionsTab(),
