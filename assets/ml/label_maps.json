@@ -1,19 +1,27 @@
 [
     {
+        "code": "el",
+        "text": "Greek"
+    },
+    {
         "code": "et",
         "text": "Estonian"
     },
     {
-        "code": "mn",
-        "text": "Mongolian"
+        "code": "pt",
+        "text": "Portugese"
     },
     {
         "code": "tm",
         "text": "Tamil"
     },
     {
-        "code": "tr",
-        "text": "Turkish"
+        "code": "yue",
+        "text": "Cantonese"
+    },
+    {
+        "code": "zh-CN",
+        "text": "Mandarin"
     },
     {
         "code": "fr",
