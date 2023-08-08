@@ -37,7 +37,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
     } else {
       // play default if null
       print("Playing default audio");
-      player.play(AssetSource("audio/001.mp3"));
+      player.play(AssetSource("audio/default_audio.mp3"));
     }
   }
 
@@ -102,8 +102,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   );
                 },
                 child: Text('Current language: ${language.getText()}',
-                        style: TextStyle(fontSize: 16)
-                        ),
+                    style: TextStyle(fontSize: 16)),
               ),
             ),
             Padding(
@@ -111,16 +110,14 @@ class _QuestionsTabState extends State<QuestionsTab> {
               child: OutlinedButton(
                 onPressed: () {
                   player.stop();
-                }, 
+                },
                 child: Row(
                   children: [
-                    const Text('Stop audio',
-                        style: TextStyle(fontSize: 16)
-                        ),
+                    const Text('Stop audio', style: TextStyle(fontSize: 16)),
                     Icon(
                       Icons.stop_circle_outlined,
                       color: Colors.redAccent[100],
-                      ),
+                    ),
                   ],
                 ),
               ),
@@ -148,14 +145,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                          final isLastItem = index ==
-                              categoriesModel.categories.length - 1;
+                          final isLastItem =
+                              index == categoriesModel.categories.length - 1;
                           return Container(
                             margin: EdgeInsets.fromLTRB(
                                 8, 8, 8, isLastItem ? 8 : 0),
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Colors.grey, width: 2),
+                              border: Border.all(color: Colors.grey, width: 2),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: ListTile(
@@ -164,16 +160,14 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               title: Text(
-                                categoriesModel
-                                    .categories[index].categoryName,
+                                categoriesModel.categories[index].categoryName,
                                 style: TextStyle(
                                     color: index == _selectedCategoryIndex
                                         ? Theme.of(context)
                                             .scaffoldBackgroundColor
                                         : Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20
-                                    ),
+                                    fontSize: 20),
                               ),
                               selected: index == _selectedCategoryIndex,
                               selectedTileColor: Colors.redAccent[100],
@@ -215,12 +209,10 @@ class _QuestionsTabState extends State<QuestionsTab> {
                           itemBuilder: (context, index) {
                             // list of questions + current question
                             List<Question> questions = categoriesModel
-                                .categories[_selectedCategoryIndex]
-                                .questions;
+                                .categories[_selectedCategoryIndex].questions;
                             final Question question = questions[index];
                             // used for styling
-                            final isLastItem =
-                                index == questions.length - 1;
+                            final isLastItem = index == questions.length - 1;
                             // should a special widget be used?
                             final type = question.type;
                             Function followUpWidget = () {};
@@ -229,16 +221,16 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 followUpWidget = () async {
                                   // get the answer from the dialog
                                   var response = await showDialog(
-                                      barrierColor: Colors.black.withOpacity(0.75),
+                                      barrierColor:
+                                          Colors.black.withOpacity(0.75),
                                       context: context,
                                       builder: (BuildContext context) {
                                         return const YesNoDialog();
                                       });
-                                      
-                                  if(response != null) {
+
+                                  if (response != null) {
                                     // append to answers history
-                                    answersModel.addAnswer(
-                                        question, response);
+                                    answersModel.addAnswer(question, response);
                                   }
                                 };
                                 break;
@@ -247,8 +239,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               margin: EdgeInsets.fromLTRB(
                                   8, 8, 8, isLastItem ? 8 : 0),
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.grey, width: 2),
+                                border:
+                                    Border.all(color: Colors.grey, width: 2),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ListTile(
@@ -317,7 +309,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
   }
 }
 
-// Yes/No optional follow up dialog for questions 
+// Yes/No optional follow up dialog for questions
 class YesNoDialog extends StatelessWidget {
   const YesNoDialog({super.key});
 
