@@ -2,7 +2,7 @@
     package="edu.utas.ears.kit301_ears">
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
    <application
-        android:label="kit301_ears"
+        android:label="EARS"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
