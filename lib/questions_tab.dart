@@ -29,6 +29,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
     });
     // create the audio path and then check if it exists
     String path = "audio/$langCode/${langCode}_$id.mp3";
+    print(path);
+
     if (await assetExists((path)) != null) {
       // play audio
       player.play(AssetSource(path));
@@ -41,7 +43,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   Future assetExists(String path) async {
     try {
-      return await rootBundle.load(path);
+      return await rootBundle.load("assets/$path");
     } catch (_) {
       return null;
     }
@@ -197,7 +199,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                  padding: const EdgeInsets.fromLTRB(0, 4, 8, 8),
                   child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey, width: 2),

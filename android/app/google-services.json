@@ -1,62 +1,33 @@
 {
   "project_info": {
-    "project_number": "591526552474",
-    "project_id": "ears-system",
-    "storage_bucket": "ears-system.appspot.com"
+    "project_number": "57640903727",
+    "project_id": "ears-system-43ae2",
+    "storage_bucket": "ears-system-43ae2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:591526552474:android:87ae1346ef44ca53aad023",
-        "android_client_info": {
-          "package_name": "com.earssystem.kit301_ears"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "591526552474-efs2kci171k5f7p0ggpr90i9otp3cfid.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBiRNV7PTETUUYl-g4T1VaBBfgfOIESbKQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "591526552474-efs2kci171k5f7p0ggpr90i9otp3cfid.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:591526552474:android:dbb50e65bb46f066aad023",
+        "mobilesdk_app_id": "1:57640903727:android:b687ee03dfd7c1515a92da",
         "android_client_info": {
           "package_name": "edu.utas.ears.kit301_ears"
         }
       },
       "oauth_client": [
         {
-          "client_id": "591526552474-efs2kci171k5f7p0ggpr90i9otp3cfid.apps.googleusercontent.com",
+          "client_id": "57640903727-1vuostpefu9tjs05nrvrap8eqn864qim.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBiRNV7PTETUUYl-g4T1VaBBfgfOIESbKQ"
+          "current_key": "AIzaSyALsUibvYBxi2GrdaoI313YvcbEpONKb5M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "591526552474-efs2kci171k5f7p0ggpr90i9otp3cfid.apps.googleusercontent.com",
+              "client_id": "57640903727-1vuostpefu9tjs05nrvrap8eqn864qim.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
