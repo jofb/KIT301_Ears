@@ -398,7 +398,7 @@ class YesNoDialog extends StatelessWidget {
                       ),
                       child: const Text(
                         'No',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 30.0),
                       ),
                     ),
                     ElevatedButton(
@@ -416,7 +416,7 @@ class YesNoDialog extends StatelessWidget {
                           backgroundColor: Colors.green),
                       child: const Text(
                         'Yes',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 30.0),
                       ),
                     ),
                   ],
@@ -497,11 +497,11 @@ class ConfirmationDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                        backgroundColor: Colors.redAccent,
                       ),
                       child: const Text(
                         'Cancel',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 24.0),
                       ),
                     ),
                     ElevatedButton(
@@ -520,7 +520,7 @@ class ConfirmationDialog extends StatelessWidget {
                           backgroundColor: Colors.green),
                       child: const Text(
                         'Confirm',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 24.0),
                       ),
                     ),
                   ],

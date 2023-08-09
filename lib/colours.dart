@@ -22,13 +22,38 @@ final themeTwo = ThemeData(
   accentColor: Colors.grey[300]
 );
 
-class ThemeModel with ChangeNotifier {
-  ThemeData _currentTheme = themeOne;
+final themeThree = ThemeData(
+  primarySwatch: const MaterialColor(_customPrimaryValue, <int, Color>{
+    50: Color(0xFFEAE4F3),
+    100: Color(0xFFCBBAE1),
+    200: Color(0xFFA98DCD),
+    300: Color(0xFF865FB8),
+    400: Color(0xFF6C3CA9),
+    500: Color(_customPrimaryValue),
+    600: Color(0xFF4B1792),
+    700: Color(0xFF411388),
+    800: Color(0xFF380F7E),
+    900: Color(0xFF28086C),
+  }),
+  primaryColor: const Color(_customPrimaryValue),
+  scaffoldBackgroundColor: Colors.white,
+  cardColor: const Color.fromARGB(255, 190, 161, 229),
+  errorColor: Colors.redAccent,
+  indicatorColor: Colors.green,
+  dividerColor: Colors.grey,
+  accentColor: Colors.grey[300]
+);
 
-  ThemeData get currentTheme => _currentTheme;
+const int _customPrimaryValue = 0xFF521A9A;
+
+class ThemeModel with ChangeNotifier {
+  final List<ThemeData> _themes = [themeOne, themeTwo, themeThree];
+  int _currentThemeIndex = 0;
+
+  ThemeData get currentTheme => _themes[_currentThemeIndex];
 
   void toggleTheme() {
-    _currentTheme = _currentTheme == themeOne ? themeTwo : themeOne;
+    _currentThemeIndex = (_currentThemeIndex + 1) % _themes.length;
     notifyListeners();
   }
 }
@@ -46,11 +71,3 @@ const MaterialColor primeswatch = MaterialColor(_primeswatchPrimaryValue, <int, 
   900: Color(0xFF050F26),
 });
 const int _primeswatchPrimaryValue = 0xFF10294F;
-
-const MaterialColor primeswatchAccent = MaterialColor(_primeswatchAccentValue, <int, Color>{
-  100: Color(0xFF6283FF),
-  200: Color(_primeswatchAccentValue),
-  400: Color(0xFF0035FB),
-  700: Color(0xFF0030E1),
-});
-const int _primeswatchAccentValue = 0xFF2F5BFF;
