@@ -35,7 +35,7 @@ Future<List<double>> loadAudio(String path) async {
 Future<int> inference(Matrix inputMatrix) async {
   // load the model from assets
   final Interpreter interpreter =
-      await Interpreter.fromAsset('assets/ml/4lang_model.tflite');
+      await Interpreter.fromAsset('assets/ml/6lang_model_v2.tflite');
 
   // resize the input tensor to match input
   interpreter.resizeInputTensor(0, [1, inputMatrix.rows.length, 40]);
@@ -48,7 +48,8 @@ Future<int> inference(Matrix inputMatrix) async {
   // input and output tensors
   // input needs to be converted to a List<List<>>
   final input = inputMatrix.toList().reshape(inputShape);
-  final output = List.filled(4, 0).reshape(outputShape);
+  final output = List.filled(6, 0).reshape(
+      outputShape); // TODO dynamically update the reshape value to number of labels
 
   // run the interpreter
   interpreter.run(input, output);
