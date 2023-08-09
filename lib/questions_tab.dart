@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kit301_ears/colours.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
@@ -69,16 +70,16 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<CategoriesModel, LanguageModel, AnswersModel>(
+    return Consumer4<CategoriesModel, LanguageModel, AnswersModel, ThemeModel>(
         builder: buildTab);
   }
 
   Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
-      LanguageModel language, AnswersModel answersModel, _) {
+      LanguageModel language, AnswersModel answersModel, ThemeModel themeModel, _) {
     if (categoriesModel.categories.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.primary,
+          color: themeModel.currentTheme.primaryColor,
         ),
       );
     }
@@ -121,7 +122,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   children: [
                     Icon(
                       Icons.stop_circle_outlined,
-                      color: Theme.of(context).colorScheme.error,
+                      color: themeModel.currentTheme.cardColor,
                     ),
                     const Text('Stop audio', style: TextStyle(fontSize: 16)),
                   ],
@@ -140,10 +141,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 2),
+                      border: Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Card(
+                      color: themeModel.currentTheme.scaffoldBackgroundColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -157,11 +159,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             margin: EdgeInsets.fromLTRB(
                                 8, 8, 8, isLastItem ? 8 : 0),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 2),
+                              border: Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: ListTile(
-                              tileColor: Colors.grey[300],
+                              tileColor: themeModel.currentTheme.accentColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -169,22 +171,19 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 categoriesModel.categories[index].categoryName,
                                 style: TextStyle(
                                     color: index == _selectedCategoryIndex
-                                        ? Theme.of(context)
-                                            .scaffoldBackgroundColor
+                                        ? themeModel.currentTheme.scaffoldBackgroundColor
                                         : Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20),
                               ),
                               selected: index == _selectedCategoryIndex,
-                              selectedTileColor:
-                                  Theme.of(context).colorScheme.error,
+                              selectedTileColor: themeModel.currentTheme.cardColor,
                               trailing: index == _selectedCategoryIndex
                                   ? Transform.scale(
                                       scale: 1.5,
                                       child: Icon(
                                         Icons.arrow_forward_ios_rounded,
-                                        color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
+                                        color: themeModel.currentTheme.scaffoldBackgroundColor,
                                       ),
                                     )
                                   : null,
@@ -208,10 +207,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   padding: const EdgeInsets.fromLTRB(0, 4, 8, 8),
                   child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 2),
+                        border: Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Card(
+                        color: themeModel.currentTheme.scaffoldBackgroundColor,
                         margin: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -252,30 +252,27 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                   8, 8, 8, isLastItem ? 8 : 0),
                               decoration: BoxDecoration(
                                 border:
-                                    Border.all(color: Colors.grey, width: 2),
+                                    Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ListTile(
-                                tileColor: Colors.grey[300],
+                                tileColor: themeModel.currentTheme.accentColor,
                                 title: Text(
                                   questions[index].short,
                                   style: TextStyle(
                                       color: index == _selectedItemIndex
-                                          ? Theme.of(context)
-                                              .scaffoldBackgroundColor
+                                          ? themeModel.currentTheme.scaffoldBackgroundColor
                                           : Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 selected: index == _selectedItemIndex,
-                                selectedTileColor:
-                                    Theme.of(context).colorScheme.error,
+                                selectedTileColor: themeModel.currentTheme.cardColor,
                                 trailing: index == _selectedItemIndex
                                     ? Transform.scale(
                                         scale: 1.5,
                                         child: Icon(
                                           Icons.volume_up_outlined,
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor,
+                                          color: themeModel.currentTheme.scaffoldBackgroundColor,
                                         ),
                                       )
                                     : null,

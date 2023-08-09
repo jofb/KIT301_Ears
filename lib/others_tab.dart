@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kit301_ears/answers.dart';
+import 'package:kit301_ears/colours.dart';
 import 'package:provider/provider.dart';
 
 import 'category.dart';
@@ -14,16 +15,22 @@ class OthersTab extends StatefulWidget {
 class _OthersTabState extends State<OthersTab> {
   @override
   Widget build(BuildContext context) {
-    return Consumer2<CategoriesModel, AnswersModel>(builder: buildTab);
+    return Consumer3<CategoriesModel, AnswersModel, ThemeModel>(builder: buildTab);
   }
 
-  Widget buildTab(BuildContext context, CategoriesModel model,
-      AnswersModel answersModel, _) {
+  Widget buildTab(BuildContext context, CategoriesModel model, AnswersModel answersModel, ThemeModel themeModel, _) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              themeModel.toggleTheme();
+              print(themeModel.currentTheme);
+            },
+            child: Text('Toggle Theme'),
+          ),
           ElevatedButton(
             onPressed: () => model.loadCollection(),
             child: Text("Update Question Files"),
@@ -52,8 +59,10 @@ class _OthersTabState extends State<OthersTab> {
                   title: Text(history[index].question.full),
                   subtitle: Text(history[index].response),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete,
-                        color: Theme.of(context).colorScheme.error),
+                    icon: Icon(
+                      Icons.delete,
+                      color: themeModel.currentTheme.errorColor
+                    ),
                     onPressed: () {
                       _showDeleteConfirmation(
                           context, answersModel, history[index]);
@@ -91,7 +100,7 @@ class _OthersTabState extends State<OthersTab> {
               },
               child: Text(
                 'Confirm',
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                style: TextStyle(color: Colors.redAccent),
               ),
             ),
           ],
