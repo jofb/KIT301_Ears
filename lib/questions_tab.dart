@@ -74,8 +74,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
         builder: buildTab);
   }
 
-  Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
-      LanguageModel language, AnswersModel answersModel, ThemeModel themeModel, _) {
+  Widget buildTab(
+      BuildContext context,
+      CategoriesModel categoriesModel,
+      LanguageModel language,
+      AnswersModel answersModel,
+      ThemeModel themeModel,
+      _) {
     if (categoriesModel.categories.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
@@ -141,7 +146,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
+                      border: Border.all(
+                          color: themeModel.currentTheme.dividerColor,
+                          width: 2),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Card(
@@ -159,7 +166,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             margin: EdgeInsets.fromLTRB(
                                 8, 8, 8, isLastItem ? 8 : 0),
                             decoration: BoxDecoration(
-                              border: Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
+                              border: Border.all(
+                                  color: themeModel.currentTheme.dividerColor,
+                                  width: 2),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: ListTile(
@@ -171,19 +180,22 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 categoriesModel.categories[index].categoryName,
                                 style: TextStyle(
                                     color: index == _selectedCategoryIndex
-                                        ? themeModel.currentTheme.scaffoldBackgroundColor
+                                        ? themeModel.currentTheme
+                                            .scaffoldBackgroundColor
                                         : Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20),
                               ),
                               selected: index == _selectedCategoryIndex,
-                              selectedTileColor: themeModel.currentTheme.cardColor,
+                              selectedTileColor:
+                                  themeModel.currentTheme.cardColor,
                               trailing: index == _selectedCategoryIndex
                                   ? Transform.scale(
                                       scale: 1.5,
                                       child: Icon(
                                         Icons.arrow_forward_ios_rounded,
-                                        color: themeModel.currentTheme.scaffoldBackgroundColor,
+                                        color: themeModel.currentTheme
+                                            .scaffoldBackgroundColor,
                                       ),
                                     )
                                   : null,
@@ -207,7 +219,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   padding: const EdgeInsets.fromLTRB(0, 4, 8, 8),
                   child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
+                        border: Border.all(
+                            color: themeModel.currentTheme.dividerColor,
+                            width: 2),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Card(
@@ -251,8 +265,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               margin: EdgeInsets.fromLTRB(
                                   8, 8, 8, isLastItem ? 8 : 0),
                               decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: themeModel.currentTheme.dividerColor, width: 2),
+                                border: Border.all(
+                                    color: themeModel.currentTheme.dividerColor,
+                                    width: 2),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ListTile(
@@ -261,18 +276,21 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                   questions[index].short,
                                   style: TextStyle(
                                       color: index == _selectedItemIndex
-                                          ? themeModel.currentTheme.scaffoldBackgroundColor
+                                          ? themeModel.currentTheme
+                                              .scaffoldBackgroundColor
                                           : Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 selected: index == _selectedItemIndex,
-                                selectedTileColor: themeModel.currentTheme.cardColor,
+                                selectedTileColor:
+                                    themeModel.currentTheme.cardColor,
                                 trailing: index == _selectedItemIndex
                                     ? Transform.scale(
                                         scale: 1.5,
                                         child: Icon(
                                           Icons.volume_up_outlined,
-                                          color: themeModel.currentTheme.scaffoldBackgroundColor,
+                                          color: themeModel.currentTheme
+                                              .scaffoldBackgroundColor,
                                         ),
                                       )
                                     : null,
