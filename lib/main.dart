@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:kit301_ears/colours.dart';
+import 'package:kit301_ears/settings.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -212,6 +213,7 @@ class BurgerMenu extends StatelessWidget {
                     );
                   });
             },
+            leading: const Icon(Icons.spellcheck_sharp),
           ),
           ListTile(
             title: const Text('View Manual',
@@ -220,14 +222,20 @@ class BurgerMenu extends StatelessWidget {
               Navigator.pop(context);
               // Open Manual PDF
             },
+            leading: const Icon(Icons.book),
           ),
           ListTile(
-            title: const Text('View Answer History',
+            title: const Text('Settings',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Navigate to answer history page
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsWidget()));
             },
+            leading: const Icon(Icons.settings),
           ),
         ],
       ),

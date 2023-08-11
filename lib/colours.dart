@@ -49,6 +49,15 @@ class ThemeModel with ChangeNotifier {
 
   ThemeData get currentTheme => _themes[_currentThemeIndex];
 
+  void setTheme(index) {
+    _currentThemeIndex = index;
+    notifyListeners();
+  }
+
+  int getThemeIndex() {
+    return _currentThemeIndex;
+  }
+
   void toggleTheme() {
     _currentThemeIndex = (_currentThemeIndex + 1) % _themes.length;
     notifyListeners();

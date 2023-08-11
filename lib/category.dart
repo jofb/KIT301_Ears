@@ -51,6 +51,7 @@ class CategoriesModel extends ChangeNotifier {
 
   List<Category> categories = [];
   late final Directory categoryDirectory;
+  bool loading = false;
 
   CategoriesModel() {
     initModel();
@@ -145,11 +146,14 @@ class CategoriesModel extends ChangeNotifier {
         (a, b) => int.parse(a.identifier).compareTo(int.parse(b.identifier)));
 
     categories = tempCategoryList;
+    loading = false;
     update();
   }
 
   // loads the collection from firebase and saves locally
   Future loadCollection() async {
+    loading = true;
+    update();
     // don't load anything if in web
     if (kIsWeb) return;
 

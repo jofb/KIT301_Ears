@@ -15,30 +15,17 @@ class OthersTab extends StatefulWidget {
 class _OthersTabState extends State<OthersTab> {
   @override
   Widget build(BuildContext context) {
-    return Consumer3<CategoriesModel, AnswersModel, ThemeModel>(builder: buildTab);
+    return Consumer3<CategoriesModel, AnswersModel, ThemeModel>(
+        builder: buildTab);
   }
 
-  Widget buildTab(BuildContext context, CategoriesModel model, AnswersModel answersModel, ThemeModel themeModel, _) {
+  Widget buildTab(BuildContext context, CategoriesModel model,
+      AnswersModel answersModel, ThemeModel themeModel, _) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              themeModel.toggleTheme();
-              print(themeModel.currentTheme);
-            },
-            child: const Text('Toggle Theme'),
-          ),
-          ElevatedButton(
-            onPressed: () => model.loadCollection(),
-            child: const Text("Update Question Files"),
-          ),
-          ElevatedButton(
-            onPressed: () => model.clearCollection(),
-            child: const Text("Clear Question Files"),
-          ),
           ElevatedButton(
             onPressed: () => answersModel.clearHistory(),
             child: const Text("Clear Answer History"),
@@ -59,10 +46,8 @@ class _OthersTabState extends State<OthersTab> {
                   title: Text(history[index].question.full),
                   subtitle: Text(history[index].response),
                   trailing: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: themeModel.currentTheme.errorColor
-                    ),
+                    icon: Icon(Icons.delete,
+                        color: themeModel.currentTheme.errorColor),
                     onPressed: () {
                       _showDeleteConfirmation(
                           context, answersModel, history[index]);
