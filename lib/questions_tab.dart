@@ -237,6 +237,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             List<Question> questions = categoriesModel
                                 .categories[_selectedCategoryIndex].questions;
                             final Question question = questions[index];
+
+                            // checks whether tile should be disabled or selected for styling
+                            bool tileDisabled =
+                                !question.hasAudioAvailable(language.getCode());
+                            bool tileSelected = _selectedItemIndex == index;
+
                             // used for styling
                             final isLastItem = index == questions.length - 1;
                             // should a special widget be used?
@@ -261,6 +267,22 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 };
                                 break;
                             }
+
+                            IconData? trailingIcon;
+                            if (tileDisabled) {
+                              trailingIcon = Icons.volume_off_outlined;
+                            } else if (tileSelected) {
+                              trailingIcon = Icons.volume_up_outlined;
+                            }
+
+                            buttonTapFn() {
+                              // play audio
+                              playAudio(
+                                  language.getCode(), question.audioId, index);
+                              // then create the follow up widget
+                              followUpWidget();
+                            }
+
                             return Container(
                               margin: EdgeInsets.fromLTRB(
                                   8, 8, 8, isLastItem ? 8 : 0),
@@ -271,36 +293,34 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ListTile(
-                                tileColor: themeModel.currentTheme.accentColor,
+                                enabled: question
+                                    .hasAudioAvailable(language.getCode()),
+                                tileColor: tileDisabled
+                                    ? Colors.grey[500]
+                                    : themeModel.currentTheme.accentColor,
                                 title: Text(
                                   questions[index].short,
                                   style: TextStyle(
-                                      color: index == _selectedItemIndex
+                                      color: tileSelected
                                           ? themeModel.currentTheme
                                               .scaffoldBackgroundColor
                                           : Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                selected: index == _selectedItemIndex,
+                                selected: tileSelected,
                                 selectedTileColor:
                                     themeModel.currentTheme.cardColor,
-                                trailing: index == _selectedItemIndex
+                                trailing: trailingIcon != null
                                     ? Transform.scale(
                                         scale: 1.5,
                                         child: Icon(
-                                          Icons.volume_up_outlined,
+                                          trailingIcon,
                                           color: themeModel.currentTheme
                                               .scaffoldBackgroundColor,
                                         ),
                                       )
                                     : null,
-                                onTap: () {
-                                  // play audio
-                                  playAudio(language.getCode(),
-                                      question.audioId, index);
-                                  // then create the follow up widget
-                                  followUpWidget();
-                                },
+                                onTap: buttonTapFn,
                                 onLongPress: () {
                                   setState(() {
                                     _selectedItemIndex = index;
@@ -312,13 +332,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     builder: (BuildContext context) {
                                       return ConfirmationDialog(
                                         question: question,
-                                        onTap: () {
-                                          // play audio
-                                          playAudio(language.getCode(),
-                                              question.audioId, index);
-                                          // then create the follow up widget
-                                          followUpWidget();
-                                        },
+                                        onTap: buttonTapFn,
                                         onPop: () {
                                           setState(() {
                                             _selectedItemIndex = -1;

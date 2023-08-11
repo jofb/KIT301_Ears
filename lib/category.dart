@@ -29,7 +29,7 @@ class Question {
   final String type;
   final String audioId;
   final String identifier;
-  final List<String> audioAvailable = [];
+  List<String> audioAvailable = [];
 
   Question.fromJson(Map<String, dynamic> json)
       : full = json['full_question'],
@@ -80,14 +80,7 @@ class CategoriesModel extends ChangeNotifier {
     print("Initializing categories");
     List<Category> tempCategoryList = [];
 
-    // create an index of every single audio file
-    // first we need the language labels
-    final languageLabels = await jsonDecode(
-            await rootBundle.loadString('assets/ml/label_maps.json'))
-        .map((e) => e['code'])
-        .toList();
-    // now get the directory for the audio files
-    // for now this is in assets
+    // directory for audio files
     // TODO move this to application directory
     final manifest = await rootBundle.loadString('AssetManifest.json');
     final Map<String, dynamic> map = json.decode(manifest);
@@ -95,8 +88,22 @@ class CategoriesModel extends ChangeNotifier {
     final audioPaths = map.keys
         .where((String key) => key.contains('audio/'))
         .map((e) => e.split('audio/')[1])
+        .where((String key) => key.contains('/'))
         .toList();
-    print(languageLabels);
+
+    final Map<String, List<String>> audioAvailableById = {};
+
+    // loop over every audio path
+    // split the id from the langauge
+    // add to a map which maps id to language list
+
+    for (String audio in audioPaths) {
+      String lang = audio.split('/')[0];
+      String id = audio.split('_')[1].split('.')[0];
+      // get the list for id and add our langauge
+      List<String> list = audioAvailableById.putIfAbsent(id, () => []);
+      list.add(lang);
+    }
 
     // if in web, just load from assets for testing
     if (kIsWeb) {
@@ -122,17 +129,9 @@ class CategoriesModel extends ChangeNotifier {
         if (file is File && file.path.endsWith(".json")) {
           final json = await file.readAsString();
           final category = Category.fromJson(jsonDecode(json));
-          // check each question for audio
-          for (Question question in category.questions) {
-            // for each question we're going to iterate over the languages and check if the audio exists
-            String id = question.audioId;
-            for (var label in languageLabels) {
-              String path = "$label/${label}_$id.mp3";
-              if (audioPaths.contains(path)) {
-                // add this to the question
-                question.audioAvailable.add(label);
-              }
-            }
+          // get the list of available audio and append to list
+          for (Question q in category.questions) {
+            q.audioAvailable = audioAvailableById[q.audioId] ?? [];
           }
           // loop over questions
           // check audio directory if they exist
