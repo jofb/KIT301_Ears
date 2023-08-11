@@ -20,13 +20,12 @@ class _InvitationTabState extends State<InvitationTab> {
     return Consumer2<LanguageModel, AnswersModel>(builder: buildTab);
   }
 
-  @override
   Widget buildTab(BuildContext context, LanguageModel language,
       AnswersModel answersModel, _) {
     if (language.labels.isEmpty) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.primary,
+          color: Colors.blueGrey,
         ),
       );
     }

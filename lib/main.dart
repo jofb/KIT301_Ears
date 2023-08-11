@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:kit301_ears/colours.dart';
+import 'package:kit301_ears/pdf_viewer.dart';
+import 'package:kit301_ears/settings.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -52,19 +56,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CategoriesModel()),
         ChangeNotifierProvider(create: (context) => LanguageModel()),
         ChangeNotifierProvider(create: (context) => AnswersModel()),
+        ChangeNotifierProvider(create: (context) => ThemeModel()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
-          colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.blueGrey,
-            accentColor: Color(0xffDC7B19),
-            errorColor: Colors.redAccent[100],
-          ),
-        ),
-        home: const MyHomePage(title: 'EARS Project'),
-      ),
+      child: const MyHomePage(title: 'EARS Project'),
     );
   }
 }
@@ -87,59 +81,66 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          toolbarHeight: 32,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(30),
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 35),
-                  child: TabBar(
-                    labelColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor:
-                        Theme.of(context).scaffoldBackgroundColor,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicator: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10),
+    return Consumer<ThemeModel>(builder: buildScaffold);
+  }
+
+  Widget buildScaffold(BuildContext context, ThemeModel themeModel, _) {
+    return MaterialApp(
+      theme: themeModel.currentTheme,
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            toolbarHeight: 32,
+            backgroundColor: themeModel.currentTheme.primaryColor,
+            elevation: 0,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(30),
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 35),
+                    child: TabBar(
+                      labelColor: themeModel.currentTheme.primaryColor,
+                      unselectedLabelColor:
+                          themeModel.currentTheme.scaffoldBackgroundColor,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicator: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        color: themeModel.currentTheme.scaffoldBackgroundColor,
                       ),
-                      color: Theme.of(context).scaffoldBackgroundColor,
+                      tabs: const [
+                        NavigationTab(text: "Others"),
+                        NavigationTab(text: "Questions and Statements"),
+                        NavigationTab(text: "Invitation to Speak"),
+                      ],
                     ),
-                    tabs: const [
-                      NavigationTab(text: "Others"),
-                      NavigationTab(text: "Questions and Statements"),
-                      NavigationTab(text: "Invitation to Speak"),
-                    ],
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.menu),
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  onPressed: () {
-                    _openDrawer();
-                  },
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.menu),
+                    color: themeModel.currentTheme.scaffoldBackgroundColor,
+                    onPressed: () {
+                      _openDrawer();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        drawer: const BurgerMenu(),
-        body: TabBarView(
-          children: [
-            OthersTab(),
-            QuestionsTab(),
-            InvitationTab(),
-          ],
+          drawer: const BurgerMenu(),
+          body: const TabBarView(
+            children: [
+              OthersTab(),
+              QuestionsTab(),
+              InvitationTab(),
+            ],
+          ),
         ),
       ),
     );
@@ -214,6 +215,7 @@ class BurgerMenu extends StatelessWidget {
                     );
                   });
             },
+            leading: const Icon(Icons.spellcheck_sharp),
           ),
           ListTile(
             title: const Text('View Manual',
@@ -221,15 +223,25 @@ class BurgerMenu extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               // Open Manual PDF
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return PDFViewerFromAsset(
+                    pdfAssetPath: 'assets/pdf/user_manual.pdf');
+              }));
             },
+            leading: const Icon(Icons.book),
           ),
           ListTile(
-            title: const Text('View Answer History',
+            title: const Text('Settings',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Navigate to answer history page
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsWidget()));
             },
+            leading: const Icon(Icons.settings),
           ),
         ],
       ),

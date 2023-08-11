@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kit301_ears/colours.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
@@ -69,16 +70,21 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<CategoriesModel, LanguageModel, AnswersModel>(
+    return Consumer4<CategoriesModel, LanguageModel, AnswersModel, ThemeModel>(
         builder: buildTab);
   }
 
-  Widget buildTab(BuildContext context, CategoriesModel categoriesModel,
-      LanguageModel language, AnswersModel answersModel, _) {
+  Widget buildTab(
+      BuildContext context,
+      CategoriesModel categoriesModel,
+      LanguageModel language,
+      AnswersModel answersModel,
+      ThemeModel themeModel,
+      _) {
     if (categoriesModel.categories.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.primary,
+          color: themeModel.currentTheme.primaryColor,
         ),
       );
     }
@@ -121,7 +127,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   children: [
                     Icon(
                       Icons.stop_circle_outlined,
-                      color: Theme.of(context).colorScheme.error,
+                      color: themeModel.currentTheme.cardColor,
                     ),
                     const Text('Stop audio', style: TextStyle(fontSize: 16)),
                   ],
@@ -140,10 +146,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 2),
+                      border: Border.all(
+                          color: themeModel.currentTheme.dividerColor,
+                          width: 2),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Card(
+                      color: themeModel.currentTheme.scaffoldBackgroundColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -157,43 +166,52 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             margin: EdgeInsets.fromLTRB(
                                 8, 8, 8, isLastItem ? 8 : 0),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 2),
+                              border: Border.all(
+                                  color: themeModel.currentTheme.dividerColor,
+                                  width: 2),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: ListTile(
-                              tileColor: Colors.grey[300],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            child: Material(
+                              elevation:
+                                  index == _selectedCategoryIndex ? 5.0 : 3.0,
+                              shadowColor: Colors.blueGrey,
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: ListTile(
+                                tileColor: themeModel.currentTheme.accentColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                title: Text(
+                                  categoriesModel
+                                      .categories[index].categoryName,
+                                  style: TextStyle(
+                                      color: index == _selectedCategoryIndex
+                                          ? themeModel.currentTheme
+                                              .scaffoldBackgroundColor
+                                          : Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                selected: index == _selectedCategoryIndex,
+                                selectedTileColor:
+                                    themeModel.currentTheme.cardColor,
+                                trailing: index == _selectedCategoryIndex
+                                    ? Transform.scale(
+                                        scale: 1.5,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: themeModel.currentTheme
+                                              .scaffoldBackgroundColor,
+                                        ),
+                                      )
+                                    : null,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedCategoryIndex = index;
+                                    _selectedItemIndex = -1;
+                                  });
+                                },
                               ),
-                              title: Text(
-                                categoriesModel.categories[index].categoryName,
-                                style: TextStyle(
-                                    color: index == _selectedCategoryIndex
-                                        ? Theme.of(context)
-                                            .scaffoldBackgroundColor
-                                        : Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
-                              ),
-                              selected: index == _selectedCategoryIndex,
-                              selectedTileColor:
-                                  Theme.of(context).colorScheme.error,
-                              trailing: index == _selectedCategoryIndex
-                                  ? Transform.scale(
-                                      scale: 1.5,
-                                      child: Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                      ),
-                                    )
-                                  : null,
-                              onTap: () {
-                                setState(() {
-                                  _selectedCategoryIndex = index;
-                                  _selectedItemIndex = -1;
-                                });
-                              },
                             ),
                           );
                         },
@@ -208,10 +226,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                   padding: const EdgeInsets.fromLTRB(0, 4, 8, 8),
                   child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 2),
+                        border: Border.all(
+                            color: themeModel.currentTheme.dividerColor,
+                            width: 2),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Card(
+                        color: themeModel.currentTheme.scaffoldBackgroundColor,
                         margin: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -223,6 +244,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             List<Question> questions = categoriesModel
                                 .categories[_selectedCategoryIndex].questions;
                             final Question question = questions[index];
+
+                            // checks whether tile should be disabled or selected for styling
+                            bool tileDisabled =
+                                !question.hasAudioAvailable(language.getCode());
+                            bool tileSelected = _selectedItemIndex == index;
+
                             // used for styling
                             final isLastItem = index == questions.length - 1;
                             // should a special widget be used?
@@ -247,45 +274,60 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 };
                                 break;
                             }
+
+                            IconData? trailingIcon;
+                            if (tileDisabled) {
+                              trailingIcon = Icons.volume_off_outlined;
+                            } else if (tileSelected) {
+                              trailingIcon = Icons.volume_up_outlined;
+                            }
+
+                            buttonTapFn() {
+                              // play audio
+                              playAudio(
+                                  language.getCode(), question.audioId, index);
+                              // then create the follow up widget
+                              followUpWidget();
+                            }
+
                             return Container(
                               margin: EdgeInsets.fromLTRB(
                                   8, 8, 8, isLastItem ? 8 : 0),
                               decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.grey, width: 2),
+                                border: Border.all(
+                                    color: themeModel.currentTheme.dividerColor,
+                                    width: 2),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: ListTile(
-                                tileColor: Colors.grey[300],
+                                enabled: question
+                                    .hasAudioAvailable(language.getCode()),
+                                tileColor: tileDisabled
+                                    ? Colors.grey[500]
+                                    : themeModel.currentTheme.accentColor,
                                 title: Text(
                                   questions[index].short,
                                   style: TextStyle(
-                                      color: index == _selectedItemIndex
-                                          ? Theme.of(context)
+                                      color: tileSelected
+                                          ? themeModel.currentTheme
                                               .scaffoldBackgroundColor
                                           : Colors.black,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                selected: index == _selectedItemIndex,
+                                selected: tileSelected,
                                 selectedTileColor:
-                                    Theme.of(context).colorScheme.error,
-                                trailing: index == _selectedItemIndex
+                                    themeModel.currentTheme.cardColor,
+                                trailing: trailingIcon != null
                                     ? Transform.scale(
                                         scale: 1.5,
                                         child: Icon(
-                                          Icons.volume_up_outlined,
-                                          color: Theme.of(context)
+                                          trailingIcon,
+                                          color: themeModel.currentTheme
                                               .scaffoldBackgroundColor,
                                         ),
                                       )
                                     : null,
-                                onTap: () {
-                                  // play audio
-                                  playAudio(language.getCode(),
-                                      question.audioId, index);
-                                  // then create the follow up widget
-                                  followUpWidget();
-                                },
+                                onTap: buttonTapFn,
                                 onLongPress: () {
                                   setState(() {
                                     _selectedItemIndex = index;
@@ -297,13 +339,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     builder: (BuildContext context) {
                                       return ConfirmationDialog(
                                         question: question,
-                                        onTap: () {
-                                          // play audio
-                                          playAudio(language.getCode(),
-                                              question.audioId, index);
-                                          // then create the follow up widget
-                                          followUpWidget();
-                                        },
+                                        onTap: buttonTapFn,
                                         onPop: () {
                                           setState(() {
                                             _selectedItemIndex = -1;
@@ -401,7 +437,7 @@ class YesNoDialog extends StatelessWidget {
                       ),
                       child: const Text(
                         'No',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 30.0),
                       ),
                     ),
                     ElevatedButton(
@@ -419,7 +455,7 @@ class YesNoDialog extends StatelessWidget {
                           backgroundColor: Colors.green),
                       child: const Text(
                         'Yes',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 30.0),
                       ),
                     ),
                   ],
@@ -500,11 +536,11 @@ class ConfirmationDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                        backgroundColor: Colors.redAccent,
                       ),
                       child: const Text(
                         'Cancel',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 24.0),
                       ),
                     ),
                     ElevatedButton(
@@ -523,7 +559,7 @@ class ConfirmationDialog extends StatelessWidget {
                           backgroundColor: Colors.green),
                       child: const Text(
                         'Confirm',
-                        style: TextStyle(fontSize: 18.0),
+                        style: TextStyle(fontSize: 24.0),
                       ),
                     ),
                   ],

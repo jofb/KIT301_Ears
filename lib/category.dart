@@ -29,6 +29,7 @@ class Question {
   final String type;
   final String audioId;
   final String identifier;
+  List<String> audioAvailable = [];
 
   Question.fromJson(Map<String, dynamic> json)
       : full = json['full_question'],
@@ -38,6 +39,10 @@ class Question {
         audioId = json['audioId'];
 
   Question(this.full, this.short, this.type, this.identifier, this.audioId);
+
+  bool hasAudioAvailable(String lang) {
+    return audioAvailable.contains(lang);
+  }
 }
 
 class CategoriesModel extends ChangeNotifier {
@@ -46,6 +51,7 @@ class CategoriesModel extends ChangeNotifier {
 
   List<Category> categories = [];
   late final Directory categoryDirectory;
+  bool loading = false;
 
   CategoriesModel() {
     initModel();
@@ -75,6 +81,31 @@ class CategoriesModel extends ChangeNotifier {
     print("Initializing categories");
     List<Category> tempCategoryList = [];
 
+    // directory for audio files
+    // TODO move this to application directory
+    final manifest = await rootBundle.loadString('AssetManifest.json');
+    final Map<String, dynamic> map = json.decode(manifest);
+
+    final audioPaths = map.keys
+        .where((String key) => key.contains('audio/'))
+        .map((e) => e.split('audio/')[1])
+        .where((String key) => key.contains('/'))
+        .toList();
+
+    final Map<String, List<String>> audioAvailableById = {};
+
+    // loop over every audio path
+    // split the id from the langauge
+    // add to a map which maps id to language list
+
+    for (String audio in audioPaths) {
+      String lang = audio.split('/')[0];
+      String id = audio.split('_')[1].split('.')[0];
+      // get the list for id and add our langauge
+      List<String> list = audioAvailableById.putIfAbsent(id, () => []);
+      list.add(lang);
+    }
+
     // if in web, just load from assets for testing
     if (kIsWeb) {
       // get the asset manifest map
@@ -99,22 +130,33 @@ class CategoriesModel extends ChangeNotifier {
         if (file is File && file.path.endsWith(".json")) {
           final json = await file.readAsString();
           final category = Category.fromJson(jsonDecode(json));
+          // get the list of available audio and append to list
+          for (Question q in category.questions) {
+            q.audioAvailable = audioAvailableById[q.audioId] ?? [];
+          }
+          // loop over questions
+          // check audio directory if they exist
+          // we dont need to index every file, we can just
           tempCategoryList.add(category);
         }
       }
     }
     // sort categories list by identifiers
-    tempCategoryList.sort((a, b) =>  int.parse(a.identifier).compareTo(int.parse(b.identifier)));
+    tempCategoryList.sort(
+        (a, b) => int.parse(a.identifier).compareTo(int.parse(b.identifier)));
 
     categories = tempCategoryList;
+    loading = false;
     update();
   }
 
   // loads the collection from firebase and saves locally
   Future loadCollection() async {
+    loading = true;
+    update();
     // don't load anything if in web
     if (kIsWeb) return;
-    
+
     // get the categories
     var query = await collection.orderBy('identifier').get();
 
@@ -133,7 +175,8 @@ class CategoriesModel extends ChangeNotifier {
       }
 
       //identifier is a string, need to order by it but as a int
-      questions.sort((a, b) => int.parse(a['identifier']).compareTo(int.parse(b['identifier'])));
+      questions.sort((a, b) =>
+          int.parse(a['identifier']).compareTo(int.parse(b['identifier'])));
 
       // convert to a map object
       var categoryData = {
