@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:kit301_ears/colours.dart';
+import 'package:kit301_ears/pdf_viewer.dart';
 import 'package:kit301_ears/settings.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -221,6 +223,10 @@ class BurgerMenu extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               // Open Manual PDF
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return PDFViewerFromAsset(
+                    pdfAssetPath: 'assets/pdf/user_manual.pdf');
+              }));
             },
             leading: const Icon(Icons.book),
           ),
