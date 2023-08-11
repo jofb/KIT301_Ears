@@ -171,40 +171,47 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                   width: 2),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: ListTile(
-                              tileColor: themeModel.currentTheme.accentColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            child: Material(
+                              elevation:
+                                  index == _selectedCategoryIndex ? 5.0 : 3.0,
+                              shadowColor: Colors.blueGrey,
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: ListTile(
+                                tileColor: themeModel.currentTheme.accentColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                title: Text(
+                                  categoriesModel
+                                      .categories[index].categoryName,
+                                  style: TextStyle(
+                                      color: index == _selectedCategoryIndex
+                                          ? themeModel.currentTheme
+                                              .scaffoldBackgroundColor
+                                          : Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                selected: index == _selectedCategoryIndex,
+                                selectedTileColor:
+                                    themeModel.currentTheme.cardColor,
+                                trailing: index == _selectedCategoryIndex
+                                    ? Transform.scale(
+                                        scale: 1.5,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: themeModel.currentTheme
+                                              .scaffoldBackgroundColor,
+                                        ),
+                                      )
+                                    : null,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedCategoryIndex = index;
+                                    _selectedItemIndex = -1;
+                                  });
+                                },
                               ),
-                              title: Text(
-                                categoriesModel.categories[index].categoryName,
-                                style: TextStyle(
-                                    color: index == _selectedCategoryIndex
-                                        ? themeModel.currentTheme
-                                            .scaffoldBackgroundColor
-                                        : Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
-                              ),
-                              selected: index == _selectedCategoryIndex,
-                              selectedTileColor:
-                                  themeModel.currentTheme.cardColor,
-                              trailing: index == _selectedCategoryIndex
-                                  ? Transform.scale(
-                                      scale: 1.5,
-                                      child: Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: themeModel.currentTheme
-                                            .scaffoldBackgroundColor,
-                                      ),
-                                    )
-                                  : null,
-                              onTap: () {
-                                setState(() {
-                                  _selectedCategoryIndex = index;
-                                  _selectedItemIndex = -1;
-                                });
-                              },
                             ),
                           );
                         },
