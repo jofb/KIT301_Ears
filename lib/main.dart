@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         color: themeModel.currentTheme.scaffoldBackgroundColor,
                       ),
                       tabs: const [
-                        NavigationTab(text: "Others"),
+                        NavigationTab(text: "Answers History"),
                         NavigationTab(text: "Questions and Statements"),
                         NavigationTab(text: "Invitation to Speak"),
                       ],
