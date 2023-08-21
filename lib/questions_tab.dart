@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kit301_ears/colours.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
@@ -21,33 +22,16 @@ class _QuestionsTabState extends State<QuestionsTab> {
   int _selectedItemIndex = -1;
 
   final player = AudioPlayer();
-
-  void playAudio(String langCode, String id, index) async {
+  void playAudio(String langCode, String id, int index) async {
+    final appDir = await getApplicationDocumentsDirectory();
     // stop current future if needed
     if (player.state == PlayerState.playing) await player.stop();
     setState(() {
       _selectedItemIndex = index;
     });
-    // create the audio path and then check if it exists
-    String path = "audio/$langCode/${langCode}_$id.mp3";
-    print(path);
-
-    if (await assetExists((path)) != null) {
-      // play audio
-      player.play(AssetSource(path));
-    } else {
-      // play default if null
-      print("Playing default audio");
-      player.play(AssetSource("audio/default_audio.mp3"));
-    }
-  }
-
-  Future assetExists(String path) async {
-    try {
-      return await rootBundle.load("assets/$path");
-    } catch (_) {
-      return null;
-    }
+    String path = "${appDir.path}/audio/$langCode/${langCode}_$id.mp3";
+    // play audio
+    player.play(UrlSource(path));
   }
 
   @override

@@ -82,14 +82,11 @@ class CategoriesModel extends ChangeNotifier {
     List<Category> tempCategoryList = [];
 
     // directory for audio files
-    // TODO move this to application directory
-    final manifest = await rootBundle.loadString('AssetManifest.json');
-    final Map<String, dynamic> map = json.decode(manifest);
-
-    final audioPaths = map.keys
-        .where((String key) => key.contains('audio/'))
-        .map((e) => e.split('audio/')[1])
-        .where((String key) => key.contains('/'))
+    final appDir = await getApplicationDocumentsDirectory();
+    final audioPaths = Directory("${appDir.path}/audio")
+        .listSync(recursive: true)
+        .map((e) => e.path.split('audio/')[1])
+        .where((e) => e.contains('/'))
         .toList();
 
     final Map<String, List<String>> audioAvailableById = {};
@@ -168,11 +165,12 @@ class CategoriesModel extends ChangeNotifier {
           .get();
 
       // get the questions as a list of maps
-      var questions = List<Map<String, dynamic>>.empty(growable: true);
-      for (var q in items.docs) {
-        var que = q.data();
-        questions.add(que);
-      }
+      var questions = items.docs.map((item) => item.data()).toList();
+      // var questions = List<Map<String, dynamic>>.empty(growable: true);
+      // for (var q in items.docs) {
+      //   var que = q.data();
+      //   questions.add(que);
+      // }
 
       //identifier is a string, need to order by it but as a int
       questions.sort((a, b) =>
