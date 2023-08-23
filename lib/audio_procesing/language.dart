@@ -125,8 +125,13 @@ class _LanguageDialogState extends State<LanguageDialog> {
                         child: Icon(Icons.search),
                       ),
                       Expanded(
+                        flex: 1,
                         child: TextField(
                           controller: _controller,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          enableIMEPersonalizedLearning: false,
+                          keyboardType: TextInputType.text,
                           onChanged: (value) {
                             setState(() {
                               _searchIndexes = search(value);
@@ -151,14 +156,13 @@ class _LanguageDialogState extends State<LanguageDialog> {
                     ],
                   ),
                 ),
-                SingleChildScrollView(
+                Flexible(
                   child: Container(
                     constraints:
                         const BoxConstraints(minHeight: 300, maxHeight: 300),
                     // wrapping in material fixes issue with selected background going out of bounds
                     child: Material(
                       child: ListView.builder(
-                        shrinkWrap: true,
                         itemCount: _searchIndexes.length,
                         itemBuilder: (context, index) {
                           return ListTile(
