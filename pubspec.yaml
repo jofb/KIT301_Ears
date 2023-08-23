@@ -34,6 +34,7 @@ dependencies:
     path_provider: ^2.0.15
     intl: ^0.17.0
     logger: ^1.4.0
+    share_plus: ^7.1.0
 
     # firebase
     firebase_core: ^2.15.1
@@ -41,7 +42,7 @@ dependencies:
     firebase_storage: ^11.2.6
 
     # audio recording and playback
-    flutter_sound:
+    flutter_sound: ^9.2.13
     audio_session: ^0.1.16
     audioplayers: ^4.1.0
 

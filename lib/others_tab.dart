@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:kit301_ears/answers.dart';
 import 'package:kit301_ears/colours.dart';
 import 'package:provider/provider.dart';
@@ -26,12 +27,19 @@ class _OthersTabState extends State<OthersTab> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ElevatedButton(
-            onPressed: () => answersModel.clearHistory(),
-            child: const Text("Clear Answer History"),
-            style: ElevatedButton.styleFrom(
-              primary: themeModel.currentTheme.primaryColor,
-            )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () => answersModel.clearHistory(),
+                child: const Text("Clear Answer History"),
+                style: ElevatedButton.styleFrom(
+                  primary: themeModel.currentTheme.primaryColor,
+                ),
+              ),
+              SizedBox(width: 10),
+              ShareButton(answersModel: answersModel), // Add the ShareButton here
+            ],
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -95,5 +103,34 @@ class _OthersTabState extends State<OthersTab> {
         );
       },
     );
+  }
+}
+
+class ShareButton extends StatelessWidget {
+  final AnswersModel answersModel;
+
+  const ShareButton({required this.answersModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        _shareHistory(context, answersModel);
+      },
+      child: Text('Share History'),
+    );
+  }
+
+  void _shareHistory(BuildContext context, AnswersModel answersModel) {
+    final StringBuffer buffer = StringBuffer();
+
+    // Build the history list as a formatted string
+    buffer.writeln('Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
+    for (var answer in answersModel.history) {
+      buffer.writeln('${answer.question.full}\n${answer.response}\n');
+    }
+
+    // Share the formatted history via the share API
+    Share.share(buffer.toString().trim(),);
   }
 }

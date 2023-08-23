@@ -75,138 +75,165 @@ class _QuestionsTabState extends State<QuestionsTab> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-              child: OutlinedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) {
-                      return LanguageDialog(
-                        language: language,
-                        onFinished: () {
-                          answersModel.newHistory(language.toString());
-                        },
-                      );
-                    },
-                  );
-                },
-                child: Text('Current language: ${language.getText()}',
-                    style: TextStyle(fontSize: 16)),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-              child: OutlinedButton(
-                onPressed: () {
-                  player.stop();
-                  setState(() {
-                    _selectedItemIndex = -1;
-                  });
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.stop_circle_outlined,
-                      color: themeModel.currentTheme.cardColor,
-                    ),
-                    const Text('Stop audio', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        
         Expanded(
           flex: 1,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: themeModel.currentTheme.dividerColor,
-                          width: 2),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Card(
-                      color: themeModel.currentTheme.scaffoldBackgroundColor,
-                      margin: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final isLastItem =
-                              index == categoriesModel.categories.length - 1;
-                          return Container(
-                            margin: EdgeInsets.fromLTRB(
-                                8, 8, 8, isLastItem ? 8 : 0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: themeModel.currentTheme.dividerColor,
-                                  width: 2),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Material(
-                              elevation: index == _selectedCategoryIndex ? 5.0 : 3.0,
-                              shadowColor: themeModel.currentTheme.primaryColor,
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: ListTile(
-                                tileColor: themeModel.currentTheme.accentColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                title: Text(
-                                  categoriesModel
-                                      .categories[index].categoryName,
-                                  style: TextStyle(
-                                      color: index == _selectedCategoryIndex
-                                          ? themeModel.currentTheme
-                                              .scaffoldBackgroundColor
-                                          : Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                selected: index == _selectedCategoryIndex,
-                                selectedTileColor:
-                                    themeModel.currentTheme.cardColor,
-                                trailing: index == _selectedCategoryIndex
-                                    ? Transform.scale(
-                                        scale: 1.5,
-                                        child: Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          color: themeModel.currentTheme
-                                              .scaffoldBackgroundColor,
-                                        ),
-                                      )
-                                    : null,
-                                onTap: () {
-                                  setState(() {
-                                    _selectedCategoryIndex = index;
-                                    _selectedItemIndex = -1;
-                                  });
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return LanguageDialog(
+                                    language: language,
+                                    onFinished: () {
+                                      answersModel.newHistory(language.toString());
+                                    },
+                                  );
                                 },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: themeModel.currentTheme.accentColor,
+                            ),
+                            // style: OutlinedButton.styleFrom(
+                            //   side: BorderSide(
+                            //     color: themeModel.currentTheme.dividerColor,
+                            //     width: 2,
+                            //   ),
+                            // ),
+                            child: Text(
+                              'Change language: ${language.getText()}',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  )
+                              ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              player.stop();
+                              setState(() {
+                                _selectedItemIndex = -1;
+                              });
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                color: themeModel.currentTheme.dividerColor,
+                                width: 2,
                               ),
                             ),
-                          );
-                        },
-                        itemCount: categoriesModel.categories.length,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.stop_circle_outlined,
+                                  color: themeModel.currentTheme.cardColor,
+                                ),
+                                const Text('Stop audio', style: TextStyle(fontSize: 18)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: themeModel.currentTheme.dividerColor,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Card(
+                            color: themeModel.currentTheme.scaffoldBackgroundColor,
+                            margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                final isLastItem =
+                                    index == categoriesModel.categories.length - 1;
+                                return Container(
+                                  margin: EdgeInsets.fromLTRB(
+                                      8, 8, 8, isLastItem ? 8 : 0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: themeModel.currentTheme.dividerColor,
+                                        width: 2),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Material(
+                                    elevation: index == _selectedCategoryIndex ? 5.0 : 3.0,
+                                    shadowColor: themeModel.currentTheme.primaryColor,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: ListTile(
+                                      tileColor: themeModel.currentTheme.accentColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      title: Text(
+                                        categoriesModel
+                                            .categories[index].categoryName,
+                                        style: TextStyle(
+                                            color: index == _selectedCategoryIndex
+                                                ? themeModel.currentTheme
+                                                    .scaffoldBackgroundColor
+                                                : Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      selected: index == _selectedCategoryIndex,
+                                      selectedTileColor:
+                                          themeModel.currentTheme.cardColor,
+                                      trailing: index == _selectedCategoryIndex
+                                          ? Transform.scale(
+                                              scale: 1.5,
+                                              child: Icon(
+                                                Icons.arrow_forward_ios_rounded,
+                                                color: themeModel.currentTheme
+                                                    .scaffoldBackgroundColor,
+                                              ),
+                                            )
+                                          : null,
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedCategoryIndex = index;
+                                          _selectedItemIndex = -1;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: categoriesModel.categories.length,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 4, 8, 8),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
                   child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
