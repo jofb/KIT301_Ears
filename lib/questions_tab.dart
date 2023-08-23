@@ -137,10 +137,10 @@ class _QuestionsTabState extends State<QuestionsTab> {
                     ),
                     child: Card(
                       color: themeModel.currentTheme.scaffoldBackgroundColor,
+                      margin: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      margin: EdgeInsets.zero,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
@@ -156,9 +156,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: Material(
-                              elevation:
-                                  index == _selectedCategoryIndex ? 5.0 : 3.0,
-                              shadowColor: Colors.blueGrey,
+                              elevation: index == _selectedCategoryIndex ? 5.0 : 3.0,
+                              shadowColor: themeModel.currentTheme.primaryColor,
                               borderRadius: BorderRadius.circular(10.0),
                               child: ListTile(
                                 tileColor: themeModel.currentTheme.accentColor,
@@ -283,56 +282,64 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     width: 2),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              child: ListTile(
-                                enabled: question
-                                    .hasAudioAvailable(language.getCode()),
-                                tileColor: tileDisabled
-                                    ? Colors.grey[500]
-                                    : themeModel.currentTheme.accentColor,
-                                title: Text(
-                                  questions[index].short,
-                                  style: TextStyle(
-                                      color: tileSelected
-                                          ? themeModel.currentTheme
-                                              .scaffoldBackgroundColor
-                                          : Colors.black,
-                                      fontWeight: FontWeight.bold),
+                              child: Material(
+                                elevation: tileSelected ? 5.0 : 3.0,
+                                shadowColor: themeModel.currentTheme.primaryColor,
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: ListTile(
+                                  enabled: question
+                                      .hasAudioAvailable(language.getCode()),
+                                  tileColor: tileDisabled
+                                      ? Colors.grey[500]
+                                      : themeModel.currentTheme.accentColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  title: Text(
+                                    questions[index].short,
+                                    style: TextStyle(
+                                        color: tileSelected
+                                            ? themeModel.currentTheme
+                                                .scaffoldBackgroundColor
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  selected: tileSelected,
+                                  selectedTileColor:
+                                      themeModel.currentTheme.cardColor,
+                                  trailing: trailingIcon != null
+                                      ? Transform.scale(
+                                          scale: 1.5,
+                                          child: Icon(
+                                            trailingIcon,
+                                            color: themeModel.currentTheme
+                                                .scaffoldBackgroundColor,
+                                          ),
+                                        )
+                                      : null,
+                                  onTap: buttonTapFn,
+                                  onLongPress: () {
+                                    setState(() {
+                                      _selectedItemIndex = index;
+                                    });
+                                    showDialog(
+                                      context: context,
+                                      barrierColor:
+                                          Colors.black.withOpacity(0.75),
+                                      builder: (BuildContext context) {
+                                        return ConfirmationDialog(
+                                          question: question,
+                                          onTap: buttonTapFn,
+                                          onPop: () {
+                                            setState(() {
+                                              _selectedItemIndex = -1;
+                                            });
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
                                 ),
-                                selected: tileSelected,
-                                selectedTileColor:
-                                    themeModel.currentTheme.cardColor,
-                                trailing: trailingIcon != null
-                                    ? Transform.scale(
-                                        scale: 1.5,
-                                        child: Icon(
-                                          trailingIcon,
-                                          color: themeModel.currentTheme
-                                              .scaffoldBackgroundColor,
-                                        ),
-                                      )
-                                    : null,
-                                onTap: buttonTapFn,
-                                onLongPress: () {
-                                  setState(() {
-                                    _selectedItemIndex = index;
-                                  });
-                                  showDialog(
-                                    context: context,
-                                    barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                    builder: (BuildContext context) {
-                                      return ConfirmationDialog(
-                                        question: question,
-                                        onTap: buttonTapFn,
-                                        onPop: () {
-                                          setState(() {
-                                            _selectedItemIndex = -1;
-                                          });
-                                        },
-                                      );
-                                    },
-                                  );
-                                },
                               ),
                             );
                           },
@@ -520,7 +527,7 @@ class ConfirmationDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: Theme.of(context).errorColor,
                       ),
                       child: const Text(
                         'Cancel',
@@ -540,7 +547,7 @@ class ConfirmationDialog extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          backgroundColor: Colors.green),
+                          backgroundColor: Theme.of(context).indicatorColor),
                       child: const Text(
                         'Confirm',
                         style: TextStyle(fontSize: 24.0),

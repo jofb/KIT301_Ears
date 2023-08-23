@@ -29,6 +29,9 @@ class _OthersTabState extends State<OthersTab> {
           ElevatedButton(
             onPressed: () => answersModel.clearHistory(),
             child: const Text("Clear Answer History"),
+            style: ElevatedButton.styleFrom(
+              primary: themeModel.currentTheme.primaryColor,
+            )
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),

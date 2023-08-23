@@ -69,8 +69,16 @@ class _SettingsWidgetState extends State<SettingsWidget>
                           ),
                           DropdownMenuItem(
                             value: 2,
-                            child: Text('Purple'),
+                            child: Text('Protanopia'),
                           ),
+                          DropdownMenuItem(
+                            value: 3,
+                            child: Text('Deuteranopia'),
+                          ),
+                          DropdownMenuItem(
+                            value: 4,
+                            child: Text('Tritanopia'),
+                          )
                         ],
                         onChanged: (value) {
                           themeModel.setTheme(value);
