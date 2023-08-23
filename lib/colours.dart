@@ -26,17 +26,18 @@ import 'package:flutter/material.dart';
 // const int _mcgpalette0PrimaryValue = 0xFF332288;
 
 final themeProt = ThemeData(
-    primarySwatch: mcgpalette0,
-    primaryColor: Color(0xFF003771),
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: Color(0xFF6D87D1),
-    errorColor: Color(0xFF6A6B7A),
-    indicatorColor: Color(0xFFCBB400),
-    dividerColor: Colors.grey,
-    accentColor: Color(0xFFD9D4D4),
+  primarySwatch: mcgpalette0,
+  primaryColor: Color(0xFF003771),
+  scaffoldBackgroundColor: Colors.white,
+  cardColor: Color(0xFF6D87D1),
+  errorColor: Color(0xFF6A6B7A),
+  indicatorColor: Color(0xFFCBB400),
+  dividerColor: Colors.grey,
+  accentColor: Color(0xFFD9D4D4),
 );
 
-const MaterialColor mcgpalette0 = MaterialColor(_mcgpalette0PrimaryValue, <int, Color>{
+const MaterialColor mcgpalette0 =
+    MaterialColor(_mcgpalette0PrimaryValue, <int, Color>{
   50: Color(0xFFE0E7EE),
   100: Color(0xFFB3C3D4),
   200: Color(0xFF809BB8),
@@ -51,17 +52,18 @@ const MaterialColor mcgpalette0 = MaterialColor(_mcgpalette0PrimaryValue, <int, 
 const int _mcgpalette0PrimaryValue = 0xFF003771;
 
 final themeDeut = ThemeData(
-    primarySwatch: mcgpalette1,
-    primaryColor: Color(0xFF003A61),
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: Color(0xFF6488CF),
-    errorColor: Color(0xFF81674E),
-    indicatorColor: Color(0xFFE4AA2F),
-    dividerColor: Colors.grey,
-    accentColor: Color(0xFFE9CED7),
+  primarySwatch: mcgpalette1,
+  primaryColor: Color(0xFF003A61),
+  scaffoldBackgroundColor: Colors.white,
+  cardColor: Color(0xFF6488CF),
+  errorColor: Color(0xFF81674E),
+  indicatorColor: Color(0xFFE4AA2F),
+  dividerColor: Colors.grey,
+  accentColor: Color(0xFFE9CED7),
 );
 
-const MaterialColor mcgpalette1 = MaterialColor(_mcgpalette1PrimaryValue, <int, Color>{
+const MaterialColor mcgpalette1 =
+    MaterialColor(_mcgpalette1PrimaryValue, <int, Color>{
   50: Color(0xFFE0E7EC),
   100: Color(0xFFB3C4D0),
   200: Color(0xFF809DB0),
@@ -76,17 +78,18 @@ const MaterialColor mcgpalette1 = MaterialColor(_mcgpalette1PrimaryValue, <int, 
 const int _mcgpalette1PrimaryValue = 0xFF003A61;
 
 final themeTrit = ThemeData(
-    primarySwatch: mcgpalette2,
-    primaryColor: Color(0xFF003E43),
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: Color(0xFF5A919C),
-    errorColor: Color(0xFFD12929),
-    indicatorColor: Color(0xFF5FC2D1),
-    dividerColor: Colors.grey,
-    accentColor: Color(0xFFD7D3E3),
+  primarySwatch: mcgpalette2,
+  primaryColor: Color(0xFF003E43),
+  scaffoldBackgroundColor: Colors.white,
+  cardColor: Color(0xFF5A919C),
+  errorColor: Color(0xFFD12929),
+  indicatorColor: Color(0xFF5FC2D1),
+  dividerColor: Colors.grey,
+  accentColor: Color(0xFFD7D3E3),
 );
 
-const MaterialColor mcgpalette2 = MaterialColor(_mcgpalette2PrimaryValue, <int, Color>{
+const MaterialColor mcgpalette2 =
+    MaterialColor(_mcgpalette2PrimaryValue, <int, Color>{
   50: Color(0xFFE0E8E8),
   100: Color(0xFFB3C5C7),
   200: Color(0xFF809FA1),
@@ -101,14 +104,14 @@ const MaterialColor mcgpalette2 = MaterialColor(_mcgpalette2PrimaryValue, <int, 
 const int _mcgpalette2PrimaryValue = 0xFF003E43;
 
 final themeOne = ThemeData(
-    primarySwatch: Colors.blueGrey,
-    primaryColor: Colors.blueGrey,
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: Colors.redAccent[100],
-    errorColor: Colors.redAccent,
-    indicatorColor: Colors.green,
-    dividerColor: Colors.grey,
-    accentColor: Colors.grey[300],
+  primarySwatch: Colors.blueGrey,
+  primaryColor: Colors.blueGrey,
+  scaffoldBackgroundColor: Colors.white,
+  cardColor: Colors.redAccent[100],
+  errorColor: Colors.redAccent,
+  indicatorColor: Colors.green,
+  dividerColor: Colors.grey,
+  accentColor: Colors.grey[300],
 );
 
 final themeTwo = ThemeData(
@@ -121,11 +124,34 @@ final themeTwo = ThemeData(
     dividerColor: Colors.grey[800],
     accentColor: Colors.grey[300]);
 
+const MaterialColor primeswatch =
+    MaterialColor(_primeswatchPrimaryValue, <int, Color>{
+  50: Color(0xFFE2E5EA),
+  100: Color(0xFFB7BFCA),
+  200: Color(0xFF8894A7),
+  300: Color(0xFF586984),
+  400: Color(0xFF344969),
+  500: Color(_primeswatchPrimaryValue),
+  600: Color(0xFF0E2448),
+  700: Color(0xFF0C1F3F),
+  800: Color(0xFF091936),
+  900: Color(0xFF050F26),
+});
+const int _primeswatchPrimaryValue = 0xFF1C3866;
+
 class ThemeModel with ChangeNotifier {
-  final List<ThemeData> _themes = [themeOne, themeTwo, themeProt, themeDeut, themeTrit];
+  final List<AppThemeData> _themes = [
+    AppThemeData('Classic', themeOne),
+    AppThemeData('SES Theme', themeTwo),
+    AppThemeData('Protanopia', themeProt),
+    AppThemeData('Deuteranopia', themeDeut),
+    AppThemeData('Tritanopia', themeTrit),
+  ];
   int _currentThemeIndex = 0;
 
-  ThemeData get currentTheme => _themes[_currentThemeIndex];
+  ThemeData get currentTheme => _themes[_currentThemeIndex].theme;
+
+  List<AppThemeData> get themeList => _themes;
 
   void setTheme(index) {
     _currentThemeIndex = index;
@@ -142,17 +168,9 @@ class ThemeModel with ChangeNotifier {
   }
 }
 
-const MaterialColor primeswatch =
-    MaterialColor(_primeswatchPrimaryValue, <int, Color>{
-  50: Color(0xFFE2E5EA),
-  100: Color(0xFFB7BFCA),
-  200: Color(0xFF8894A7),
-  300: Color(0xFF586984),
-  400: Color(0xFF344969),
-  500: Color(_primeswatchPrimaryValue),
-  600: Color(0xFF0E2448),
-  700: Color(0xFF0C1F3F),
-  800: Color(0xFF091936),
-  900: Color(0xFF050F26),
-});
-const int _primeswatchPrimaryValue = 0xFF1C3866;
+class AppThemeData {
+  final ThemeData theme;
+  final String name;
+
+  AppThemeData(this.name, this.theme);
+}

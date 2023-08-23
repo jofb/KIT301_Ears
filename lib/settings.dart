@@ -58,28 +58,12 @@ class _SettingsWidgetState extends State<SettingsWidget>
                         hint: const Text('Change colour theme'),
                         icon: const Icon(Icons.color_lens),
                         iconEnabledColor: themeModel.currentTheme.cardColor,
-                        items: const [
-                          DropdownMenuItem(
-                            value: 0,
-                            child: Text('Classic'),
-                          ),
-                          DropdownMenuItem(
-                            value: 1,
-                            child: Text('SES Theme'),
-                          ),
-                          DropdownMenuItem(
-                            value: 2,
-                            child: Text('Protanopia'),
-                          ),
-                          DropdownMenuItem(
-                            value: 3,
-                            child: Text('Deuteranopia'),
-                          ),
-                          DropdownMenuItem(
-                            value: 4,
-                            child: Text('Tritanopia'),
-                          )
-                        ],
+                        // map the colours list to the dropdown items
+                        items: themeModel.themeList.map((value) {
+                          int index = themeModel.themeList.indexOf(value);
+                          return DropdownMenuItem(
+                              value: index, child: Text(value.name));
+                        }).toList(),
                         onChanged: (value) {
                           themeModel.setTheme(value);
                         },
