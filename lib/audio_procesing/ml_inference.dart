@@ -8,7 +8,7 @@ import 'package:wav/wav.dart';
 
 import 'spectrogram.dart';
 
-Future<int> predictLanguage(audioPath) async {
+Future<int> predictLanguage(String audioPath) async {
   final signal = await loadAudio(audioPath);
   // TODO add the VAD filtering here
   // ...
@@ -48,8 +48,7 @@ Future<int> inference(Matrix inputMatrix) async {
   // input and output tensors
   // input needs to be converted to a List<List<>>
   final input = inputMatrix.toList().reshape(inputShape);
-  final output = List.filled(6, 0).reshape(
-      outputShape); // TODO dynamically update the reshape value to number of labels
+  final output = List.filled(outputShape[1], 0).reshape(outputShape);
 
   // run the interpreter
   interpreter.run(input, output);
