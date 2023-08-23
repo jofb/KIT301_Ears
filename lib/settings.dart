@@ -19,10 +19,7 @@ class SettingsWidget extends StatefulWidget {
   State<SettingsWidget> createState() => _SettingsWidgetState();
 }
 
-class _SettingsWidgetState extends State<SettingsWidget>
-    with TickerProviderStateMixin {
-  late AnimationController audioProgressController;
-
+class _SettingsWidgetState extends State<SettingsWidget> {
   bool downloadingAudio = false;
 
   void showSnackbar(String msg, Color colour) {
@@ -40,15 +37,6 @@ class _SettingsWidgetState extends State<SettingsWidget>
 
     // show snackbar using scaffold messenger
     widget.scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-  }
-
-  @override
-  void initState() {
-    audioProgressController = AnimationController(vsync: this)
-      ..addListener(() {
-        if (mounted) setState(() {});
-      });
-    super.initState();
   }
 
   @override
@@ -170,10 +158,6 @@ class _SettingsWidgetState extends State<SettingsWidget>
                         // get the firebase instance
                         var instance = FirebaseStorage.instance.ref("/");
 
-                        // // used for progress indicator
-                        // int total = 0;
-                        // int progress = 0;
-
                         // now search the the instance for all our labels
                         for (String label in labels) {
                           // ensure labelled directory exists
@@ -185,7 +169,6 @@ class _SettingsWidgetState extends State<SettingsWidget>
 
                           ListResult list = await instance.child(label).list();
 
-                          // total += list.items.length;
                           // now for every item we download and place in folder
                           for (Reference item in list.items) {
                             String filePath = "${labelDir.path}/${item.name}";
@@ -193,13 +176,6 @@ class _SettingsWidgetState extends State<SettingsWidget>
                             File file = File(filePath);
                             final downloadTask = item.writeToFile(file);
                             downloads.add(downloadTask);
-                            // downloadTask.snapshotEvents.listen((event) {
-                            //   if (event.state == TaskState.success) {
-                            //     progress += 1;
-                            //     audioProgressController.value =
-                            //         progress / total;
-                            //   }
-                            // });
                           }
                         }
                         Future.wait(downloads).then((value) {
