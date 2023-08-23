@@ -66,16 +66,23 @@ class _QuestionsTabState extends State<QuestionsTab> {
       ThemeModel themeModel,
       _) {
     if (categoriesModel.categories.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: themeModel.currentTheme.primaryColor,
-        ),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'No Question & Statement files available',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'You may need to download them from the internet. (Go to Settings > \'Update Questions\')',
+            style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+          )
+        ],
       );
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        
         Expanded(
           flex: 1,
           child: Row(
@@ -97,14 +104,16 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                   return LanguageDialog(
                                     language: language,
                                     onFinished: () {
-                                      answersModel.newHistory(language.toString());
+                                      answersModel
+                                          .newHistory(language.toString());
                                     },
                                   );
                                 },
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: themeModel.currentTheme.accentColor,
+                              backgroundColor:
+                                  themeModel.currentTheme.accentColor,
                             ),
                             // style: OutlinedButton.styleFrom(
                             //   side: BorderSide(
@@ -112,13 +121,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             //     width: 2,
                             //   ),
                             // ),
-                            child: Text(
-                              'Change language: ${language.getText()}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                  )
-                              ),
+                            child:
+                                Text('Change language: ${language.getText()}',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    )),
                           ),
                         ),
                         Padding(
@@ -142,7 +150,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                   Icons.stop_circle_outlined,
                                   color: themeModel.currentTheme.cardColor,
                                 ),
-                                const Text('Stop audio', style: TextStyle(fontSize: 18)),
+                                const Text('Stop audio',
+                                    style: TextStyle(fontSize: 18)),
                               ],
                             ),
                           ),
@@ -160,7 +169,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Card(
-                            color: themeModel.currentTheme.scaffoldBackgroundColor,
+                            color:
+                                themeModel.currentTheme.scaffoldBackgroundColor,
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -168,23 +178,28 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                final isLastItem =
-                                    index == categoriesModel.categories.length - 1;
+                                final isLastItem = index ==
+                                    categoriesModel.categories.length - 1;
                                 return Container(
                                   margin: EdgeInsets.fromLTRB(
                                       8, 8, 8, isLastItem ? 8 : 0),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: themeModel.currentTheme.dividerColor,
+                                        color: themeModel
+                                            .currentTheme.dividerColor,
                                         width: 2),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Material(
-                                    elevation: index == _selectedCategoryIndex ? 5.0 : 3.0,
-                                    shadowColor: themeModel.currentTheme.primaryColor,
+                                    elevation: index == _selectedCategoryIndex
+                                        ? 5.0
+                                        : 3.0,
+                                    shadowColor:
+                                        themeModel.currentTheme.primaryColor,
                                     borderRadius: BorderRadius.circular(10.0),
                                     child: ListTile(
-                                      tileColor: themeModel.currentTheme.accentColor,
+                                      tileColor:
+                                          themeModel.currentTheme.accentColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -192,10 +207,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                         categoriesModel
                                             .categories[index].categoryName,
                                         style: TextStyle(
-                                            color: index == _selectedCategoryIndex
-                                                ? themeModel.currentTheme
-                                                    .scaffoldBackgroundColor
-                                                : Colors.black,
+                                            color:
+                                                index == _selectedCategoryIndex
+                                                    ? themeModel.currentTheme
+                                                        .scaffoldBackgroundColor
+                                                    : Colors.black,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20),
                                       ),
@@ -311,7 +327,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               ),
                               child: Material(
                                 elevation: tileSelected ? 5.0 : 3.0,
-                                shadowColor: themeModel.currentTheme.primaryColor,
+                                shadowColor:
+                                    themeModel.currentTheme.primaryColor,
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: ListTile(
                                   enabled: question
