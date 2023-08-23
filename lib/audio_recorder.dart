@@ -154,8 +154,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
     try {
       await _recordingOperation?.value;
 
-      stopRecorder();
       toggleAnimation();
+      stopRecorder();
     } catch (e) {
       print(e);
     }
@@ -172,13 +172,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
     return Stack(
       children: [
         Positioned.fill(
-          bottom: 32,
           child: Center(
             child: ElevatedButton(
               onPressed: () {
                 if (!_recorderIsInitialized) return;
 
-                // we need to check if recorder is currently running or not
+                // either start recording or cancel it
                 if (_recorder.isRecording) {
                   // stopping early > are you sure you want to cancel this?
                   // show dialog > if true then
@@ -186,15 +185,17 @@ class _AudioRecorderState extends State<AudioRecorder> {
                   if (stop) {
                     _recordingOperation?.cancel();
                     stopRecorder(cancelled: true);
+
+                    // set animation state
+                    toggleAnimation();
                   }
                 } else {
                   // start recording and create operation for delayed stop
                   startRecorder();
                   delayedStopRecording();
+                  // set animation state
+                  toggleAnimation();
                 }
-
-                // set animation state
-                toggleAnimation();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,

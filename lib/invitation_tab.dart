@@ -37,7 +37,8 @@ class _InvitationTabState extends State<InvitationTab> {
         // get the lang index and then update the language provider
         int langIndex = await predictLanguage('my_file.wav');
         language.setLanguage(langIndex);
-        // note that importing the ml stuff WILL break the web version of the app.
+
+        // create new answer history for new language
         answersModel.newHistory(language.toString());
       },
     );
