@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:async/async.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:audio_session/audio_session.dart';
@@ -23,9 +24,11 @@ class AudioRecorder extends StatefulWidget {
 class _AudioRecorderState extends State<AudioRecorder> {
   final FlutterSoundRecorder _recorder =
       FlutterSoundRecorder(logLevel: Level.error);
+
+  CancelableOperation<void>? _recordingOperation;
   bool _recorderIsInitialized = false;
   String _filePath = 'my_file.wav';
-  Codec _codec = Codec.aacADTS; // TODO look into alternative codecs
+  Codec _codec = Codec.aacADTS;
   // animation state
   Artboard? _artboard;
   SMIInput<bool>? _trigger;
@@ -120,35 +123,19 @@ class _AudioRecorderState extends State<AudioRecorder> {
   }
 
   // stops current recorder
-  void stopRecorder() async {
+  void stopRecorder({bool cancelled = false}) async {
     await _recorder.stopRecorder().then((value) {
       setState(() {});
-      widget.onFinished();
+      if (!cancelled) widget.onFinished();
     });
-  }
-
-  // returns function to stop or start the recorder
-  Function? getRecorderFunction() {
-    if (!_recorderIsInitialized) return null;
-    return _recorder.isStopped ? startRecorder : stopRecorder;
   }
 
   @override
   void dispose() {
     // close resources for audio recorder
     _recorder.closeRecorder();
+    _recordingOperation?.cancel();
     super.dispose();
-  }
-
-  void onPressedFn() async {
-    final recordFn = getRecorderFunction();
-    if (recordFn != null) {
-      recordFn();
-      // stop recording early everytime if needed
-      Future.delayed(Duration(seconds: widget.recordingTime), () {
-        if (_recorder.isRecording) stopRecorder();
-      });
-    }
   }
 
   void toggleAnimation() {
@@ -157,9 +144,25 @@ class _AudioRecorderState extends State<AudioRecorder> {
     });
   }
 
+  Future<void> delayedStopRecording() async {
+    _recordingOperation = CancelableOperation.fromFuture(
+      Future.delayed(
+        Duration(seconds: widget.recordingTime),
+      ),
+    );
+
+    try {
+      await _recordingOperation?.value;
+
+      stopRecorder();
+      toggleAnimation();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // return widget.child();
     if (_artboard == null) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -173,19 +176,23 @@ class _AudioRecorderState extends State<AudioRecorder> {
           child: Center(
             child: ElevatedButton(
               onPressed: () {
-                // start or stop audio recorder
-                final recordFn = getRecorderFunction();
-                if (recordFn != null) {
-                  recordFn();
-                  // then we can stop the recorder in 8s if needed
-                  Future.delayed(Duration(seconds: widget.recordingTime), () {
-                    if (_recorder.isRecording) {
-                      // stop animation and recorder
-                      stopRecorder();
-                      toggleAnimation();
-                    }
-                  });
+                if (!_recorderIsInitialized) return;
+
+                // we need to check if recorder is currently running or not
+                if (_recorder.isRecording) {
+                  // stopping early > are you sure you want to cancel this?
+                  // show dialog > if true then
+                  bool stop = true;
+                  if (stop) {
+                    _recordingOperation?.cancel();
+                    stopRecorder(cancelled: true);
+                  }
+                } else {
+                  // start recording and create operation for delayed stop
+                  startRecorder();
+                  delayedStopRecording();
                 }
+
                 // set animation state
                 toggleAnimation();
               },

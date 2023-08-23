@@ -34,11 +34,6 @@ class _InvitationTabState extends State<InvitationTab> {
       onFinished: () async {
         print('Finished recording. Predicting language...');
 
-        // TODO this really isn't neccessary since it breaks on web anyway
-        if (kIsWeb) {
-          language.setLanguage(2);
-          // return;
-        }
         // get the lang index and then update the language provider
         int langIndex = await predictLanguage('my_file.wav');
         language.setLanguage(langIndex);

@@ -157,7 +157,6 @@ Matrix computeMelWeightsMatrix(
 // creates and returns a log mel spectrogram given a real signal
 Matrix melSpectrogram(List<double> signal) {
   // processing constants
-  // TODO should these be params?
   const sampleRate = 16000;
   const frameLengthMS = 25;
   const frameStepMS = 10;
