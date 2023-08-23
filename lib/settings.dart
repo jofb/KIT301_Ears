@@ -11,7 +11,9 @@ import 'category.dart';
 import 'colours.dart';
 
 class SettingsWidget extends StatefulWidget {
-  const SettingsWidget({super.key});
+  const SettingsWidget({super.key, required this.scaffoldMessengerKey});
+
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState();
@@ -20,6 +22,24 @@ class SettingsWidget extends StatefulWidget {
 class _SettingsWidgetState extends State<SettingsWidget>
     with TickerProviderStateMixin {
   late AnimationController audioProgressController;
+
+  void showSnackbar(String msg, Color colour) {
+    // create snack bar
+    final snackBar = SnackBar(
+      content: Text(
+        msg,
+        style: const TextStyle(
+            fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+      ),
+      duration: const Duration(seconds: 3),
+      backgroundColor: colour,
+      shape: const RoundedRectangleBorder(),
+    );
+
+    // show snackbar using scaffold messenger
+
+    widget.scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+  }
 
   @override
   void initState() {
@@ -84,7 +104,11 @@ class _SettingsWidgetState extends State<SettingsWidget>
                     SettingsButton(
                       text: 'Update questions',
                       onPressed: () {
-                        categoriesModel.loadCollection();
+                        Color colour = Theme.of(context).indicatorColor;
+                        categoriesModel.loadCollection().then(
+                              (_) => showSnackbar(
+                                  'Questions & Statements Updated', colour),
+                            );
                       },
                       theme: themeModel.currentTheme,
                     ),
@@ -102,8 +126,12 @@ class _SettingsWidgetState extends State<SettingsWidget>
                   children: [
                     SettingsButton(
                       text: 'Clear questions',
-                      onPressed: () => categoriesModel.clearCollection(),
-                      theme: themeModel.currentTheme,
+                      onPressed: () {
+                        categoriesModel.clearCollection();
+                        showSnackbar('Categories Cache Cleared',
+                            Theme.of(context).indicatorColor);
+                      },
+                      theme: Theme.of(context),
                     ),
                   ],
                 ),
@@ -137,8 +165,7 @@ class _SettingsWidgetState extends State<SettingsWidget>
                             }
 
                             // get the firebase instance
-                            var instance =
-                                await FirebaseStorage.instance.ref("/");
+                            var instance = FirebaseStorage.instance.ref("/");
 
                             // used for progress indicator
                             int total = 0;
@@ -170,6 +197,10 @@ class _SettingsWidgetState extends State<SettingsWidget>
                                     progress += 1;
                                     audioProgressController.value =
                                         progress / total;
+                                    if (progress == total) {
+                                      showSnackbar(
+                                          'All Audio Downloaded', Colors.green);
+                                    }
                                   }
                                 });
                               }
@@ -200,7 +231,11 @@ class _SettingsWidgetState extends State<SettingsWidget>
                   children: [
                     SettingsButton(
                       text: 'Change model',
-                      onPressed: () => print('not yet implemented!'),
+                      onPressed: () async {
+                        Color colour = Theme.of(context).errorColor;
+                        showSnackbar(
+                            'Language model changing unavailable', colour);
+                      },
                       theme: themeModel.currentTheme,
                     ),
                   ],
