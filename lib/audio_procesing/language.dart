@@ -74,7 +74,7 @@ class LanguageDialog extends StatefulWidget {
 class _LanguageDialogState extends State<LanguageDialog> {
   List<int> _searchIndexes = [];
   List<String> _languageList = [];
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -110,7 +110,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
+                  padding: EdgeInsets.only(bottom: 3.0),
                   child: Text(
                     'Change Language',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -121,7 +121,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
                   child: Row(
                     children: [
                       const Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
+                        padding: EdgeInsets.only(right: 8.0),
                         child: Icon(Icons.search),
                       ),
                       Expanded(
@@ -134,15 +134,17 @@ class _LanguageDialogState extends State<LanguageDialog> {
                           },
                           decoration: InputDecoration(
                             hintText: 'Search Languages',
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                _controller.clear();
-                                setState(() {
-                                  _searchIndexes = search('');
-                                });
-                              },
-                              icon: Icon(Icons.clear),
-                            ),
+                            suffixIcon: _controller.text != ''
+                                ? IconButton(
+                                    onPressed: () {
+                                      _controller.clear();
+                                      setState(() {
+                                        _searchIndexes = search('');
+                                      });
+                                    },
+                                    icon: const Icon(Icons.clear, size: 18),
+                                  )
+                                : null,
                           ),
                         ),
                       ),
@@ -151,7 +153,8 @@ class _LanguageDialogState extends State<LanguageDialog> {
                 ),
                 SingleChildScrollView(
                   child: Container(
-                    constraints: BoxConstraints(minHeight: 300, maxHeight: 300),
+                    constraints:
+                        const BoxConstraints(minHeight: 300, maxHeight: 300),
                     // wrapping in material fixes issue with selected background going out of bounds
                     child: Material(
                       child: ListView.builder(
@@ -173,7 +176,7 @@ class _LanguageDialogState extends State<LanguageDialog> {
                             selectedTileColor: Theme.of(context).primaryColor,
                             selectedColor:
                                 Theme.of(context).scaffoldBackgroundColor,
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
