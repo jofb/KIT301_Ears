@@ -31,10 +31,7 @@ class AnswersModel extends ChangeNotifier {
 
   @override
   String toString() {
-    final formattedDateStart = DateFormat('E d MMMM yyyy ').format(dateTime);
-    const formattedDateMid = "at";
-    final formattedDateEnd = DateFormat(' h:mm a').format(dateTime);
-    return "$formattedDateStart$formattedDateMid$formattedDateEnd\n$language Answers History";
+    return "$language Answers History";
   }
 
    @override
