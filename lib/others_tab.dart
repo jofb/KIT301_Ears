@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:kit301_ears/answers.dart';
@@ -22,55 +24,77 @@ class _OthersTabState extends State<OthersTab> {
 
   Widget buildTab(BuildContext context, CategoriesModel model,
       AnswersModel answersModel, ThemeModel themeModel, _) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () => answersModel.clearHistory(),
-                child: const Text("Clear Answer History"),
-                style: ElevatedButton.styleFrom(
-                  primary: themeModel.currentTheme.primaryColor,
-                ),
-              ),
-              SizedBox(width: 10),
-              ShareButton(answersModel: answersModel), // Add the ShareButton here
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              answersModel.toString(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 25),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                List<Answer> history = answersModel.history;
-                return ListTile(
-                  title: Text(history[index].question.full),
-                  subtitle: Text(history[index].response),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete,
-                        color: themeModel.currentTheme.errorColor),
-                    onPressed: () {
-                      _showDeleteConfirmation(
-                          context, answersModel, history[index]);
-                    },
+    return Stack(
+      alignment: AlignmentDirectional.bottomEnd,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          answersModel.toString(),
+                          style: TextStyle(color: themeModel.currentTheme.primaryColor, fontSize: 30)
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Divider(
+                              color: themeModel.currentTheme.primaryColor,
+                              thickness: 3,
+                            ),
+                          )
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
-              itemCount: answersModel.history.length,
+                  Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: Text(
+                      answersModel.toStringSimple(),
+                      style: TextStyle(color: themeModel.currentTheme.primaryColor, fontSize: 20)
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  List<Answer> history = answersModel.history;
+                  return ListTile(
+                    title: Text(history[index].question.full),
+                    subtitle: Text(history[index].response),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete,
+                          color: themeModel.currentTheme.errorColor),
+                      onPressed: () {
+                        _showDeleteConfirmation(
+                            context, answersModel, history[index]);
+                      },
+                    ),
+                  );
+                },
+                itemCount: answersModel.history.length,
+                padding: EdgeInsets.only(bottom: 80)
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+          bottom: 24.0,
+          right: 24.0,
+          child: _buildFab(context),
+        )
+      ],
     );
   }
 
@@ -104,6 +128,15 @@ class _OthersTabState extends State<OthersTab> {
       },
     );
   }
+
+  Widget _buildFab(BuildContext context) {
+    final icons = [ Icons.car_crash_rounded, Icons.share_rounded, Icons.delete_rounded ];
+    final fabText = ['Select Casualty Position', 'Share Answer History', 'Clear Answer History'];
+    return FabWithIcons(
+      icons: icons,
+      fabText: fabText,
+    );
+  }
 }
 
 class ShareButton extends StatelessWidget {
@@ -132,5 +165,286 @@ class ShareButton extends StatelessWidget {
 
     // Share the formatted history via the share API
     Share.share(buffer.toString().trim(),);
+  }
+}
+
+class FabWithIcons extends StatefulWidget {
+  FabWithIcons({required this.icons, required this.fabText});
+  final List<IconData> icons;
+  final List<String> fabText;
+  //ValueChanged<int> onIconTapped;
+  @override
+  State createState() => FabWithIconsState();
+}
+
+class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixin {
+  late AnimationController _controller;
+
+  void _shareHistory(BuildContext context, AnswersModel answersModel) {
+    final StringBuffer buffer = StringBuffer();
+
+    // Build the history list as a formatted string
+    buffer.writeln('Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
+    for (var answer in answersModel.history) {
+      buffer.writeln('${answer.question.full}\n${answer.response}\n');
+    }
+
+    // Share the formatted history via the share API
+    Share.share(buffer.toString().trim(),);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AnswersModel>(builder: _buildThing);
+  }
+
+  Widget _buildThing(BuildContext context, AnswersModel answersModel, _) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: List.generate(widget.icons.length, (int index) {
+        return _buildChild(index, answersModel);
+      }).toList()..add(
+        _buildFab(),
+      ),
+    );
+  }
+
+  Widget _buildChild(int index, AnswersModel answersModel) {
+    Color backgroundColor = Theme.of(context).cardColor;
+    Color foregroundColor = Theme.of(context).scaffoldBackgroundColor;
+    return Container(
+      height: 65.0,
+      alignment: FractionalOffset.centerRight,
+      child: ScaleTransition(
+        scale: CurvedAnimation(
+          parent: _controller,
+          curve: Interval(
+              0.0,
+              1.0 - index / widget.icons.length / 2.0,
+              curve: Curves.easeOut
+          ),
+        ),
+        child: FloatingActionButton.extended(
+          elevation: 4.0,
+          isExtended: true,
+          onPressed: () async {
+            if (widget.fabText[index] == 'Select Casualty Position') {
+              //print("first");
+              var response = await showDialog(
+                barrierColor:
+                    Colors.black.withOpacity(0.75),
+                context: context,
+                builder: (BuildContext context) {
+                  return SeatPositionDialog();
+                });
+
+              if (response != null) {
+                // append to answers history
+                answersModel.addAnswer(Question('Answeree Seating Position', 'Answeree Seating Position', 'text', '999', '999'), response);
+              }
+            } else if (widget.fabText[index] == 'Share Answer History') {
+              //ShareButton(answersModel: answersModel);
+              _shareHistory(context, answersModel);
+            } else if (widget.fabText[index] == 'Clear Answer History') {
+              answersModel.clearHistory();
+            }
+          },
+          label: Text(
+            widget.fabText[index],
+            style: TextStyle(
+              color: foregroundColor,
+            ),
+          ),
+          icon: Icon(
+            widget.icons[index],
+            color: foregroundColor,
+            ),
+          backgroundColor: backgroundColor,
+        )
+      ),
+    );
+  }
+
+  Widget _buildFab() {
+    var pressedBtn = false;
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: FloatingActionButton(
+        onPressed: () {
+          if (_controller.isDismissed) {
+            _controller.forward();
+          } else {
+            _controller.reverse();
+          }
+        },
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 4.0,
+        child: Transform.rotate(
+          angle: 90 * pi / 180,
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: 0.5).animate(_controller),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SeatPositionDialog extends StatefulWidget {
+  @override
+  _SeatPositionDialogState createState() => _SeatPositionDialogState();
+}
+
+class _SeatPositionDialogState extends State<SeatPositionDialog> {
+  String? selectedSeat;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WillPopScope(
+        onWillPop: () async {
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            width: MediaQuery.of(context).size.width *
+                0.7, //Gets dimension of the screen * 70%
+            height: MediaQuery.of(context).size.height *
+                0.7, //Gets dimension of the screen * 70%
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildCarGraphic(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 30.0,
+                          horizontal: 40.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: Theme.of(context).errorColor,
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 30.0),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, selectedSeat);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 30.0,
+                            horizontal: 40.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Theme.of(context).indicatorColor),
+                      child: const Text(
+                        'Confirm',
+                        style: TextStyle(fontSize: 30.0),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarGraphic() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(128.0, 0, 0, 0),
+                  child: _buildSeatButton('Front Left'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 128.0, 0),
+                  child: _buildSeatButton('Front Right'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20), // Adjust the height as needed
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                  child: _buildSeatButton('Back Left'),
+                ),
+                _buildSeatButton('Back Middle'),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 16.0, 0),
+                  child: _buildSeatButton('Back Right'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeatButton(String seatName) {
+    bool isSelected = selectedSeat == seatName;
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          selectedSeat = isSelected ? null : seatName;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        foregroundColor: isSelected ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
+        backgroundColor: isSelected ? Theme.of(context).indicatorColor : Theme.of(context).accentColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        padding:
+            const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
+      ),
+      child: Text(seatName),
+    );
   }
 }
