@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:kit301_ears/answers.dart';
@@ -46,7 +48,7 @@ class _OthersTabState extends State<OthersTab> {
                           child: Padding(
                             padding: EdgeInsets.only(left: 20.0),
                             child: Divider(
-                              color: themeModel.currentTheme.cardColor,
+                              color: themeModel.currentTheme.primaryColor,
                               thickness: 3,
                             ),
                           )
@@ -233,6 +235,7 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
           ),
         ),
         child: FloatingActionButton.extended(
+          elevation: 4.0,
           isExtended: true,
           onPressed: () async {
             if (widget.fabText[index] == 'Select Casualty Position') {
@@ -273,19 +276,29 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
   }
 
   Widget _buildFab() {
-    return FloatingActionButton(
-      onPressed: () {
-        if (_controller.isDismissed) {
-          _controller.forward();
-        } else {
-          _controller.reverse();
-        }
-      },
-      backgroundColor: Theme.of(context).cardColor,
-      elevation: 2.0,
-      child: Icon(
-        Icons.arrow_upward_rounded,
-        color: Theme.of(context).scaffoldBackgroundColor,
+    var pressedBtn = false;
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: FloatingActionButton(
+        onPressed: () {
+          if (_controller.isDismissed) {
+            _controller.forward();
+          } else {
+            _controller.reverse();
+          }
+        },
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 4.0,
+        child: Transform.rotate(
+          angle: 90 * pi / 180,
+          child: RotationTransition(
+            turns: Tween(begin: 0.0, end: 0.5).animate(_controller),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -320,7 +333,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
               border: Border.all(color: Colors.grey, width: 2),
               borderRadius: BorderRadius.circular(8.0),
             ),
-            padding: const EdgeInsets.fromLTRB(30.0, 50.0, 30.0, 25.0),
+            padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -334,8 +347,8 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                          vertical: 60.0,
-                          horizontal: 80.0,
+                          vertical: 30.0,
+                          horizontal: 40.0,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -353,8 +366,8 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 60.0,
-                            horizontal: 80.0,
+                            vertical: 30.0,
+                            horizontal: 40.0,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -376,14 +389,42 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
   }
 
   Widget _buildCarGraphic() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        _buildSeatButton('Front Left'),
-        _buildSeatButton('Front Right'),
-        _buildSeatButton('Back Left'),
-        _buildSeatButton('Back Middle'),
-        _buildSeatButton('Back Right'),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(128.0, 0, 0, 0),
+                  child: _buildSeatButton('Front Left'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 128.0, 0),
+                  child: _buildSeatButton('Front Right'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20), // Adjust the height as needed
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                  child: _buildSeatButton('Back Left'),
+                ),
+                _buildSeatButton('Back Middle'),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 16.0, 0),
+                  child: _buildSeatButton('Back Right'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -401,7 +442,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
         backgroundColor: isSelected ? Theme.of(context).indicatorColor : Theme.of(context).accentColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding:
-            const EdgeInsets.symmetric(vertical: 45.0, horizontal: 20.0),
+            const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
       ),
       child: Text(seatName),
     );
