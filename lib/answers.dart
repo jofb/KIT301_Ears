@@ -20,6 +20,7 @@ class AnswersModel extends ChangeNotifier {
     this.language = language;
     history = [];
     dateTime = DateTime.now();
+    update();
   }
 
   // append to history
@@ -34,7 +35,7 @@ class AnswersModel extends ChangeNotifier {
     return "$language Answers History";
   }
 
-   @override
+  @override
   String toStringSimple() {
     final formattedDateStart = DateFormat('E d MMMM yyyy ').format(dateTime);
     const formattedDateMid = "at";
