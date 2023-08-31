@@ -40,52 +40,50 @@ class _OthersTabState extends State<OthersTab> {
                     padding: EdgeInsets.all(4.0),
                     child: Row(
                       children: [
-                        Text(
-                          answersModel.toString(),
-                          style: TextStyle(color: themeModel.currentTheme.primaryColor, fontSize: 30)
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20.0),
-                            child: Divider(
-                              color: themeModel.currentTheme.primaryColor,
-                              thickness: 3,
-                            ),
-                          )
-                        ),
+                        Text(answersModel.toString(),
+                            style: TextStyle(
+                                color: themeModel.currentTheme.primaryColor,
+                                fontSize: 30)),
+                        const Expanded(
+                            child: Padding(
+                          padding: EdgeInsets.only(left: 20.0),
+                          child: Divider(
+                            color: Colors.grey,
+                            thickness: 1,
+                          ),
+                        )),
                       ],
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      answersModel.toStringSimple(),
-                      style: TextStyle(color: themeModel.currentTheme.primaryColor, fontSize: 20)
-                    ),
+                    child: Text(answersModel.toStringSimple(),
+                        style: TextStyle(
+                            color: themeModel.currentTheme.primaryColor,
+                            fontSize: 20)),
                   ),
                 ],
               ),
             ),
             Expanded(
               child: ListView.builder(
-                itemBuilder: (context, index) {
-                  List<Answer> history = answersModel.history;
-                  return ListTile(
-                    title: Text(history[index].question.full),
-                    subtitle: Text(history[index].response),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete,
-                          color: themeModel.currentTheme.errorColor),
-                      onPressed: () {
-                        _showDeleteConfirmation(
-                            context, answersModel, history[index]);
-                      },
-                    ),
-                  );
-                },
-                itemCount: answersModel.history.length,
-                padding: EdgeInsets.only(bottom: 80)
-              ),
+                  itemBuilder: (context, index) {
+                    List<Answer> history = answersModel.history;
+                    return ListTile(
+                      title: Text(history[index].question.full),
+                      subtitle: Text(history[index].response),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete,
+                            color: themeModel.currentTheme.errorColor),
+                        onPressed: () {
+                          _showDeleteConfirmation(
+                              context, answersModel, history[index]);
+                        },
+                      ),
+                    );
+                  },
+                  itemCount: answersModel.history.length,
+                  padding: EdgeInsets.only(bottom: 80)),
             ),
           ],
         ),
@@ -130,8 +128,16 @@ class _OthersTabState extends State<OthersTab> {
   }
 
   Widget _buildFab(BuildContext context) {
-    final icons = [ Icons.car_crash_rounded, Icons.share_rounded, Icons.delete_rounded ];
-    final fabText = ['Select Casualty Position', 'Share Answer History', 'Clear Answer History'];
+    final icons = [
+      Icons.car_crash_rounded,
+      Icons.share_rounded,
+      Icons.delete_rounded
+    ];
+    final fabText = [
+      'Select Casualty Position',
+      'Share Answer History',
+      'Clear Answer History'
+    ];
     return FabWithIcons(
       icons: icons,
       fabText: fabText,
@@ -158,13 +164,16 @@ class ShareButton extends StatelessWidget {
     final StringBuffer buffer = StringBuffer();
 
     // Build the history list as a formatted string
-    buffer.writeln('Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
+    buffer.writeln(
+        'Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
     for (var answer in answersModel.history) {
       buffer.writeln('${answer.question.full}\n${answer.response}\n');
     }
 
     // Share the formatted history via the share API
-    Share.share(buffer.toString().trim(),);
+    Share.share(
+      buffer.toString().trim(),
+    );
   }
 }
 
@@ -177,20 +186,24 @@ class FabWithIcons extends StatefulWidget {
   State createState() => FabWithIconsState();
 }
 
-class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixin {
+class FabWithIconsState extends State<FabWithIcons>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
 
   void _shareHistory(BuildContext context, AnswersModel answersModel) {
     final StringBuffer buffer = StringBuffer();
 
     // Build the history list as a formatted string
-    buffer.writeln('Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
+    buffer.writeln(
+        'Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
     for (var answer in answersModel.history) {
       buffer.writeln('${answer.question.full}\n${answer.response}\n');
     }
 
     // Share the formatted history via the share API
-    Share.share(buffer.toString().trim(),);
+    Share.share(
+      buffer.toString().trim(),
+    );
   }
 
   @override
@@ -213,9 +226,10 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
       mainAxisAlignment: MainAxisAlignment.end,
       children: List.generate(widget.icons.length, (int index) {
         return _buildChild(index, answersModel);
-      }).toList()..add(
-        _buildFab(),
-      ),
+      }).toList()
+        ..add(
+          _buildFab(),
+        ),
     );
   }
 
@@ -226,52 +240,50 @@ class FabWithIconsState extends State<FabWithIcons> with TickerProviderStateMixi
       height: 65.0,
       alignment: FractionalOffset.centerRight,
       child: ScaleTransition(
-        scale: CurvedAnimation(
-          parent: _controller,
-          curve: Interval(
-              0.0,
-              1.0 - index / widget.icons.length / 2.0,
-              curve: Curves.easeOut
+          scale: CurvedAnimation(
+            parent: _controller,
+            curve: Interval(0.0, 1.0 - index / widget.icons.length / 2.0,
+                curve: Curves.easeOut),
           ),
-        ),
-        child: FloatingActionButton.extended(
-          elevation: 4.0,
-          isExtended: true,
-          onPressed: () async {
-            if (widget.fabText[index] == 'Select Casualty Position') {
-              //print("first");
-              var response = await showDialog(
-                barrierColor:
-                    Colors.black.withOpacity(0.75),
-                context: context,
-                builder: (BuildContext context) {
-                  return SeatPositionDialog();
-                });
+          child: FloatingActionButton.extended(
+            elevation: 4.0,
+            isExtended: true,
+            onPressed: () async {
+              if (widget.fabText[index] == 'Select Casualty Position') {
+                //print("first");
+                var response = await showDialog(
+                    barrierColor: Colors.black.withOpacity(0.75),
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SeatPositionDialog();
+                    });
 
-              if (response != null) {
-                // append to answers history
-                answersModel.addAnswer(Question('Answeree Seating Position', 'Answeree Seating Position', 'text', '999', '999'), response);
+                if (response != null) {
+                  // append to answers history
+                  answersModel.addAnswer(
+                      Question('Answeree Seating Position',
+                          'Answeree Seating Position', 'text', '999', '999'),
+                      response);
+                }
+              } else if (widget.fabText[index] == 'Share Answer History') {
+                //ShareButton(answersModel: answersModel);
+                _shareHistory(context, answersModel);
+              } else if (widget.fabText[index] == 'Clear Answer History') {
+                answersModel.clearHistory();
               }
-            } else if (widget.fabText[index] == 'Share Answer History') {
-              //ShareButton(answersModel: answersModel);
-              _shareHistory(context, answersModel);
-            } else if (widget.fabText[index] == 'Clear Answer History') {
-              answersModel.clearHistory();
-            }
-          },
-          label: Text(
-            widget.fabText[index],
-            style: TextStyle(
+            },
+            label: Text(
+              widget.fabText[index],
+              style: TextStyle(
+                color: foregroundColor,
+              ),
+            ),
+            icon: Icon(
+              widget.icons[index],
               color: foregroundColor,
             ),
-          ),
-          icon: Icon(
-            widget.icons[index],
-            color: foregroundColor,
-            ),
-          backgroundColor: backgroundColor,
-        )
-      ),
+            backgroundColor: backgroundColor,
+          )),
     );
   }
 
@@ -311,7 +323,7 @@ class SeatPositionDialog extends StatefulWidget {
 
 class _SeatPositionDialogState extends State<SeatPositionDialog> {
   String? selectedSeat;
-  
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -438,11 +450,14 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
         });
       },
       style: ElevatedButton.styleFrom(
-        foregroundColor: isSelected ? Theme.of(context).scaffoldBackgroundColor : Colors.black,
-        backgroundColor: isSelected ? Theme.of(context).indicatorColor : Theme.of(context).accentColor,
+        foregroundColor: isSelected
+            ? Theme.of(context).scaffoldBackgroundColor
+            : Colors.black,
+        backgroundColor: isSelected
+            ? Theme.of(context).indicatorColor
+            : Theme.of(context).accentColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding:
-            const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
+        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
       ),
       child: Text(seatName),
     );
