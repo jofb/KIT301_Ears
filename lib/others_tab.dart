@@ -281,6 +281,7 @@ class FabWithIconsState extends State<FabWithIcons>
           ),
           child: FittedBox(
             child: FloatingActionButton.extended(
+              heroTag: null,
               elevation: 4.0,
               isExtended: true,
               onPressed: () async {
@@ -332,6 +333,7 @@ class FabWithIconsState extends State<FabWithIcons>
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: FloatingActionButton(
+        heroTag: null,
         onPressed: () {
           if (_controller.isDismissed) {
             _controller.forward();
