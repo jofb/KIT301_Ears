@@ -7,9 +7,21 @@ import 'category.dart';
 class AnswersModel extends ChangeNotifier {
   // use datetime as a unique identifier for answer histories
   late DateTime dateTime;
-
   String language = 'English (en)';
   List<Answer> history = [];
+
+  static const List<String> carSeatStrings = [
+    'Front Left',
+    'Front Right',
+    'Back Left',
+    'Back Middle',
+    'Back Right',
+    'Far Back Left',
+    'Far Back Middle',
+    'Far Back Right',
+  ];
+
+  int? carSeatIndex;
 
   AnswersModel() {
     dateTime = DateTime.now();
@@ -20,6 +32,7 @@ class AnswersModel extends ChangeNotifier {
     this.language = language;
     history = [];
     dateTime = DateTime.now();
+    carSeatIndex = null;
     update();
   }
 
@@ -30,12 +43,25 @@ class AnswersModel extends ChangeNotifier {
     update();
   }
 
+  List<String> getCarSeatStrings() {
+    return carSeatStrings;
+  }
+
+  // set driver position
+  void setCarSeat(int i) {
+    carSeatIndex = i;
+    update();
+  }
+
+  String carSeatToString() {
+    return carSeatStrings[carSeatIndex ?? 0];
+  }
+
   @override
   String toString() {
     return "$language Answers History";
   }
 
-  @override
   String toStringSimple() {
     final formattedDateStart = DateFormat('E d MMMM yyyy ').format(dateTime);
     const formattedDateMid = "at";
@@ -52,11 +78,6 @@ class AnswersModel extends ChangeNotifier {
     history.remove(answer);
     update();
   }
-  // TODOs
-  // share?
-  // clear?
-  // remove?
-  // etc
 
   void update() {
     notifyListeners();

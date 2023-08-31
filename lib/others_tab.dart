@@ -45,22 +45,52 @@ class _OthersTabState extends State<OthersTab> {
                                 color: themeModel.currentTheme.primaryColor,
                                 fontSize: 30)),
                         const Expanded(
-                            child: Padding(
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: Divider(
-                            color: Colors.grey,
-                            thickness: 1,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Divider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
                           ),
-                        )),
+                        ),
+                        if (answersModel.carSeatIndex != null)
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, right: 8.0),
+                            child: Icon(Icons.drive_eta_rounded,
+                                color: themeModel.currentTheme.primaryColor),
+                          ),
+                        if (answersModel.carSeatIndex != null)
+                          Column(
+                            children: [
+                              Text(
+                                'Casualty Position',
+                                style: TextStyle(
+                                  color: themeModel.currentTheme.primaryColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                answersModel.carSeatToString(),
+                                style: TextStyle(
+                                  color: themeModel.currentTheme.primaryColor,
+                                  fontSize: 16,
+                                ),
+                              )
+                            ],
+                          )
                       ],
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4.0),
-                    child: Text(answersModel.toStringSimple(),
-                        style: TextStyle(
-                            color: themeModel.currentTheme.primaryColor,
-                            fontSize: 20)),
+                    child: Text(
+                      answersModel.toStringSimple(),
+                      style: TextStyle(
+                          color: themeModel.currentTheme.primaryColor,
+                          fontSize: 20),
+                    ),
                   ),
                 ],
               ),
@@ -76,7 +106,7 @@ class _OthersTabState extends State<OthersTab> {
                         icon: Icon(Icons.delete,
                             color: themeModel.currentTheme.errorColor),
                         onPressed: () {
-                          _showDeleteConfirmation(
+                          showDeleteConfirmation(
                               context, answersModel, history[index]);
                         },
                       ),
@@ -90,13 +120,13 @@ class _OthersTabState extends State<OthersTab> {
         Positioned(
           bottom: 24.0,
           right: 24.0,
-          child: _buildFab(context),
+          child: buildFab(context),
         )
       ],
     );
   }
 
-  void _showDeleteConfirmation(
+  void showDeleteConfirmation(
       BuildContext context, AnswersModel answersModel, Answer answer) {
     showDialog(
       context: context,
@@ -127,7 +157,7 @@ class _OthersTabState extends State<OthersTab> {
     );
   }
 
-  Widget _buildFab(BuildContext context) {
+  Widget buildFab(BuildContext context) {
     final icons = [
       Icons.car_crash_rounded,
       Icons.share_rounded,
@@ -190,7 +220,7 @@ class FabWithIconsState extends State<FabWithIcons>
     with TickerProviderStateMixin {
   late AnimationController _controller;
 
-  void _shareHistory(BuildContext context, AnswersModel answersModel) {
+  void shareHistory(BuildContext context, AnswersModel answersModel) {
     final StringBuffer buffer = StringBuffer();
 
     // Build the history list as a formatted string
@@ -217,78 +247,88 @@ class FabWithIconsState extends State<FabWithIcons>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AnswersModel>(builder: _buildThing);
+    return Consumer<AnswersModel>(builder: buildThing);
   }
 
-  Widget _buildThing(BuildContext context, AnswersModel answersModel, _) {
+  Widget buildThing(BuildContext context, AnswersModel answersModel, _) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.end,
       children: List.generate(widget.icons.length, (int index) {
-        return _buildChild(index, answersModel);
+        return buildChild(index, answersModel);
       }).toList()
         ..add(
-          _buildFab(),
+          buildFab(),
         ),
     );
   }
 
-  Widget _buildChild(int index, AnswersModel answersModel) {
+  Widget buildChild(int index, AnswersModel answersModel) {
     Color backgroundColor = Theme.of(context).cardColor;
     Color foregroundColor = Theme.of(context).scaffoldBackgroundColor;
     return Container(
       height: 65.0,
+      width: 220,
       alignment: FractionalOffset.centerRight,
       child: ScaleTransition(
           scale: CurvedAnimation(
             parent: _controller,
-            curve: Interval(0.0, 1.0 - index / widget.icons.length / 2.0,
-                curve: Curves.easeOut),
+            curve: Interval(
+              0.0,
+              1.0 - index / widget.icons.length / 2.0,
+              curve: Curves.easeOut,
+            ),
           ),
-          child: FloatingActionButton.extended(
-            elevation: 4.0,
-            isExtended: true,
-            onPressed: () async {
-              if (widget.fabText[index] == 'Select Casualty Position') {
-                //print("first");
-                var response = await showDialog(
+          child: FittedBox(
+            child: FloatingActionButton.extended(
+              elevation: 4.0,
+              isExtended: true,
+              onPressed: () async {
+                if (widget.fabText[index] == 'Select Casualty Position') {
+                  //print("first");
+                  final response = await showDialog(
                     barrierColor: Colors.black.withOpacity(0.75),
                     context: context,
                     builder: (BuildContext context) {
-                      return SeatPositionDialog();
-                    });
+                      // we have the answers model current position
+                      // and we have the list
+                      return SeatPositionDialog(
+                          list: answersModel.getCarSeatStrings(),
+                          initial: answersModel.carSeatIndex);
+                    },
+                  );
 
-                if (response != null) {
-                  // append to answers history
-                  answersModel.addAnswer(
-                      Question('Answeree Seating Position',
-                          'Answeree Seating Position', 'text', '999', '999'),
-                      response);
+                  if (response != null) {
+                    // TODO refactor answers history to take in driver position, dont add new answer
+                    // append to answers history
+                    // answersModel.position = response;
+                    print(response);
+                    answersModel.setCarSeat(response);
+                  }
+                } else if (widget.fabText[index] == 'Share Answer History') {
+                  //ShareButton(answersModel: answersModel);
+                  shareHistory(context, answersModel);
+                } else if (widget.fabText[index] == 'Clear Answer History') {
+                  answersModel.clearHistory();
                 }
-              } else if (widget.fabText[index] == 'Share Answer History') {
-                //ShareButton(answersModel: answersModel);
-                _shareHistory(context, answersModel);
-              } else if (widget.fabText[index] == 'Clear Answer History') {
-                answersModel.clearHistory();
-              }
-            },
-            label: Text(
-              widget.fabText[index],
-              style: TextStyle(
+              },
+              label: Text(
+                widget.fabText[index],
+                style: TextStyle(
+                  color: foregroundColor,
+                ),
+              ),
+              icon: Icon(
+                widget.icons[index],
                 color: foregroundColor,
               ),
+              backgroundColor: backgroundColor,
             ),
-            icon: Icon(
-              widget.icons[index],
-              color: foregroundColor,
-            ),
-            backgroundColor: backgroundColor,
           )),
     );
   }
 
-  Widget _buildFab() {
-    var pressedBtn = false;
+  Widget buildFab() {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: FloatingActionButton(
@@ -317,12 +357,24 @@ class FabWithIconsState extends State<FabWithIcons>
 }
 
 class SeatPositionDialog extends StatefulWidget {
+  const SeatPositionDialog({super.key, required this.list, this.initial});
+  final List<String> list;
+  final int? initial;
+
   @override
   _SeatPositionDialogState createState() => _SeatPositionDialogState();
 }
 
 class _SeatPositionDialogState extends State<SeatPositionDialog> {
   String? selectedSeat;
+  int? selectedIndex;
+
+  @override
+  void initState() {
+    // selectedSeat = widget.initalSeat;
+    selectedIndex = widget.initial;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -349,7 +401,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildCarGraphic(),
+                buildCarGraphic(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -374,7 +426,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context, selectedSeat);
+                        Navigator.pop(context, selectedIndex);
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -400,7 +452,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
     );
   }
 
-  Widget _buildCarGraphic() {
+  Widget buildCarGraphic() {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -412,11 +464,11 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(128.0, 0, 0, 0),
-                  child: _buildSeatButton('Front Left'),
+                  child: buildSeatButton(0),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 128.0, 0),
-                  child: _buildSeatButton('Front Right'),
+                  child: buildSeatButton(1),
                 ),
               ],
             ),
@@ -426,12 +478,12 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
-                  child: _buildSeatButton('Back Left'),
+                  child: buildSeatButton(2),
                 ),
-                _buildSeatButton('Back Middle'),
+                buildSeatButton(3),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 16.0, 0),
-                  child: _buildSeatButton('Back Right'),
+                  child: buildSeatButton(4),
                 ),
               ],
             ),
@@ -441,12 +493,13 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
     );
   }
 
-  Widget _buildSeatButton(String seatName) {
-    bool isSelected = selectedSeat == seatName;
+  Widget buildSeatButton(int seatIndex) {
+    String title = widget.list[seatIndex];
+    bool isSelected = selectedIndex == seatIndex;
     return ElevatedButton(
       onPressed: () {
         setState(() {
-          selectedSeat = isSelected ? null : seatName;
+          selectedIndex = isSelected ? null : seatIndex;
         });
       },
       style: ElevatedButton.styleFrom(
@@ -459,7 +512,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
       ),
-      child: Text(seatName),
+      child: Text(title),
     );
   }
 }
