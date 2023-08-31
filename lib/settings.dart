@@ -184,7 +184,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                               downloadingAudio = false;
                             });
                           }
-
+                          categoriesModel.initCategories();
                           showSnackbar('All Audio Downloaded', Colors.green);
                         });
                       },
