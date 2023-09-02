@@ -12,7 +12,7 @@
         "text": "Portugese"
     },
     {
-        "code": "tm",
+        "code": "ta",
         "text": "Tamil"
     },
     {
@@ -30,5 +30,29 @@
     {
         "code": "de",
         "text": "German"
+    },
+    {
+        "code": "vi",
+        "text": "Vietnamese"
+    },
+    {
+        "code": "ur",
+        "text": "Urdu"
+    },
+    {
+        "code": "te",
+        "text": "Telegu"
+    },
+    {
+        "code": "fa",
+        "text": "Persian"
+    },
+    {
+        "code": "ne",
+        "text": "Nepali"
+    },
+    {
+        "code": "ar",
+        "text": "Arabic"
     }
 ]

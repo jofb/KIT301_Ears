@@ -19,9 +19,8 @@ class SettingsWidget extends StatefulWidget {
   State<SettingsWidget> createState() => _SettingsWidgetState();
 }
 
-class _SettingsWidgetState extends State<SettingsWidget>
-    with TickerProviderStateMixin {
-  late AnimationController audioProgressController;
+class _SettingsWidgetState extends State<SettingsWidget> {
+  bool downloadingAudio = false;
 
   void showSnackbar(String msg, Color colour) {
     // create snack bar
@@ -37,17 +36,7 @@ class _SettingsWidgetState extends State<SettingsWidget>
     );
 
     // show snackbar using scaffold messenger
-
     widget.scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-  }
-
-  @override
-  void initState() {
-    audioProgressController = AnimationController(vsync: this)
-      ..addListener(() {
-        if (mounted) setState(() {});
-      });
-    super.initState();
   }
 
   @override
@@ -102,9 +91,10 @@ class _SettingsWidgetState extends State<SettingsWidget>
                 child: Row(
                   children: [
                     SettingsButton(
-                      text: 'Update questions',
+                      text: 'Download questions',
                       onPressed: () {
                         Color colour = Theme.of(context).indicatorColor;
+                        categoriesModel.clearCollection();
                         categoriesModel.loadCollection().then(
                               (_) => showSnackbar(
                                   'Questions & Statements Updated', colour),
@@ -121,21 +111,6 @@ class _SettingsWidgetState extends State<SettingsWidget>
                   ],
                 ),
               ),
-              CustomSettingsTile(
-                child: Row(
-                  children: [
-                    SettingsButton(
-                      text: 'Clear questions',
-                      onPressed: () {
-                        categoriesModel.clearCollection();
-                        showSnackbar('Categories Cache Cleared',
-                            Theme.of(context).indicatorColor);
-                      },
-                      theme: Theme.of(context),
-                    ),
-                  ],
-                ),
-              ),
             ],
             theme: themeModel.currentTheme,
           ),
@@ -145,78 +120,68 @@ class _SettingsWidgetState extends State<SettingsWidget>
               CustomSettingsTile(
                 child: Row(
                   children: [
-                    Column(
-                      children: [
-                        SettingsButton(
-                          text: 'Download audio',
-                          onPressed: () async {
-                            // get language labels
-                            List<String> labels = languageModel.labels
-                                .map((l) => l['code']!)
-                                .toList();
+                    SettingsButton(
+                      text: 'Download audio',
+                      onPressed: () async {
+                        setState(() {
+                          downloadingAudio = true;
+                        });
+                        // get language labels
+                        List<String> labels = languageModel.labels
+                            .map((l) => l['code']!)
+                            .toList();
 
-                            final appDir =
-                                await getApplicationDocumentsDirectory();
-                            // ensure audio directory exists
-                            final audioDir = Directory("${appDir.path}/audio");
+                        final appDir = await getApplicationDocumentsDirectory();
+                        // ensure audio directory exists
+                        final audioDir = Directory("${appDir.path}/audio");
 
-                            if (!await Directory(audioDir.path).exists()) {
-                              await Directory(audioDir.path).create();
-                            }
+                        if (!await Directory(audioDir.path).exists()) {
+                          await Directory(audioDir.path).create();
+                        }
 
-                            // get the firebase instance
-                            var instance = FirebaseStorage.instance.ref("/");
+                        List<DownloadTask> downloads = [];
 
-                            // used for progress indicator
-                            int total = 0;
-                            int progress = 0;
+                        // get the firebase instance
+                        var instance = FirebaseStorage.instance.ref("/");
 
-                            // now search the the instance for all our labels
-                            for (String label in labels) {
-                              // ensure labelled directory exists
-                              final labelDir =
-                                  Directory("${audioDir.path}/$label");
+                        // now search the the instance for all our labels
+                        for (String label in labels) {
+                          // ensure labelled directory exists
+                          final labelDir = Directory("${audioDir.path}/$label");
 
-                              if (!await Directory(labelDir.path).exists()) {
-                                await Directory(labelDir.path).create();
-                              }
+                          if (!await Directory(labelDir.path).exists()) {
+                            await Directory(labelDir.path).create();
+                          }
 
-                              ListResult list =
-                                  await instance.child(label).list();
+                          ListResult list = await instance.child(label).list();
 
-                              total += list.items.length;
-                              // now for every item we download and place in folder
-                              for (Reference item in list.items) {
-                                String filePath =
-                                    "${labelDir.path}/${item.name}";
-                                // finally download
-                                File file = File(filePath);
-                                final downloadTask = item.writeToFile(file);
-                                downloadTask.snapshotEvents.listen((event) {
-                                  if (event.state == TaskState.success) {
-                                    progress += 1;
-                                    audioProgressController.value =
-                                        progress / total;
-                                    if (progress == total) {
-                                      showSnackbar(
-                                          'All Audio Downloaded', Colors.green);
-                                    }
-                                  }
-                                });
-                              }
-                            }
-                          },
-                          theme: themeModel.currentTheme,
-                        ),
-                        if (audioProgressController.status ==
-                            AnimationStatus.forward)
-                          SizedBox(
-                            width: 200,
-                            child: LinearProgressIndicator(
-                                value: audioProgressController.value),
-                          )
-                      ],
+                          // now for every item we download and place in folder
+                          for (Reference item in list.items) {
+                            String filePath = "${labelDir.path}/${item.name}";
+                            // finally download
+                            File file = File(filePath);
+                            final downloadTask = item.writeToFile(file);
+                            downloads.add(downloadTask);
+                          }
+                        }
+                        Future.wait(downloads).then((value) {
+                          if (mounted) {
+                            setState(() {
+                              downloadingAudio = false;
+                            });
+                          }
+                          categoriesModel.initCategories();
+                          showSnackbar('All Audio Downloaded', Colors.green);
+                        });
+                      },
+                      theme: themeModel.currentTheme,
                     ),
+                    if (downloadingAudio)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Transform.scale(
+                            scale: 0.8, child: CircularProgressIndicator()),
+                      ),
                   ],
                 ),
               ),
