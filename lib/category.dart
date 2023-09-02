@@ -83,7 +83,13 @@ class CategoriesModel extends ChangeNotifier {
 
     // directory for audio files
     final appDir = await getApplicationDocumentsDirectory();
-    final audioPaths = Directory("${appDir.path}/audio")
+    // ensure audio directory exists
+    final audioDir = Directory("${appDir.path}/audio");
+
+    if (!await Directory(audioDir.path).exists()) {
+      await Directory(audioDir.path).create();
+    }
+    final audioPaths = audioDir
         .listSync(recursive: true)
         .map((e) => e.path.split('audio/')[1])
         .where((e) => e.contains('/'))

@@ -91,9 +91,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 child: Row(
                   children: [
                     SettingsButton(
-                      text: 'Update questions',
+                      text: 'Download questions',
                       onPressed: () {
                         Color colour = Theme.of(context).indicatorColor;
+                        categoriesModel.clearCollection();
                         categoriesModel.loadCollection().then(
                               (_) => showSnackbar(
                                   'Questions & Statements Updated', colour),
@@ -107,21 +108,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         child: Transform.scale(
                             scale: 0.8, child: CircularProgressIndicator()),
                       ),
-                  ],
-                ),
-              ),
-              CustomSettingsTile(
-                child: Row(
-                  children: [
-                    SettingsButton(
-                      text: 'Clear questions',
-                      onPressed: () {
-                        categoriesModel.clearCollection();
-                        showSnackbar('Categories Cache Cleared',
-                            Theme.of(context).indicatorColor);
-                      },
-                      theme: Theme.of(context),
-                    ),
                   ],
                 ),
               ),
