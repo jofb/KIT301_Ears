@@ -63,7 +63,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     SizedBox(
                       width: 200,
                       child: DropdownButton(
-                        value: themeModel.getThemeIndex(),
+                        value: themeModel.themeIndex,
                         hint: const Text('Change colour theme'),
                         icon: const Icon(Icons.color_lens),
                         iconEnabledColor: themeModel.currentTheme.cardColor,
@@ -199,7 +199,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     SettingsButton(
                       text: 'Change model',
                       onPressed: () async {
-                        Color colour = Theme.of(context).errorColor;
+                        Color colour = Theme.of(context).colorScheme.error;
                         showSnackbar(
                             'Language model changing unavailable', colour);
                       },

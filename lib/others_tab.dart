@@ -105,7 +105,7 @@ class _OthersTabState extends State<OthersTab> {
                       subtitle: Text(history[index].response),
                       trailing: IconButton(
                         icon: Icon(Icons.delete,
-                            color: themeModel.currentTheme.errorColor),
+                            color: themeModel.currentTheme.colorScheme.error),
                         onPressed: () {
                           showDeleteConfirmation(
                               context, answersModel, history[index]);
@@ -419,7 +419,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).errorColor,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                       child: const Text(
                         'Cancel',
@@ -510,7 +510,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
             : Colors.black,
         backgroundColor: isSelected
             ? Theme.of(context).indicatorColor
-            : Theme.of(context).accentColor,
+            : Theme.of(context).colorScheme.secondary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
       ),

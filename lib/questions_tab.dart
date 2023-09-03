@@ -112,7 +112,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  themeModel.currentTheme.accentColor,
+                                  themeModel.currentTheme.colorScheme.secondary,
                             ),
                             child:
                                 Text('Change language: ${language.getText()}',
@@ -191,8 +191,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                         themeModel.currentTheme.primaryColor,
                                     borderRadius: BorderRadius.circular(10.0),
                                     child: ListTile(
-                                      tileColor:
-                                          themeModel.currentTheme.accentColor,
+                                      tileColor: themeModel
+                                          .currentTheme.colorScheme.secondary,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -328,7 +328,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                       .hasAudioAvailable(language.getCode()),
                                   tileColor: tileDisabled
                                       ? Colors.grey[500]
-                                      : themeModel.currentTheme.accentColor,
+                                      : themeModel
+                                          .currentTheme.colorScheme.secondary,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -564,7 +565,7 @@ class ConfirmationDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).errorColor,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                       child: const Text(
                         'Cancel',
