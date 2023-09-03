@@ -11,6 +11,8 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:rive/rive.dart';
 
+import 'log.dart';
+
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({super.key, required this.onFinished});
 
@@ -157,7 +159,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
       toggleAnimation();
       stopRecorder();
     } catch (e) {
-      print(e);
+      logger.e(e);
     }
   }
 

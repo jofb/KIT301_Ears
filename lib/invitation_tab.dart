@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kit301_ears/answers.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'log.dart';
 import 'audio_procesing/language.dart';
 import 'audio_recorder.dart';
 import 'audio_procesing/ml_inference.dart';
@@ -32,7 +32,7 @@ class _InvitationTabState extends State<InvitationTab> {
 
     return AudioRecorder(
       onFinished: () async {
-        print('Finished recording. Predicting language...');
+        logger.i('Finished recording. Predicting language...');
 
         // get the lang index and then update the language provider
         int langIndex = await predictLanguage('my_file.wav');

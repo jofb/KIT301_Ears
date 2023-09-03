@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:kit301_ears/colours.dart';
-import 'package:kit301_ears/pdf_viewer.dart';
-import 'package:kit301_ears/settings.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
+import 'colours.dart';
+import 'pdf_viewer.dart';
+import 'settings.dart';
 import 'category.dart';
 import 'others_tab.dart';
 import 'invitation_tab.dart';
 import 'questions_tab.dart';
 import 'answers.dart';
 import 'audio_procesing/language.dart';
+import 'log.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var app = await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print("\n\nConnected to Firebase App ${app.options.projectId}\n\n");
+  logger.i('Connect to Firebase App ${app.options.projectId}');
 
   runApp(const MyApp());
 }
@@ -224,11 +224,13 @@ class BurgerMenu extends StatelessWidget {
               Navigator.pop(context);
               // Navigate to answer history page
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SettingsWidget(
-                            scaffoldMessengerKey: scaffoldMessengerKey,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsWidget(
+                    scaffoldMessengerKey: scaffoldMessengerKey,
+                  ),
+                ),
+              );
             },
             leading: const Icon(Icons.settings),
           ),

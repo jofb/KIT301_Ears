@@ -25,17 +25,8 @@ import 'package:flutter/material.dart';
 // });
 // const int _mcgpalette0PrimaryValue = 0xFF332288;
 
-final themeProt = ThemeData(
-  primarySwatch: mcgpalette0,
-  primaryColor: Color(0xFF003771),
-  scaffoldBackgroundColor: Colors.white,
-  cardColor: Color(0xFF6D87D1),
-  errorColor: Color(0xFF6A6B7A),
-  indicatorColor: Color(0xFFCBB400),
-  dividerColor: Colors.grey,
-  accentColor: Color(0xFFD9D4D4),
-);
-
+// prot theme
+const int _mcgpalette0PrimaryValue = 0xFF003771;
 const MaterialColor mcgpalette0 =
     MaterialColor(_mcgpalette0PrimaryValue, <int, Color>{
   50: Color(0xFFE0E7EE),
@@ -49,19 +40,24 @@ const MaterialColor mcgpalette0 =
   800: Color(0xFF002354),
   900: Color(0xFF001642),
 });
-const int _mcgpalette0PrimaryValue = 0xFF003771;
 
-final themeDeut = ThemeData(
-  primarySwatch: mcgpalette1,
-  primaryColor: Color(0xFF003A61),
+final themeProt = ThemeData(
+  primarySwatch: mcgpalette0,
+  primaryColor: const Color(0xFF003771),
   scaffoldBackgroundColor: Colors.white,
-  cardColor: Color(0xFF6488CF),
-  errorColor: Color(0xFF81674E),
-  indicatorColor: Color(0xFFE4AA2F),
+  cardColor: const Color(0xFF6D87D1),
+  errorColor: const Color(0xFF6A6B7A),
+  indicatorColor: const Color(0xFFCBB400),
   dividerColor: Colors.grey,
-  accentColor: Color(0xFFE9CED7),
+  accentColor: const Color(0xFFD9D4D4),
+  colorScheme: ColorScheme.fromSwatch(primarySwatch: mcgpalette0).copyWith(
+    error: const Color(0xFF6A6B7A),
+    secondary: const Color(0xFFD9D4D4),
+  ),
 );
 
+// deut theme
+const int _mcgpalette1PrimaryValue = 0xFF003A61;
 const MaterialColor mcgpalette1 =
     MaterialColor(_mcgpalette1PrimaryValue, <int, Color>{
   50: Color(0xFFE0E7EC),
@@ -75,19 +71,20 @@ const MaterialColor mcgpalette1 =
   800: Color(0xFF002545),
   900: Color(0xFF001833),
 });
-const int _mcgpalette1PrimaryValue = 0xFF003A61;
 
-final themeTrit = ThemeData(
-  primarySwatch: mcgpalette2,
-  primaryColor: Color(0xFF003E43),
+final themeDeut = ThemeData(
+  primarySwatch: mcgpalette1,
+  primaryColor: const Color(0xFF003A61),
   scaffoldBackgroundColor: Colors.white,
-  cardColor: Color(0xFF5A919C),
-  errorColor: Color(0xFFD12929),
-  indicatorColor: Color(0xFF5FC2D1),
+  cardColor: const Color(0xFF6488CF),
+  errorColor: const Color(0xFF81674E),
+  indicatorColor: const Color(0xFFE4AA2F),
   dividerColor: Colors.grey,
-  accentColor: Color(0xFFD7D3E3),
+  accentColor: const Color(0xFFE9CED7),
 );
 
+// trit theme
+const int _mcgpalette2PrimaryValue = 0xFF003E43;
 const MaterialColor mcgpalette2 =
     MaterialColor(_mcgpalette2PrimaryValue, <int, Color>{
   50: Color(0xFFE0E8E8),
@@ -101,8 +98,19 @@ const MaterialColor mcgpalette2 =
   800: Color(0xFF00282C),
   900: Color(0xFF001B1E),
 });
-const int _mcgpalette2PrimaryValue = 0xFF003E43;
 
+final themeTrit = ThemeData(
+  primarySwatch: mcgpalette2,
+  primaryColor: const Color(0xFF003E43),
+  scaffoldBackgroundColor: Colors.white,
+  cardColor: const Color(0xFF5A919C),
+  errorColor: const Color(0xFFD12929),
+  indicatorColor: const Color(0xFF5FC2D1),
+  dividerColor: Colors.grey,
+  accentColor: const Color(0xFFD7D3E3),
+);
+
+// classic theme
 final themeOne = ThemeData(
   primarySwatch: Colors.blueGrey,
   primaryColor: Colors.blueGrey,
@@ -114,16 +122,8 @@ final themeOne = ThemeData(
   accentColor: Colors.grey[300],
 );
 
-final themeTwo = ThemeData(
-    primarySwatch: primeswatch,
-    primaryColor: const Color.fromARGB(255, 28, 56, 102),
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: const Color.fromARGB(255, 221, 123, 39),
-    errorColor: Colors.redAccent,
-    indicatorColor: Colors.green,
-    dividerColor: Colors.grey[800],
-    accentColor: Colors.grey[300]);
-
+// ses theme
+const int _primeswatchPrimaryValue = 0xFF1C3866;
 const MaterialColor primeswatch =
     MaterialColor(_primeswatchPrimaryValue, <int, Color>{
   50: Color(0xFFE2E5EA),
@@ -137,9 +137,127 @@ const MaterialColor primeswatch =
   800: Color(0xFF091936),
   900: Color(0xFF050F26),
 });
-const int _primeswatchPrimaryValue = 0xFF1C3866;
+
+final themeTwo = ThemeData(
+    primarySwatch: primeswatch,
+    primaryColor: const Color.fromARGB(255, 28, 56, 102),
+    scaffoldBackgroundColor: Colors.white,
+    cardColor: const Color.fromARGB(255, 221, 123, 39),
+    errorColor: Colors.redAccent,
+    indicatorColor: Colors.green,
+    dividerColor: Colors.grey[800],
+    accentColor: Colors.grey[300]);
 
 class ThemeModel with ChangeNotifier {
+  List<AppThemeData> tt = [];
+
+  ThemeData createTheme({
+    required MaterialColor swatch,
+    required Color? primary,
+    required Color? secondary,
+    required Color? background,
+    required Color? error,
+    required Color? card,
+    required Color? divider,
+    required Color? indicator,
+  }) {
+    return ThemeData(
+      primarySwatch: swatch,
+      primaryColor: primary,
+      scaffoldBackgroundColor: background,
+      cardColor: card,
+      dividerColor: divider,
+      indicatorColor: indicator,
+      colorScheme: ColorScheme.fromSwatch(primarySwatch: swatch)
+          .copyWith(secondary: secondary, error: error),
+    );
+  }
+
+  ThemeModel() {
+    // classic theme
+    final themeOne = createTheme(
+      swatch: Colors.blueGrey,
+      primary: Colors.blueGrey,
+      secondary: Colors.grey[300],
+      background: Colors.white,
+      error: Colors.redAccent,
+      card: Colors.redAccent[100],
+      divider: Colors.grey,
+      indicator: Colors.green,
+    );
+
+    // ses theme
+    final themeTwo = createTheme(
+      swatch: createMaterialColor(const Color(0xFF1C3866)),
+      primary: const Color.fromARGB(255, 28, 56, 102),
+      secondary: Colors.grey[300],
+      background: Colors.white,
+      error: Colors.redAccent,
+      card: const Color.fromARGB(255, 221, 123, 39),
+      divider: Colors.grey[800],
+      indicator: Colors.green,
+    );
+
+    // protanopia theme
+    final themeThree = createTheme(
+      swatch: mcgpalette0, // TODO change this
+      primary: const Color(0xFF003771),
+      secondary: const Color(0xFFD9D4D4),
+      background: Colors.white,
+      error: const Color(0xFF6A6B7A),
+      card: const Color(0xFF6D87D1),
+      divider: Colors.grey,
+      indicator: const Color(0xFFCBB400),
+    );
+
+    // deuteranopia theme
+    final themeFour = createTheme(
+      swatch: mcgpalette1, // TODO change this
+      primary: const Color(0xFF003A61),
+      secondary: const Color(0xFFE9CED7),
+      background: Colors.white,
+      error: const Color(0xFF81674E),
+      card: const Color(0xFF6488CF),
+      divider: Colors.grey,
+      indicator: const Color(0xFFE4AA2F),
+    );
+
+    // tritanopia theme
+    final themeFive = createTheme(
+      swatch: mcgpalette2, // TODO change this
+      primary: const Color(0xFF003E43),
+      secondary: const Color(0xFFD7D3E3),
+      background: Colors.white,
+      error: const Color(0xFFD12929),
+      card: const Color(0xFF5A919C),
+      divider: Colors.grey,
+      indicator: const Color(0xFF5FC2D1),
+    );
+
+    // initialize themes
+    tt = [
+      AppThemeData('Classic', themeOne),
+      AppThemeData('SES Theme', themeTwo),
+      AppThemeData('Protanopia', themeThree),
+      AppThemeData('Deuteranopia', themeFour),
+      AppThemeData('Tritanopia', themeFive),
+    ];
+  }
+  // prot theme
+  final MaterialColor mcgpalette0 =
+      const MaterialColor(0xFF003771, <int, Color>{
+    50: Color(0xFFE0E7EE),
+    100: Color(0xFFB3C3D4),
+    200: Color(0xFF809BB8),
+    300: Color(0xFF4D739C),
+    400: Color(0xFF265586),
+    500: Color(0xFF003771),
+    600: Color(0xFF003169),
+    700: Color(0xFF002A5E),
+    800: Color(0xFF002354),
+    900: Color(0xFF001642),
+  });
+
   final List<AppThemeData> _themes = [
     AppThemeData('Classic', themeOne),
     AppThemeData('SES Theme', themeTwo),
@@ -157,6 +275,8 @@ class ThemeModel with ChangeNotifier {
     _currentThemeIndex = index;
     notifyListeners();
   }
+
+  int get themeIndex => _currentThemeIndex;
 
   int getThemeIndex() {
     return _currentThemeIndex;

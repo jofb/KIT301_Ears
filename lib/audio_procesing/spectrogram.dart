@@ -178,10 +178,9 @@ Matrix melSpectrogram(List<double> signal) {
   // TODO refactor this to just use the matrix rather than list of lists
   // create the power spectrogram
   List<List<double>> powerSpectrogram = [];
-  spectrogram.forEach((element) {
-    powerSpectrogram
-        .add(element.map((e) => pow(e.abs(), power).toDouble()).toList());
-  });
+  for (var e in spectrogram) {
+    powerSpectrogram.add(e.map((e) => pow(e.abs(), power).toDouble()).toList());
+  }
 
   // matrix used for converting to mel scale
   Matrix melWeights = computeMelWeightsMatrix(
@@ -243,7 +242,7 @@ List<List<double>> nonOverlapFrame(signal, int length) {
 
 List<double> rootMeanSquare(List<List<double>> input, length) {
   // square, two maps to cover both lists
-  final square = input.map((e) => e.map((num) => num.abs() * num.abs()));
+  final square = input.map((e) => e.map((v) => v.abs() * v.abs()));
   // mean, sum rows then take the mean
   final mean = square.map((e) => e.reduce((a, b) => a + b) / e.length);
   // root, simple sqrt map on each element

@@ -28,7 +28,7 @@ class PDFViewerFromAsset extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Text(
                         snapshot.data!,
-                        style: TextStyle(fontSize: 22),
+                        style: const TextStyle(fontSize: 22),
                       ),
                     ),
                   );
@@ -65,7 +65,7 @@ class PDFViewerFromAsset extends StatelessWidget {
               children: <Widget>[
                 FloatingActionButton(
                   heroTag: '<',
-                  child: Icon(Icons.arrow_back),
+                  child: const Icon(Icons.arrow_back),
                   onPressed: () async {
                     final PDFViewController pdfController = snapshot.data!;
                     final int currentPage =
