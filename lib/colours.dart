@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeModel with ChangeNotifier {
   List<AppThemeData> _themes = [];
+  int _currentThemeIndex = 1;
 
   ThemeModel() {
     // classic theme
@@ -73,8 +74,6 @@ class ThemeModel with ChangeNotifier {
       AppThemeData('Tritanopia', themeFive),
     ];
   }
-
-  int _currentThemeIndex = 1;
 
   ThemeData get currentTheme => _themes[_currentThemeIndex].theme;
 
