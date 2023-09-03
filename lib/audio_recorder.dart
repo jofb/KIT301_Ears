@@ -52,6 +52,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
       var controller =
           StateMachineController.fromArtboard(artboard, 'State Machine 1');
 
+      var micRecordingAnimation = artboard.animations.firstWhere((element) => element.name == 'MicRec') as LinearAnimation;
+      artboard.internalRemoveAnimation(micRecordingAnimation);
+
+      micRecordingAnimation.speed = 15/widget.recordingTime + 0.1; //micRecordingAnimation time = recording time + 0.1 sec;
+      artboard.internalAddAnimation(micRecordingAnimation);
+
       if (controller != null) {
         artboard.addController(controller);
         _trigger = controller.findInput('Press');
