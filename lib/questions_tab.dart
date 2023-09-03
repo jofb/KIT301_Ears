@@ -1,13 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:kit301_ears/colours.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 
 import 'category.dart';
 import 'answers.dart';
+import 'log.dart';
 import 'audio_procesing/language.dart';
 
 class QuestionsTab extends StatefulWidget {
@@ -37,7 +36,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
   @override
   void initState() {
     player.onPlayerComplete.listen((e) {
-      print('Audio player complete');
+      logger.d('Audio player complete');
       setState(() {
         _selectedItemIndex = -1;
       });
@@ -115,15 +114,9 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               backgroundColor:
                                   themeModel.currentTheme.accentColor,
                             ),
-                            // style: OutlinedButton.styleFrom(
-                            //   side: BorderSide(
-                            //     color: themeModel.currentTheme.dividerColor,
-                            //     width: 2,
-                            //   ),
-                            // ),
                             child:
                                 Text('Change language: ${language.getText()}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,
                                     )),

@@ -106,7 +106,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Transform.scale(
-                            scale: 0.8, child: CircularProgressIndicator()),
+                            scale: 0.8,
+                            child: const CircularProgressIndicator()),
                       ),
                   ],
                 ),
@@ -180,7 +181,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Transform.scale(
-                            scale: 0.8, child: CircularProgressIndicator()),
+                            scale: 0.8,
+                            child: const CircularProgressIndicator()),
                       ),
                   ],
                 ),
@@ -259,7 +261,7 @@ class Section extends AbstractSettingsSection {
                 style: TextStyle(color: theme.primaryColor, fontSize: 30)),
             const Expanded(
                 child: Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: EdgeInsets.only(left: 20.0),
               child: Divider(),
             )),
           ],
