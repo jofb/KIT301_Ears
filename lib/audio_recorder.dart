@@ -36,6 +36,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   // animation state
   Artboard? _artboard;
   SMIInput<bool>? _trigger;
+  SMIInput<bool>? _complete; //A trigger for the boolean
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
       if (controller != null) {
         artboard.addController(controller);
         _trigger = controller.findInput('Press');
+        _complete = controller.findInput('Complete');
       }
 
       setState(() {
@@ -159,7 +161,13 @@ class _AudioRecorderState extends State<AudioRecorder> {
     });
   }
 
-  Future<void> delayedStopRecording() async {
+  void toggleStopAnimation() {
+    setState(() {
+      _complete?.value = true; //trigger the red end flash of the animation
+    });
+  }
+
+  Future<void> delayedStopRecording() async {//TODO: trigger the red flash stop animation when (recordingTime - 0.5) is reached
     _recordingOperation = CancelableOperation.fromFuture(
       Future.delayed(
         Duration(seconds: widget.recordingTime),
