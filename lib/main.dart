@@ -119,11 +119,13 @@ class _MyHomePageState extends State<MyHomePage> {
               scaffoldMessengerKey: _scaffoldMessengerKey,
             ),
           ),
-          body: const TabBarView(
+          body: TabBarView(
             children: [
-              OthersTab(),
-              QuestionsTab(),
-              InvitationTab(),
+              const OthersTab(),
+              const QuestionsTab(),
+              InvitationTab(
+                scaffoldMessengerKey: _scaffoldMessengerKey,
+              ),
             ],
           ),
         ),

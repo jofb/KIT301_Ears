@@ -73,7 +73,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           Text(
-            'You may need to download them from the internet. (Go to Settings > \'Update Questions\')',
+            'You may need to download them from the internet. (Go to Settings > \'Download Questions\')',
             style: TextStyle(fontSize: 20, color: Colors.grey[700]),
           )
         ],

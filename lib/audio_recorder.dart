@@ -16,7 +16,7 @@ import 'log.dart';
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({super.key, required this.onFinished});
 
-  final int recordingTime = 8;
+  final int recordingTime = 4;
   final Function onFinished;
 
   @override
@@ -52,10 +52,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
       var controller =
           StateMachineController.fromArtboard(artboard, 'State Machine 1');
 
-      var micRecordingAnimation = artboard.animations.firstWhere((element) => element.name == 'MicRec') as LinearAnimation;
+      var micRecordingAnimation = artboard.animations
+          .firstWhere((element) => element.name == 'MicRec') as LinearAnimation;
       artboard.internalRemoveAnimation(micRecordingAnimation);
 
-      micRecordingAnimation.speed = 15/widget.recordingTime + 0.1; //micRecordingAnimation time = recording time + 0.1 sec;
+      micRecordingAnimation.speed = (15 / widget.recordingTime) +
+          0.1; //micRecordingAnimation time = recording time + 0.1 sec;
       artboard.internalAddAnimation(micRecordingAnimation);
 
       if (controller != null) {
