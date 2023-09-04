@@ -16,7 +16,7 @@ import 'log.dart';
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({super.key, required this.onFinished});
 
-  final int recordingTime = 4;
+  final int recordingTime = 8;
   final Function onFinished;
 
   @override
