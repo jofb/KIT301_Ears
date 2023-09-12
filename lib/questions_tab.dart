@@ -607,7 +607,7 @@ class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).errorColor,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                       child: const Text(
                         'Cancel',

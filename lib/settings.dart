@@ -219,6 +219,27 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             ],
             theme: themeModel.currentTheme,
           ),
+          Section(
+            title: 'About',
+            tiles: const [
+              CustomSettingsTile(
+                child: ListTile(
+                  title: Text('Version'),
+                  subtitle: Text('1.0.0'),
+                ),
+              ),
+              CustomSettingsTile(
+                child: ListTile(
+                  title: Text('Developers'),
+                  subtitle: Padding(
+                    padding: EdgeInsets.fromLTRB(4,4,4,8),
+                    child: Text('- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Brown\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
+                  ),
+                ),
+              )
+            ],
+            theme: themeModel.currentTheme,
+          ),
         ],
       ),
     );
