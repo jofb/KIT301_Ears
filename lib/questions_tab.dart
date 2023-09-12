@@ -582,7 +582,7 @@ class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
                           },
                           min: 1,
                           max: 10,
-                          divisions: null, //change to 9 for snappy slider
+                          divisions: 9, //change to 9 for snappy slider
                           label: null,
                           activeColor: Colors.transparent,
                           inactiveColor: Colors.transparent,

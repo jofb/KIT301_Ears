@@ -49,7 +49,7 @@ class AnswersModel extends ChangeNotifier {
 
   // set driver position
   void setCarSeat(int i) {
-    carSeatIndex = i;
+    carSeatIndex = i == -1 ? null : i;
     update();
   }
 
