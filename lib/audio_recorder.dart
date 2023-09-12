@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -10,6 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:rive/rive.dart';
+
+import 'log.dart';
 
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({super.key, required this.onFinished});
@@ -49,6 +53,17 @@ class _AudioRecorderState extends State<AudioRecorder> {
       final artboard = file.mainArtboard;
       var controller =
           StateMachineController.fromArtboard(artboard, 'State Machine 1');
+
+      // rip out the mic recording animation and update the speed multiplyer
+      LinearAnimation micRecordingAnimation = artboard.animations
+          .firstWhere((element) => element.name == 'MicRec') as LinearAnimation;
+      artboard.internalRemoveAnimation(micRecordingAnimation);
+
+      // speed multiplyer is (original_duration / new_duration) + fudging_number
+      micRecordingAnimation.speed = (15 / widget.recordingTime) + 0.1;
+
+      // add the animation back
+      artboard.internalAddAnimation(micRecordingAnimation);
 
       if (controller != null) {
         artboard.addController(controller);
@@ -114,12 +129,12 @@ class _AudioRecorderState extends State<AudioRecorder> {
     // needs a file path, a codec, and an audio source
     _recorder
         .startRecorder(
-            // codec: _codec,
-            toFile: '${tempDir.path}/$_filePath',
-            audioSource: AudioSource.microphone)
-        .then((value) {
-      setState(() {});
-    });
+          // codec: Codec.pcm16,
+          toFile: '${tempDir.path}/$_filePath',
+          audioSource: AudioSource.microphone,
+          // toStream: sink,
+        )
+        .then((_) => setState(() {}));
   }
 
   // stops current recorder
@@ -157,7 +172,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
       toggleAnimation();
       stopRecorder();
     } catch (e) {
-      print(e);
+      logger.e(e);
     }
   }
 

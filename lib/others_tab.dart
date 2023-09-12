@@ -7,6 +7,7 @@ import 'package:kit301_ears/colours.dart';
 import 'package:provider/provider.dart';
 
 import 'category.dart';
+import 'log.dart';
 
 class OthersTab extends StatefulWidget {
   const OthersTab({super.key});
@@ -37,7 +38,7 @@ class _OthersTabState extends State<OthersTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(4.0),
                     child: Row(
                       children: [
                         Text(answersModel.toString(),
@@ -84,7 +85,7 @@ class _OthersTabState extends State<OthersTab> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(4.0),
                     child: Text(
                       answersModel.toStringSimple(),
                       style: TextStyle(
@@ -104,7 +105,7 @@ class _OthersTabState extends State<OthersTab> {
                       subtitle: Text(history[index].response),
                       trailing: IconButton(
                         icon: Icon(Icons.delete,
-                            color: themeModel.currentTheme.errorColor),
+                            color: themeModel.currentTheme.colorScheme.error),
                         onPressed: () {
                           showDeleteConfirmation(
                               context, answersModel, history[index]);
@@ -113,7 +114,7 @@ class _OthersTabState extends State<OthersTab> {
                     );
                   },
                   itemCount: answersModel.history.length,
-                  padding: EdgeInsets.only(bottom: 80)),
+                  padding: const EdgeInsets.only(bottom: 80)),
             ),
           ],
         ),
@@ -178,7 +179,7 @@ class _OthersTabState extends State<OthersTab> {
 class ShareButton extends StatelessWidget {
   final AnswersModel answersModel;
 
-  const ShareButton({required this.answersModel});
+  const ShareButton({super.key, required this.answersModel});
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +187,7 @@ class ShareButton extends StatelessWidget {
       onPressed: () {
         _shareHistory(context, answersModel);
       },
-      child: Text('Share History'),
+      child: const Text('Share History'),
     );
   }
 
@@ -208,7 +209,8 @@ class ShareButton extends StatelessWidget {
 }
 
 class FabWithIcons extends StatefulWidget {
-  FabWithIcons({required this.icons, required this.fabText});
+  const FabWithIcons({super.key, required this.icons, required this.fabText});
+
   final List<IconData> icons;
   final List<String> fabText;
   //ValueChanged<int> onIconTapped;
@@ -300,15 +302,9 @@ class FabWithIconsState extends State<FabWithIcons>
                   );
 
                   if (response != null) {
-                    // TODO refactor answers history to take in driver position, dont add new answer
-                    // append to answers history
-                    // answersModel.position = response;
-                    if (response == -1) {
-                      answersModel.carSeatIndex = null;
-                      answersModel.update();
-                    } else {
-                      answersModel.setCarSeat(response);
-                    }
+                    // set car seat from dialog response
+                    answersModel.setCarSeat(response);
+                    logger.d('Car seat: $response');
                   }
                 } else if (widget.fabText[index] == 'Share Answer History') {
                   //ShareButton(answersModel: answersModel);
@@ -368,7 +364,7 @@ class SeatPositionDialog extends StatefulWidget {
   final int? initial;
 
   @override
-  _SeatPositionDialogState createState() => _SeatPositionDialogState();
+  State<SeatPositionDialog> createState() => _SeatPositionDialogState();
 }
 
 class _SeatPositionDialogState extends State<SeatPositionDialog> {
@@ -423,7 +419,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).errorColor,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                       child: const Text(
                         'Cancel',
@@ -478,7 +474,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                 ),
               ],
             ),
-            SizedBox(height: 20), // Adjust the height as needed
+            const SizedBox(height: 20), // Adjust the height as needed
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -535,7 +531,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
             : Colors.black,
         backgroundColor: isSelected
             ? Theme.of(context).indicatorColor
-            : Theme.of(context).accentColor,
+            : Theme.of(context).colorScheme.secondary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
       ),

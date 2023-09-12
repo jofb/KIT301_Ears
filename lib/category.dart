@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 
+import 'log.dart';
+
 class Category {
   final String categoryName;
   final List<Question> questions;
@@ -78,12 +80,18 @@ class CategoriesModel extends ChangeNotifier {
 
   // initializes category list
   Future initCategories() async {
-    print("Initializing categories");
+    logger.i("Initializing categories");
     List<Category> tempCategoryList = [];
 
     // directory for audio files
     final appDir = await getApplicationDocumentsDirectory();
-    final audioPaths = Directory("${appDir.path}/audio")
+    // ensure audio directory exists
+    final audioDir = Directory("${appDir.path}/audio");
+
+    if (!await Directory(audioDir.path).exists()) {
+      await Directory(audioDir.path).create();
+    }
+    final audioPaths = audioDir
         .listSync(recursive: true)
         .map((e) => e.path.split('audio/')[1])
         .where((e) => e.contains('/'))
@@ -201,7 +209,7 @@ class CategoriesModel extends ChangeNotifier {
       }
     }
     categories.clear();
-    print('Categories cache cleared');
+    logger.i('Categories cache cleared');
   }
 
   void update() {

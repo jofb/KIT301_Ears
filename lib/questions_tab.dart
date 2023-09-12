@@ -1,13 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:kit301_ears/colours.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 
 import 'category.dart';
 import 'answers.dart';
+import 'log.dart';
 import 'audio_procesing/language.dart';
 
 class QuestionsTab extends StatefulWidget {
@@ -37,7 +36,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
   @override
   void initState() {
     player.onPlayerComplete.listen((e) {
-      print('Audio player complete');
+      logger.d('Audio player complete');
       setState(() {
         _selectedItemIndex = -1;
       });
@@ -74,7 +73,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           Text(
-            'You may need to download them from the internet. (Go to Settings > \'Update Questions\')',
+            'You may need to download them from the internet. (Go to Settings > \'Download Questions\')',
             style: TextStyle(fontSize: 20, color: Colors.grey[700]),
           )
         ],
@@ -113,17 +112,11 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  themeModel.currentTheme.accentColor,
+                                  themeModel.currentTheme.colorScheme.secondary,
                             ),
-                            // style: OutlinedButton.styleFrom(
-                            //   side: BorderSide(
-                            //     color: themeModel.currentTheme.dividerColor,
-                            //     width: 2,
-                            //   ),
-                            // ),
                             child:
                                 Text('Change language: ${language.getText()}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       color: Colors.black,
                                     )),
@@ -198,8 +191,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                         themeModel.currentTheme.primaryColor,
                                     borderRadius: BorderRadius.circular(10.0),
                                     child: ListTile(
-                                      tileColor:
-                                          themeModel.currentTheme.accentColor,
+                                      tileColor: themeModel
+                                          .currentTheme.colorScheme.secondary,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
@@ -352,7 +345,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                       .hasAudioAvailable(language.getCode()),
                                   tileColor: tileDisabled
                                       ? Colors.grey[500]
-                                      : themeModel.currentTheme.accentColor,
+                                      : themeModel
+                                          .currentTheme.colorScheme.secondary,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -780,7 +774,7 @@ class ConfirmationDialog extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: Theme.of(context).errorColor,
+                        backgroundColor: Theme.of(context).colorScheme.error,
                       ),
                       child: const Text(
                         'Cancel',
