@@ -64,6 +64,7 @@ class PDFViewerFromAsset extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 FloatingActionButton(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   heroTag: '<',
                   child: const Icon(Icons.arrow_back),
                   onPressed: () async {
@@ -76,6 +77,7 @@ class PDFViewerFromAsset extends StatelessWidget {
                   },
                 ),
                 FloatingActionButton(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   heroTag: '>',
                   child: const Icon(Icons.arrow_forward),
                   onPressed: () async {

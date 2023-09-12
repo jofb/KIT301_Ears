@@ -392,14 +392,14 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
           padding: const EdgeInsets.all(4),
           child: Container(
             width: MediaQuery.of(context).size.width *
-                0.7, //Gets dimension of the screen * 70%
+                0.8, //Gets dimension of the screen * 70%
             height: MediaQuery.of(context).size.height *
-                0.7, //Gets dimension of the screen * 70%
+                0.8, //Gets dimension of the screen * 70%
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey, width: 2),
               borderRadius: BorderRadius.circular(8.0),
             ),
-            padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
+            padding: const EdgeInsets.fromLTRB(30.0, 16.0, 30.0, 16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -413,8 +413,8 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                          vertical: 30.0,
-                          horizontal: 40.0,
+                          vertical: 20.0,
+                          horizontal: 60.0,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
@@ -432,8 +432,8 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 30.0,
-                            horizontal: 40.0,
+                            vertical: 20.0,
+                            horizontal: 60.0,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -489,6 +489,27 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                 ),
               ],
             ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Divider(
+                color: Colors.grey,
+                thickness: 2,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0, 0, 0),
+                  child: buildSeatButton(5),
+                ),
+                buildSeatButton(6),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 16.0, 0),
+                  child: buildSeatButton(7),
+                ),
+              ],
+            )
           ],
         ),
       ],
@@ -501,7 +522,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
     return ElevatedButton(
       onPressed: () {
         setState(() {
-          selectedIndex = isSelected ? null : seatIndex;
+          selectedIndex = isSelected ? -1 : seatIndex;
         });
       },
       style: ElevatedButton.styleFrom(
@@ -512,9 +533,12 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
             ? Theme.of(context).indicatorColor
             : Theme.of(context).colorScheme.secondary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
+        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
       ),
-      child: Text(title),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 20.0),
+        ),
     );
   }
 }
