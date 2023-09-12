@@ -298,7 +298,24 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     answersModel.addAnswer(question, response);
                                   }
                                 };
-                                break;
+                              break;
+                              case 'scalerating':
+                                followUpWidget = () async {
+                                  // get the answer from the dialog
+                                  var response = await showDialog(
+                                      barrierColor:
+                                          Colors.black.withOpacity(0.75),
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const ScaleRatingDialog();
+                                      });
+
+                                  if (response != null) {
+                                    // append to answers history
+                                    answersModel.addAnswer(question, response);
+                                  }
+                                };
+                              break;
                             }
 
                             IconData? trailingIcon;
@@ -501,6 +518,198 @@ class YesNoDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// Scale rating optional follow up dialog for questions, rates casualty pain on scale 1-5
+class ScaleRatingDialog extends StatefulWidget {
+  const ScaleRatingDialog({Key? key}) : super(key: key);
+
+  @override
+  _ScaleRatingDialogState createState() => _ScaleRatingDialogState();
+}
+
+class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
+  double _sliderValue = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: WillPopScope(
+        onWillPop: () async {
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            width: MediaQuery.of(context).size.width *
+                  0.7, //Gets dimension of the screen * 70%
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 2),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [ Colors.green, Colors.yellow, Colors.orange, Colors.red],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          thumbShape: const CustomSliderThumbCircle(
+                            thumbRadius: 30.0,
+                            min: 1,
+                            max: 10,
+                          ),
+                        ),
+                        child: Slider(
+                          value: _sliderValue,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _sliderValue = newValue;
+                            });
+                          },
+                          min: 1,
+                          max: 10,
+                          divisions: null, //change to 9 for snappy slider
+                          label: null,
+                          activeColor: Colors.transparent,
+                          inactiveColor: Colors.transparent,
+                          thumbColor: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 50.0,
+                          horizontal: 60.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: Theme.of(context).errorColor,
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 24.0),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, _sliderValue.toStringAsFixed(1));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 50.0,
+                            horizontal: 60.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: Theme.of(context).indicatorColor),
+                      child: const Text(
+                        'Confirm',
+                        style: TextStyle(fontSize: 24.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomSliderThumbCircle extends SliderComponentShape {
+  final double thumbRadius;
+  final int min;
+  final int max;
+  final String? customLabel; // Custom label for the thumb.
+
+  const CustomSliderThumbCircle({
+    required this.thumbRadius,
+    this.min = 0,
+    this.max = 10,
+    this.customLabel,
+  });
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return Size.fromRadius(thumbRadius);
+  }
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    final Canvas canvas = context.canvas;
+
+    final paint = Paint()
+      ..color = Colors.white // Thumb Background Color
+      ..style = PaintingStyle.fill;
+
+    TextSpan span = TextSpan(
+      style: TextStyle(
+        fontSize: thumbRadius * 1,
+        fontWeight: FontWeight.w700,
+        color: sliderTheme.thumbColor, // Text Color of Value on Thumb
+      ),
+      text: customLabel ?? getValue(value), // Use custom label or default label.
+    );
+
+    TextPainter tp = TextPainter(
+        text: span,
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr);
+    tp.layout();
+    Offset textCenter =
+        Offset(center.dx - (tp.width / 2), center.dy - (tp.height / 2));
+
+    canvas.drawCircle(center, thumbRadius * 1, paint);
+    tp.paint(canvas, textCenter);
+  }
+
+  String getValue(double value) {
+    return (min + (max - min) * value).round().toString();
   }
 }
 
