@@ -95,7 +95,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-                          child: ElevatedButton(
+                          child: OutlinedButton(
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -110,15 +110,16 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                 },
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  themeModel.currentTheme.colorScheme.secondary,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                color: themeModel.currentTheme.dividerColor,
+                                width: 2,
+                              ),
                             ),
                             child:
                                 Text('Change language: ${language.getText()}',
                                     style: const TextStyle(
                                       fontSize: 18,
-                                      color: Colors.black,
                                     )),
                           ),
                         ),
