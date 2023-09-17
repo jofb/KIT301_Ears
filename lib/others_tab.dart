@@ -101,8 +101,22 @@ class _OthersTabState extends State<OthersTab> {
                   itemBuilder: (context, index) {
                     List<Answer> history = answersModel.history;
                     return ListTile(
-                      title: Text(history[index].question.full),
-                      subtitle: Text(history[index].response),
+                      title: Text(
+                        history[index].question.full,
+                        style: TextStyle(
+                                color: themeModel.currentTheme.primaryColor
+                              ),
+                        ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0,4,8.0,0),
+                        child: Text(
+                          history[index].response,
+                          style: TextStyle(
+                                fontSize: 24,
+                                color: themeModel.currentTheme.primaryColor
+                              ),
+                          ),
+                      ),
                       trailing: IconButton(
                         icon: Icon(Icons.delete,
                             color: themeModel.currentTheme.colorScheme.error),

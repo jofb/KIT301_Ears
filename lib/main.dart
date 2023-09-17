@@ -20,7 +20,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   logger.i('Connect to Firebase App ${app.options.projectId}');
-
   runApp(const MyApp());
 }
 
