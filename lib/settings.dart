@@ -7,9 +7,10 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'audio_procesing/language.dart';
-import 'category.dart';
-import 'colours.dart';
+import 'providers/audo_downloader.dart';
+import 'providers/language.dart';
+import 'providers/category.dart';
+import 'providers/colours.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({super.key, required this.scaffoldMessengerKey});
@@ -38,13 +39,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   @override
   Widget build(BuildContext build) {
-    return Consumer3<CategoriesModel, ThemeModel, LanguageModel>(
+    return Consumer4<CategoriesModel, ThemeModel, LanguageModel,
+        AudioDownloader>(
       builder: buildScaffold,
     );
   }
 
-  Widget buildScaffold(BuildContext context, CategoriesModel categoriesModel,
-      ThemeModel themeModel, LanguageModel languageModel, _) {
+  Widget buildScaffold(
+      BuildContext context,
+      CategoriesModel categoriesModel,
+      ThemeModel themeModel,
+      LanguageModel languageModel,
+      AudioDownloader audioDownloader,
+      _) {
     if (userPrefs == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -143,55 +150,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   subtitle: const Text(
                       'Updates and downloads audio files from the database. Note that this may take some time. Requires an internet connection'),
                   trailing: DownloadButton(
-                    enabled: !downloadingAudio,
+                    enabled: !audioDownloader.loading,
                     onPressed: () async {
-                      setState(() {
-                        downloadingAudio = true;
-                      });
-                      // get language labels
-                      List<String> labels =
-                          languageModel.labels.map((l) => l['code']!).toList();
+                      final download = audioDownloader.loadAudio(
+                          languageModel.labels.map((l) => l['code']!).toList());
 
-                      final appDir = await getApplicationDocumentsDirectory();
-                      // ensure audio directory exists
-                      final audioDir = Directory("${appDir.path}/audio");
-
-                      if (!await Directory(audioDir.path).exists()) {
-                        await Directory(audioDir.path).create();
-                      }
-
-                      List<DownloadTask> downloads = [];
-
-                      // get the firebase instance
-                      var instance = FirebaseStorage.instance.ref();
-
-                      // now search the the instance for all our labels
-                      for (String label in labels) {
-                        // ensure labelled directory exists
-                        final labelDir = Directory("${audioDir.path}/$label");
-
-                        if (!await Directory(labelDir.path).exists()) {
-                          await Directory(labelDir.path).create();
-                        }
-
-                        ListResult list = await instance.child(label).list();
-
-                        // now for every item we download and place in folder
-                        for (Reference item in list.items) {
-                          String filePath = "${labelDir.path}/${item.name}";
-                          // finally download
-                          File file = File(filePath);
-                          final downloadTask = item.writeToFile(file);
-                          downloads.add(downloadTask);
-                        }
-                      }
-
-                      Future.wait(downloads).then((value) {
-                        if (mounted) {
-                          setState(() {
-                            downloadingAudio = false;
-                          });
-                        }
+                      download.then((_) {
                         categoriesModel.initCategories();
                         showSnackbar('All Audio Downloaded', Colors.green);
                       });

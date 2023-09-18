@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:kit301_ears/providers/audo_downloader.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'colours.dart';
+import 'providers/colours.dart';
 import 'pdf_viewer.dart';
 import 'settings.dart';
-import 'category.dart';
+import 'providers/category.dart';
 import 'others_tab.dart';
 import 'invitation_tab.dart';
 import 'questions_tab.dart';
-import 'answers.dart';
-import 'audio_procesing/language.dart';
+import 'providers/answers.dart';
+import 'providers/language.dart';
 import 'log.dart';
 
 void main() async {
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => LanguageModel()),
         ChangeNotifierProvider(create: (context) => AnswersModel()),
         ChangeNotifierProvider(create: (context) => ThemeModel()),
+        ChangeNotifierProvider(create: (context) => AudioDownloader()),
       ],
       child: const MyHomePage(title: 'EARS Project'),
     );
