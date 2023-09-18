@@ -25,6 +25,11 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   SharedPreferences? userPrefs;
 
+  void initPreferences() async {
+    userPrefs = await SharedPreferences.getInstance();
+    setState(() {});
+  }
+
   @override
   void initState() {
     initPreferences();
@@ -232,8 +237,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 child: ListTile(
                   title: Text('Developers'),
                   subtitle: Padding(
-                    padding: EdgeInsets.fromLTRB(4,4,4,8),
-                    child: Text('- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Brown\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
+                    padding: EdgeInsets.fromLTRB(4, 4, 4, 8),
+                    child: Text(
+                        '- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Brown\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
                   ),
                 ),
               )
@@ -260,11 +266,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
     // show snackbar using scaffold messenger
     widget.scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
-  }
-
-  void initPreferences() async {
-    userPrefs = await SharedPreferences.getInstance();
-    setState(() {});
   }
 }
 

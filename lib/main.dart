@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'colours.dart';
 import 'pdf_viewer.dart';
@@ -56,6 +57,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _openDrawer() {
     _scaffoldKey.currentState!.openDrawer();
+  }
+
+  @override
+  void initState() {
+    // init default user preferences
+    final userPrefsFuture = SharedPreferences.getInstance();
+    userPrefsFuture.then((userPrefs) {
+      if (!userPrefs.containsKey('questionsNav')) {
+        userPrefs.setBool('questionsNav', true);
+      }
+    });
+    super.initState();
   }
 
   @override
