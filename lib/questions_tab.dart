@@ -1,13 +1,13 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:kit301_ears/colours.dart';
+import 'package:kit301_ears/providers/colours.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'category.dart';
-import 'answers.dart';
+import 'providers/category.dart';
+import 'providers/answers.dart';
 import 'log.dart';
-import 'audio_procesing/language.dart';
+import 'providers/language.dart';
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -292,7 +292,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     answersModel.addAnswer(question, response);
                                   }
                                 };
-                              break;
+                                break;
                               case 'scalerating':
                                 followUpWidget = () async {
                                   // get the answer from the dialog
@@ -309,7 +309,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     answersModel.addAnswer(question, response);
                                   }
                                 };
-                              break;
+                                break;
                               case 'multiplechoice':
                                 followUpWidget = () async {
                                   // get the answer from the dialog
@@ -326,7 +326,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
                                     answersModel.addAnswer(question, response);
                                   }
                                 };
-                              break;
+                                break;
                             }
 
                             IconData? trailingIcon;
@@ -558,11 +558,11 @@ class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
           padding: const EdgeInsets.all(4.0),
           child: Container(
             width: MediaQuery.of(context).size.width *
-                  0.7, //Gets dimension of the screen * 70%
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 2),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+                0.7, //Gets dimension of the screen * 70%
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -574,7 +574,12 @@ class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
                     height: 100,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [ Colors.green, Colors.yellow, Colors.orange, Colors.red],
+                        colors: [
+                          Colors.green,
+                          Colors.yellow,
+                          Colors.orange,
+                          Colors.red
+                        ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -705,7 +710,8 @@ class CustomSliderThumbCircle extends SliderComponentShape {
         fontWeight: FontWeight.w700,
         color: sliderTheme.thumbColor, // Text Color of Value on Thumb
       ),
-      text: customLabel ?? getValue(value), // Use custom label or default label.
+      text:
+          customLabel ?? getValue(value), // Use custom label or default label.
     );
 
     TextPainter tp = TextPainter(
@@ -888,11 +894,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 1 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 1
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '1',
-                        style: TextStyle(fontSize: 40.0, color: _value == 1 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 1 ? Colors.white : Colors.black),
                       ),
                     ),
                     ElevatedButton(
@@ -913,11 +923,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 2 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 2
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '2',
-                        style: TextStyle(fontSize: 40.0, color: _value == 2 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 2 ? Colors.white : Colors.black),
                       ),
                     ),
                     ElevatedButton(
@@ -938,11 +952,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 3 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 3
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '3',
-                        style: TextStyle(fontSize: 40.0, color: _value == 3 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 3 ? Colors.white : Colors.black),
                       ),
                     ),
                     ElevatedButton(
@@ -963,11 +981,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 4 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 4
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '4',
-                        style: TextStyle(fontSize: 40.0, color: _value == 4 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 4 ? Colors.white : Colors.black),
                       ),
                     ),
                     ElevatedButton(
@@ -988,11 +1010,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 5 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 5
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '5',
-                        style: TextStyle(fontSize: 40.0, color: _value == 5 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 5 ? Colors.white : Colors.black),
                       ),
                     ),
                     ElevatedButton(
@@ -1013,11 +1039,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 6 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 6
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '6',
-                        style: TextStyle(fontSize: 40.0, color: _value == 6 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 6 ? Colors.white : Colors.black),
                       ),
                     ),
                     ElevatedButton(
@@ -1038,11 +1068,15 @@ class _MultipleChoiceDialogState extends State<MultipleChoiceDialog> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        backgroundColor: _value == 7 ? Theme.of(context).indicatorColor : Colors.grey[300],
+                        backgroundColor: _value == 7
+                            ? Theme.of(context).indicatorColor
+                            : Colors.grey[300],
                       ),
                       child: Text(
                         '7',
-                        style: TextStyle(fontSize: 40.0, color: _value == 7 ? Colors.white : Colors.black),
+                        style: TextStyle(
+                            fontSize: 40.0,
+                            color: _value == 7 ? Colors.white : Colors.black),
                       ),
                     ),
                   ],

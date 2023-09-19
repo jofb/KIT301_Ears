@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:kit301_ears/answers.dart';
-import 'package:kit301_ears/colours.dart';
+import 'package:kit301_ears/providers/answers.dart';
+import 'package:kit301_ears/providers/colours.dart';
 import 'package:provider/provider.dart';
 
-import 'category.dart';
+import 'providers/category.dart';
 import 'log.dart';
 
 class OthersTab extends StatefulWidget {
@@ -104,18 +104,16 @@ class _OthersTabState extends State<OthersTab> {
                       title: Text(
                         history[index].question.full,
                         style: TextStyle(
-                                color: themeModel.currentTheme.primaryColor
-                              ),
-                        ),
+                            color: themeModel.currentTheme.primaryColor),
+                      ),
                       subtitle: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0,4,8.0,0),
+                        padding: const EdgeInsets.fromLTRB(8.0, 4, 8.0, 0),
                         child: Text(
                           history[index].response,
                           style: TextStyle(
-                                fontSize: 24,
-                                color: themeModel.currentTheme.primaryColor
-                              ),
-                          ),
+                              fontSize: 24,
+                              color: themeModel.currentTheme.primaryColor),
+                        ),
                       ),
                       trailing: IconButton(
                         icon: Icon(Icons.delete,
@@ -552,7 +550,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
       child: Text(
         title,
         style: TextStyle(fontSize: 20.0),
-        ),
+      ),
     );
   }
 }

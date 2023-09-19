@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kit301_ears/answers.dart';
+import 'package:kit301_ears/providers/answers.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log.dart';
-import 'audio_procesing/language.dart';
+import 'providers/language.dart';
 import 'audio_recorder.dart';
 import 'audio_procesing/ml_inference.dart';
 

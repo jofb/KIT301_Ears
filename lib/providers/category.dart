@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 
-import 'log.dart';
+import '../log.dart';
 
 class Category {
   final String categoryName;
