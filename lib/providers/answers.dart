@@ -7,7 +7,7 @@ import 'category.dart';
 class AnswersModel extends ChangeNotifier {
   // use datetime as a unique identifier for answer histories
   late DateTime dateTime;
-  String language = 'English (en)';
+  String language = 'Greek (el)';
   List<Answer> history = [];
 
   static const List<String> carSeatStrings = [
@@ -71,6 +71,7 @@ class AnswersModel extends ChangeNotifier {
 
   void clearHistory() {
     history.clear();
+    carSeatIndex = null;
     update();
   }
 
