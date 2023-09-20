@@ -266,8 +266,8 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             final Question question = questions[index];
 
                             // checks whether tile should be disabled or selected for styling
-                            bool tileDisabled =
-                                !question.hasAudioAvailable(language.getCode());
+                            bool audioAvailable =
+                                question.hasAudioAvailable(language.getCode());
                             bool tileSelected = _selectedItemIndex == index;
 
                             // used for styling
@@ -313,12 +313,12 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               case 'multiplechoice':
                                 followUpWidget = () async {
                                   // get the answer from the dialog
-                                  var response = await showDialog(
+                                  final response = await showDialog(
                                       barrierColor:
                                           Colors.black.withOpacity(0.75),
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return MultipleChoiceDialog();
+                                        return const MultipleChoiceDialog();
                                       });
 
                                   if (response != null) {
@@ -330,12 +330,13 @@ class _QuestionsTabState extends State<QuestionsTab> {
                             }
 
                             IconData? trailingIcon;
-                            if (tileDisabled) {
+                            if (!audioAvailable) {
                               trailingIcon = Icons.volume_off_outlined;
                             } else if (tileSelected) {
                               trailingIcon = Icons.volume_up_outlined;
                             }
 
+                            // plays audio and creates follow functionality when button is pressed
                             buttonTapFn() {
                               // play audio
                               playAudio(
@@ -344,75 +345,77 @@ class _QuestionsTabState extends State<QuestionsTab> {
                               followUpWidget();
                             }
 
+                            // returns a dialog confirming question text, used in long press
+                            buttonConfirmFn() {
+                              setState(() {
+                                _selectedItemIndex = index;
+                              });
+                              showDialog(
+                                context: context,
+                                barrierColor: Colors.black.withOpacity(0.75),
+                                builder: (BuildContext context) {
+                                  return ConfirmationDialog(
+                                    question: question,
+                                    onTap: buttonTapFn,
+                                    onPop: () {
+                                      setState(() {
+                                        _selectedItemIndex = -1;
+                                      });
+                                    },
+                                    audioAvailable: audioAvailable,
+                                  );
+                                },
+                              );
+                            }
+
                             return Container(
                               margin: EdgeInsets.fromLTRB(
                                   8, 8, 8, isLastItem ? 8 : 0),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                    color: themeModel.currentTheme.dividerColor,
+                                    color: Theme.of(context).dividerColor,
                                     width: 2),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: Material(
                                 elevation: tileSelected ? 5.0 : 3.0,
-                                shadowColor:
-                                    themeModel.currentTheme.primaryColor,
+                                shadowColor: Theme.of(context).primaryColor,
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: ListTile(
-                                  enabled: question
-                                      .hasAudioAvailable(language.getCode()),
-                                  tileColor: tileDisabled
-                                      ? Colors.grey[500]
-                                      : themeModel
-                                          .currentTheme.colorScheme.secondary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  title: Text(
-                                    questions[index].short,
-                                    style: TextStyle(
-                                        color: tileSelected
-                                            ? themeModel.currentTheme
-                                                .scaffoldBackgroundColor
-                                            : Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  selected: tileSelected,
-                                  selectedTileColor:
-                                      themeModel.currentTheme.cardColor,
-                                  trailing: trailingIcon != null
-                                      ? Transform.scale(
-                                          scale: 1.5,
-                                          child: Icon(
-                                            trailingIcon,
-                                            color: themeModel.currentTheme
-                                                .scaffoldBackgroundColor,
-                                          ),
-                                        )
-                                      : null,
-                                  onTap: buttonTapFn,
-                                  onLongPress: () {
-                                    setState(() {
-                                      _selectedItemIndex = index;
-                                    });
-                                    showDialog(
-                                      context: context,
-                                      barrierColor:
-                                          Colors.black.withOpacity(0.75),
-                                      builder: (BuildContext context) {
-                                        return ConfirmationDialog(
-                                          question: question,
-                                          onTap: buttonTapFn,
-                                          onPop: () {
-                                            setState(() {
-                                              _selectedItemIndex = -1;
-                                            });
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                                    tileColor: audioAvailable
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                        : Colors.grey[500],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    title: Text(
+                                      questions[index].short,
+                                      style: TextStyle(
+                                          color: tileSelected
+                                              ? Theme.of(context)
+                                                  .scaffoldBackgroundColor
+                                              : Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    selected: tileSelected,
+                                    selectedTileColor:
+                                        Theme.of(context).cardColor,
+                                    trailing: trailingIcon != null
+                                        ? Transform.scale(
+                                            scale: 1.5,
+                                            child: Icon(
+                                              trailingIcon,
+                                              color: Theme.of(context)
+                                                  .scaffoldBackgroundColor,
+                                            ),
+                                          )
+                                        : null,
+                                    onTap: audioAvailable
+                                        ? buttonTapFn
+                                        : buttonConfirmFn,
+                                    onLongPress: buttonConfirmFn),
                               ),
                             );
                           },
@@ -737,11 +740,13 @@ class ConfirmationDialog extends StatelessWidget {
     required this.onPop,
     required this.question,
     required this.onTap,
+    this.audioAvailable = true,
   });
 
   final Question question;
   final Function onPop;
   final Function onTap;
+  final bool audioAvailable;
 
   @override
   Widget build(BuildContext context) {
@@ -781,6 +786,14 @@ class ConfirmationDialog extends StatelessWidget {
                   question.full,
                   style: const TextStyle(fontSize: 16.0),
                 ),
+                if (!audioAvailable)
+                  Text(
+                    'There is currently no audio available for this question',
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor),
+                  ),
                 const SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -806,10 +819,12 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        onTap();
-                      },
+                      onPressed: audioAvailable
+                          ? () {
+                              Navigator.of(context).pop();
+                              onTap();
+                            }
+                          : null,
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                             vertical: 50.0,
