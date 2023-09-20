@@ -203,7 +203,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   subtitle: Padding(
                     padding: EdgeInsets.fromLTRB(4, 4, 4, 8),
                     child: Text(
-                        '- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Brown\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
+                        '- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Browne\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
                   ),
                 ),
               )
