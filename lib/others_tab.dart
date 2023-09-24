@@ -549,7 +549,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
       ),
       child: Text(
         title,
-        style: TextStyle(fontSize: 20.0),
+        style: const TextStyle(fontSize: 20.0),
       ),
     );
   }

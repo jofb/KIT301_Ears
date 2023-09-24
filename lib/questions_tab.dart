@@ -538,10 +538,10 @@ class YesNoDialog extends StatelessWidget {
 
 // Scale rating optional follow up dialog for questions, rates casualty pain on scale 1-5
 class ScaleRatingDialog extends StatefulWidget {
-  const ScaleRatingDialog({Key? key}) : super(key: key);
+  const ScaleRatingDialog({super.key});
 
   @override
-  _ScaleRatingDialogState createState() => _ScaleRatingDialogState();
+  State<ScaleRatingDialog> createState() => _ScaleRatingDialogState();
 }
 
 class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
