@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'providers/colours.dart';
 import 'pdf_viewer.dart';
-import 'settings.dart';
+import 'settings_screen.dart';
 import 'providers/category.dart';
 import 'answers_tab.dart';
 import 'invitation_tab.dart';
