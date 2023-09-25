@@ -69,6 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
       if (!userPrefs.containsKey('questionsNav')) {
         userPrefs.setBool('questionsNav', true);
       }
+      if (!userPrefs.containsKey('colourTheme')) {
+        userPrefs.setInt('colourTheme', 1);
+      }
     });
     super.initState();
   }
@@ -135,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: TabBarView(
             children: [
-              const OthersTab(),
+              const AnswersTab(),
               const QuestionsTab(),
               InvitationTab(
                 scaffoldMessengerKey: _scaffoldMessengerKey,

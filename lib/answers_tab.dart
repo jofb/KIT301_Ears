@@ -9,14 +9,14 @@ import 'package:provider/provider.dart';
 import 'providers/category.dart';
 import 'log.dart';
 
-class OthersTab extends StatefulWidget {
-  const OthersTab({super.key});
+class AnswersTab extends StatefulWidget {
+  const AnswersTab({super.key});
 
   @override
-  State<OthersTab> createState() => _OthersTabState();
+  State<AnswersTab> createState() => _AnswersTabState();
 }
 
-class _OthersTabState extends State<OthersTab> {
+class _AnswersTabState extends State<AnswersTab> {
   @override
   Widget build(BuildContext context) {
     return Consumer3<CategoriesModel, AnswersModel, ThemeModel>(
