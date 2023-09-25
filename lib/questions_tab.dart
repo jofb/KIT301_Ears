@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:kit301_ears/providers/colours.dart';
+import 'package:kit301_ears/providers/themes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 

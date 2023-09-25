@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:kit301_ears/providers/answers.dart';
-import 'package:kit301_ears/providers/colours.dart';
+import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/category.dart';

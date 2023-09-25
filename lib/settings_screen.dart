@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/audo_downloader.dart';
 import 'providers/language.dart';
 import 'providers/category.dart';
-import 'providers/colours.dart';
+import 'providers/themes.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({super.key, required this.scaffoldMessengerKey});
