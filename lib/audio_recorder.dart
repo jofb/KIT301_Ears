@@ -48,7 +48,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     });
 
     // load the animation asset
-    rootBundle.load('assets/animation/wordsv2.riv').then((data) async { /** Switch between the animations on this line */
+    rootBundle.load('assets/animation/wordsv3.riv').then((data) async { /** Switch between the animations on this line */
       final file = RiveFile.import(data);
 
       final artboard = file.mainArtboard;
