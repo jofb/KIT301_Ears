@@ -188,38 +188,6 @@ class _AnswersTabState extends State<AnswersTab> {
   }
 }
 
-class ShareButton extends StatelessWidget {
-  final AnswersModel answersModel;
-
-  const ShareButton({super.key, required this.answersModel});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _shareHistory(context, answersModel);
-      },
-      child: const Text('Share History'),
-    );
-  }
-
-  void _shareHistory(BuildContext context, AnswersModel answersModel) {
-    final StringBuffer buffer = StringBuffer();
-
-    // Build the history list as a formatted string
-    buffer.writeln(
-        'Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
-    for (var answer in answersModel.history) {
-      buffer.writeln('${answer.question.full}\n${answer.response}\n');
-    }
-
-    // Share the formatted history via the share API
-    Share.share(
-      buffer.toString().trim(),
-    );
-  }
-}
-
 class FabWithIcons extends StatefulWidget {
   const FabWithIcons({super.key, required this.icons, required this.fabText});
 
