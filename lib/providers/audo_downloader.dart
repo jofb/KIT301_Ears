@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 class AudioDownloader extends ChangeNotifier {
   bool loading = false;
 
-  AudioDownloader() {}
+  AudioDownloader();
 
   Future<void> loadAudio(List<String> labels) async {
     loading = true;

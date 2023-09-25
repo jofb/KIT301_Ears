@@ -3,20 +3,20 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:kit301_ears/providers/answers.dart';
-import 'package:kit301_ears/providers/colours.dart';
+import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/category.dart';
 import 'log.dart';
 
-class OthersTab extends StatefulWidget {
-  const OthersTab({super.key});
+class AnswersTab extends StatefulWidget {
+  const AnswersTab({super.key});
 
   @override
-  State<OthersTab> createState() => _OthersTabState();
+  State<AnswersTab> createState() => _AnswersTabState();
 }
 
-class _OthersTabState extends State<OthersTab> {
+class _AnswersTabState extends State<AnswersTab> {
   @override
   Widget build(BuildContext context) {
     return Consumer3<CategoriesModel, AnswersModel, ThemeModel>(
@@ -184,38 +184,6 @@ class _OthersTabState extends State<OthersTab> {
     return FabWithIcons(
       icons: icons,
       fabText: fabText,
-    );
-  }
-}
-
-class ShareButton extends StatelessWidget {
-  final AnswersModel answersModel;
-
-  const ShareButton({super.key, required this.answersModel});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _shareHistory(context, answersModel);
-      },
-      child: const Text('Share History'),
-    );
-  }
-
-  void _shareHistory(BuildContext context, AnswersModel answersModel) {
-    final StringBuffer buffer = StringBuffer();
-
-    // Build the history list as a formatted string
-    buffer.writeln(
-        'Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
-    for (var answer in answersModel.history) {
-      buffer.writeln('${answer.question.full}\n${answer.response}\n');
-    }
-
-    // Share the formatted history via the share API
-    Share.share(
-      buffer.toString().trim(),
     );
   }
 }
@@ -549,7 +517,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
       ),
       child: Text(
         title,
-        style: TextStyle(fontSize: 20.0),
+        style: const TextStyle(fontSize: 20.0),
       ),
     );
   }

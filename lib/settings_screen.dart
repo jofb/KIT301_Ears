@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/audo_downloader.dart';
 import 'providers/language.dart';
 import 'providers/category.dart';
-import 'providers/colours.dart';
+import 'providers/themes.dart';
 
 class SettingsWidget extends StatefulWidget {
   const SettingsWidget({super.key, required this.scaffoldMessengerKey});
@@ -203,7 +199,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   subtitle: Padding(
                     padding: EdgeInsets.fromLTRB(4, 4, 4, 8),
                     child: Text(
-                        '- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Brown\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
+                        '- Brayden Ransom-Frost\n- Leo Headley\n- Jordan Wylde-Browne\n- Theodore Ing Ting Tiong\n- Thomas Ambrose\n- Toby Coy'),
                   ),
                 ),
               )

@@ -5,11 +5,11 @@ import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'providers/colours.dart';
+import 'providers/themes.dart';
 import 'pdf_viewer.dart';
-import 'settings.dart';
+import 'settings_screen.dart';
 import 'providers/category.dart';
-import 'others_tab.dart';
+import 'answers_tab.dart';
 import 'invitation_tab.dart';
 import 'questions_tab.dart';
 import 'providers/answers.dart';
@@ -68,6 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
     userPrefsFuture.then((userPrefs) {
       if (!userPrefs.containsKey('questionsNav')) {
         userPrefs.setBool('questionsNav', true);
+      }
+      if (!userPrefs.containsKey('colourTheme')) {
+        userPrefs.setInt('colourTheme', 1);
       }
     });
     super.initState();
@@ -135,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: TabBarView(
             children: [
-              const OthersTab(),
+              const AnswersTab(),
               const QuestionsTab(),
               InvitationTab(
                 scaffoldMessengerKey: _scaffoldMessengerKey,
