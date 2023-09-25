@@ -9,7 +9,7 @@ import 'providers/colours.dart';
 import 'pdf_viewer.dart';
 import 'settings.dart';
 import 'providers/category.dart';
-import 'others_tab.dart';
+import 'answers_tab.dart';
 import 'invitation_tab.dart';
 import 'questions_tab.dart';
 import 'providers/answers.dart';
