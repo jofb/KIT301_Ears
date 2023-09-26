@@ -99,7 +99,6 @@ flutter:
     assets:
         - assets/images/
         - assets/pdf/
-        - assets/categories/
         - assets/ml/
         - assets/animation/
         - assets/audio/
