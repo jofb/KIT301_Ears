@@ -224,14 +224,31 @@ class BurgerMenu extends StatelessWidget {
             leading: const Icon(Icons.spellcheck_sharp),
           ),
           ListTile(
-            title: const Text('View Manual',
+            title: const Text('User Manual',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.pop(context);
               // Open Manual PDF
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return PDFViewerFromAsset(
-                    pdfAssetPath: 'assets/pdf/user_manual.pdf');
+                  title: 'User Manual',
+                  pdfAssetPath: 'assets/pdf/user_manual.pdf',
+                );
+              }));
+            },
+            leading: const Icon(Icons.book),
+          ),
+          ListTile(
+            title: const Text('Technical Manual',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            onTap: () {
+              Navigator.pop(context);
+              // Open Manual PDF
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return PDFViewerFromAsset(
+                  title: 'Technical Manual',
+                  pdfAssetPath: 'assets/pdf/technical_manual.pdf',
+                );
               }));
             },
             leading: const Icon(Icons.book),

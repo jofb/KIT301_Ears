@@ -167,18 +167,39 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             title: 'Language Model',
             tiles: [
               CustomSettingsTile(
-                child: Row(
-                  children: [
-                    SettingsButton(
-                      text: 'Change model',
-                      onPressed: () async {
+                child: ListTile(
+                  title: const Text('Change Model'),
+                  subtitle: const Text(
+                      'Change the language model used during prediction. This affects the number of languages and mean accuracy.'),
+                  trailing: SizedBox(
+                    width: 200,
+                    child: DropdownButton(
+                      value: themeModel.themeIndex,
+                      hint: const Text('Change language model'),
+                      icon: const Icon(Icons.language),
+                      iconEnabledColor: themeModel.currentTheme.cardColor,
+                      // map the colours list to the dropdown items
+                      items: const [
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text('4 Lang (80%)'),
+                        ),
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text('6 Lang (70%)'),
+                        ),
+                        DropdownMenuItem(
+                          value: 3,
+                          child: Text('Hello'),
+                        ),
+                      ],
+                      onChanged: (value) {
                         Color colour = Theme.of(context).colorScheme.error;
                         showSnackbar(
                             'Language model changing unavailable', colour);
                       },
-                      theme: themeModel.currentTheme,
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],

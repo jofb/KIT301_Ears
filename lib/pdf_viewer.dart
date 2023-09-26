@@ -6,8 +6,11 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 // Adapted from https://github.com/binSaed/flutter_cached_pdfview/blob/master/example/lib/main.dart
 
 class PDFViewerFromAsset extends StatelessWidget {
-  PDFViewerFromAsset({Key? key, required this.pdfAssetPath}) : super(key: key);
+  PDFViewerFromAsset(
+      {Key? key, required this.title, required this.pdfAssetPath})
+      : super(key: key);
   final String pdfAssetPath;
+  final String title;
   final Completer<PDFViewController> _pdfViewController =
       Completer<PDFViewController>();
   final StreamController<String> _pageCountController =
@@ -17,7 +20,7 @@ class PDFViewerFromAsset extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Manual'),
+        title: Text(title),
         actions: <Widget>[
           StreamBuilder<String>(
               stream: _pageCountController.stream,
@@ -55,7 +58,6 @@ class PDFViewerFromAsset extends StatelessWidget {
         pdfAssetPath,
         errorWidget: (dynamic error) => Center(child: Text(error.toString())),
       ),
-
       floatingActionButton: FutureBuilder<PDFViewController>(
         future: _pdfViewController.future,
         builder: (_, AsyncSnapshot<PDFViewController> snapshot) {
