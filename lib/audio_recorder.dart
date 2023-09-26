@@ -36,6 +36,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   // animation state
   Artboard? _artboard;
   SMIInput<bool>? _trigger;
+  SMIInput<bool>? _complete; //A trigger for the boolean
 
   @override
   void initState() {
@@ -47,20 +48,21 @@ class _AudioRecorderState extends State<AudioRecorder> {
     });
 
     // load the animation asset
-    rootBundle.load('assets/animation/fin.riv').then((data) async {
+    rootBundle.load('assets/animation/wordsv3.riv').then((data) async { /** Switch between the animations on this line */
       final file = RiveFile.import(data);
 
       final artboard = file.mainArtboard;
       var controller =
           StateMachineController.fromArtboard(artboard, 'State Machine 1');
 
-      // rip out the mic recording animation and update the speed multiplyer
+      // rip out the mic recording animation and update the speed multiplier
       LinearAnimation micRecordingAnimation = artboard.animations
           .firstWhere((element) => element.name == 'MicRec') as LinearAnimation;
       artboard.internalRemoveAnimation(micRecordingAnimation);
 
-      // speed multiplyer is (original_duration / new_duration) + fudging_number
-      micRecordingAnimation.speed = (15 / widget.recordingTime) + 0.1;
+      // speed multiplier is (original_duration) / (new_duration - fudging_number)
+      // mic recording animation duration is (new_duration - fudging_number)
+      micRecordingAnimation.speed = (15) / (widget.recordingTime - 0.2);
 
       // add the animation back
       artboard.internalAddAnimation(micRecordingAnimation);
@@ -68,6 +70,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
       if (controller != null) {
         artboard.addController(controller);
         _trigger = controller.findInput('Press');
+        _complete = controller.findInput('Complete');
       }
 
       setState(() {
@@ -159,7 +162,13 @@ class _AudioRecorderState extends State<AudioRecorder> {
     });
   }
 
-  Future<void> delayedStopRecording() async {
+  void toggleCompleteAnimation() {
+    setState(() {
+      _complete?.value = true; //trigger the red end flash of the animation
+    });
+  }
+
+  Future<void> delayedStopRecording() async {//TODO: trigger the red flash stop animation when (recordingTime - 0.5) is reached
     _recordingOperation = CancelableOperation.fromFuture(
       Future.delayed(
         Duration(seconds: widget.recordingTime),
@@ -169,7 +178,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
     try {
       await _recordingOperation?.value;
 
-      toggleAnimation();
+      toggleCompleteAnimation();
       stopRecorder();
     } catch (e) {
       logger.e(e);
@@ -209,7 +218,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                   startRecorder();
                   delayedStopRecording();
                   // set animation state
-                  toggleAnimation();
+                  toggleAnimation(); //I don't get it, why does the animation needs to be double clicked to transition without this?
                 }
               },
               style: ElevatedButton.styleFrom(

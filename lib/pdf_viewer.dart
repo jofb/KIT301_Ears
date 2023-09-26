@@ -55,6 +55,7 @@ class PDFViewerFromAsset extends StatelessWidget {
         pdfAssetPath,
         errorWidget: (dynamic error) => Center(child: Text(error.toString())),
       ),
+
       floatingActionButton: FutureBuilder<PDFViewController>(
         future: _pdfViewController.future,
         builder: (_, AsyncSnapshot<PDFViewController> snapshot) {
