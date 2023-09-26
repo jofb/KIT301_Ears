@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             toolbarHeight: 32,
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: themeModel.currentTheme.primaryColor,
             elevation: 0,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(30),
@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 35),
                     child: TabBar(
-                      labelColor: Theme.of(context).primaryColor,
+                      labelColor: themeModel.currentTheme.primaryColor,
                       unselectedLabelColor:
                           Theme.of(context).scaffoldBackgroundColor,
                       indicatorSize: TabBarIndicatorSize.label,
@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10),
                         ),
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: themeModel.currentTheme.scaffoldBackgroundColor,
                       ),
                       tabs: const [
                         NavigationTab(text: "Answers History"),
@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.menu),
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: themeModel.currentTheme.scaffoldBackgroundColor,
                     onPressed: () {
                       _openDrawer();
                     },
