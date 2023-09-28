@@ -207,10 +207,12 @@ class FabWithIconsState extends State<FabWithIcons>
 
     // Build the history list as a formatted string
     buffer.writeln(
-        'Answers History (${answersModel.language}) on ${answersModel.toStringSimple()}\n');
+        'Answers History (${answersModel.language.split(' ')[0]}) on ${answersModel.toStringSimple()}\n');
     for (var answer in answersModel.history) {
-      buffer.writeln('${answer.question.full}\n${answer.response}\n');
+      buffer.writeln('Question: ${answer.question.full}\nResponse: ${answer.response}\n');
     }
+
+    buffer.writeln('Casualty Seating Position: ${answersModel.carSeatToString()}');
 
     // Share the formatted history via the share API
     Share.share(

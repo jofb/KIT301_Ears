@@ -86,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
       scaffoldMessengerKey: _scaffoldMessengerKey,
       theme: themeModel.currentTheme,
       home: DefaultTabController(
+        initialIndex: 2,
         length: 3,
         child: Scaffold(
           key: _scaffoldKey,
