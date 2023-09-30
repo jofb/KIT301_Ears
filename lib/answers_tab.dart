@@ -6,6 +6,7 @@ import 'package:kit301_ears/providers/answers.dart';
 import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/dialog.dart';
 import 'providers/category.dart';
 import 'log.dart';
 
@@ -115,13 +116,92 @@ class _AnswersTabState extends State<AnswersTab> {
                               color: themeModel.currentTheme.primaryColor),
                         ),
                       ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete,
-                            color: themeModel.currentTheme.colorScheme.error),
-                        onPressed: () {
-                          showDeleteConfirmation(
-                              context, answersModel, history[index]);
-                        },
+                      trailing: Wrap(
+                        spacing: 12,
+                        children: <Widget> [
+                          IconButton(
+                            icon: Icon(Icons.edit,
+                                color: themeModel.currentTheme.colorScheme.error),
+
+                            onPressed: () {
+
+                              final type = history[index].type;
+                              Function followUpWidget = () {};
+                              switch (type) {
+                                case 'yesno':
+                                  followUpWidget = () async {
+                                    // get the answer from the dialog
+                                    var response = await showDialog(
+                                        barrierColor:
+                                        Colors.black.withOpacity(0.75),
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const YesNoDialog();
+                                        });
+
+                                    if (response != null && context.mounted) {
+                                      // append to answers history
+                                      showEditConfirmation(
+                                          context, answersModel, history[index], response);
+                                      //answersModel.addAnswer(question, response);
+                                    }
+                                  };
+                                  break;
+                                case 'scalerating':
+                                  followUpWidget = () async {
+                                    // get the answer from the dialog
+                                    var response = await showDialog(
+                                        barrierColor:
+                                        Colors.black.withOpacity(0.75),
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const ScaleRatingDialog();
+                                        });
+
+                                    if (response != null && context.mounted) {
+                                      // append to answers history
+                                      showEditConfirmation(
+                                          context, answersModel, history[index], response);
+                                      //answersModel.addAnswer(question, response);
+                                    }
+                                  };
+                                  break;
+                                case 'multiplechoice':
+                                  followUpWidget = () async {
+                                    // get the answer from the dialog
+                                    final response = await showDialog(
+                                        barrierColor:
+                                        Colors.black.withOpacity(0.75),
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const MultipleChoiceDialog();
+                                        });
+
+                                    if (response != null && context.mounted) {
+                                      // append to answers history
+                                      showEditConfirmation(
+                                          context, answersModel, history[index], response);
+                                      //answersModel.addAnswer(question, response);
+                                    }
+                                  };
+                                  break;
+                              }
+
+                              followUpWidget();
+
+
+                            },
+                            ),
+
+                          IconButton(
+                            icon: Icon(Icons.delete,
+                                color: themeModel.currentTheme.colorScheme.error),
+                            onPressed: () {
+                              showDeleteConfirmation(
+                                  context, answersModel, history[index]);
+                            },
+                          ),
+                        ]
                       ),
                     );
                   },
@@ -157,6 +237,37 @@ class _AnswersTabState extends State<AnswersTab> {
             TextButton(
               onPressed: () {
                 answersModel.removeAnswer(answer);
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text(
+                'Confirm',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showEditConfirmation(
+      BuildContext context, AnswersModel answersModel, Answer answer, String response) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Answer'),
+          content: const Text('Are you sure you want to edit this answer?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                answersModel.editAnswer(answer, response);
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: const Text(
