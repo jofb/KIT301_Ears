@@ -7,7 +7,6 @@ import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'widgets/dialog.dart';
-import 'widgets/dialog.dart';
 import 'providers/category.dart';
 import 'utils/log.dart';
 
