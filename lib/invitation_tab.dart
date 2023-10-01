@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/log.dart';
 import 'providers/language.dart';
 import 'widgets/audio_recorder.dart';
-import 'audio_procesing/ml_inference.dart';
+import 'audio_processing/ml_inference.dart';
 
 class InvitationTab extends StatefulWidget {
   const InvitationTab({super.key, required this.scaffoldMessengerKey});
