@@ -37,8 +37,8 @@ class AnswersModel extends ChangeNotifier {
   }
 
   // append to history
-  void addAnswer(Question question, String response, String type) {
-    Answer answer = Answer(question.audioId, question, response, type);
+  void addAnswer(Question question, String response) {
+    Answer answer = Answer(question.audioId, question, response);
     history.add(answer);
     update();
   }
@@ -81,7 +81,7 @@ class AnswersModel extends ChangeNotifier {
   }
 
   void editAnswer(Answer answer, String response) {
-    Answer newAnswer = Answer(answer.id, answer.question, response, answer.type);
+    Answer newAnswer = Answer(answer.id, answer.question, response);
     history[history.indexWhere((element) => element.id == answer.id)] = newAnswer; //find the index of the answer to be replaced and replace it.
     update();
   }
@@ -96,9 +96,8 @@ class Answer {
   final String id;
   final Question question;
   final String response;
-  final String type;
 
-  Answer(this.id, this.question, this.response, this.type);
+  Answer(this.id, this.question, this.response);
 
   @override
   String toString() {

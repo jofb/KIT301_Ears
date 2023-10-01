@@ -8,7 +8,7 @@ import 'providers/category.dart';
 import 'providers/answers.dart';
 import 'log.dart';
 import 'providers/language.dart';
-import 'providers/dialog.dart';
+import 'dialog.dart';
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});
@@ -290,7 +290,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
                                   if (response != null) {
                                     // append to answers history
-                                    answersModel.addAnswer(question, response, type);
+                                    answersModel.addAnswer(question, response);
                                   }
                                 };
                                 break;
@@ -307,7 +307,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
                                   if (response != null) {
                                     // append to answers history
-                                    answersModel.addAnswer(question, response, type);
+                                    answersModel.addAnswer(question, response);
                                   }
                                 };
                                 break;
@@ -324,7 +324,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
 
                                   if (response != null) {
                                     // append to answers history
-                                    answersModel.addAnswer(question, response, type);
+                                    answersModel.addAnswer(question, response);
                                   }
                                 };
                                 break;

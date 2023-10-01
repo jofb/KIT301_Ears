@@ -6,7 +6,7 @@ import 'package:kit301_ears/providers/answers.dart';
 import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/dialog.dart';
+import 'dialog.dart';
 import 'providers/category.dart';
 import 'log.dart';
 
@@ -123,73 +123,31 @@ class _AnswersTabState extends State<AnswersTab> {
                             icon: Icon(Icons.edit,
                                 color: themeModel.currentTheme.colorScheme.error),
 
-                            onPressed: () {
+                            onPressed: () async {
+                              final type = history[index].question.type;
 
-                              final type = history[index].type;
-                              Function followUpWidget = () {};
-                              switch (type) {
-                                case 'yesno':
-                                  followUpWidget = () async {
-                                    // get the answer from the dialog
-                                    var response = await showDialog(
-                                        barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const YesNoDialog();
-                                        });
+                              final response = await showDialog(
+                                  barrierColor:
+                                  Colors.black.withOpacity(0.75),
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    switch (type) {
+                                      case 'yesno':
+                                        return const YesNoDialog();
 
-                                    if (response != null && context.mounted) {
-                                      // append to answers history
-                                      showEditConfirmation(
-                                          context, answersModel, history[index], response);
-                                      //answersModel.addAnswer(question, response);
+                                      case 'scalerating':
+                                        return const ScaleRatingDialog();
+
+                                      case 'multiplechoice':
+                                      default:
+                                        return const MultipleChoiceDialog();
                                     }
-                                  };
-                                  break;
-                                case 'scalerating':
-                                  followUpWidget = () async {
-                                    // get the answer from the dialog
-                                    var response = await showDialog(
-                                        barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const ScaleRatingDialog();
-                                        });
+                                  });
 
-                                    if (response != null && context.mounted) {
-                                      // append to answers history
-                                      showEditConfirmation(
-                                          context, answersModel, history[index], response);
-                                      //answersModel.addAnswer(question, response);
-                                    }
-                                  };
-                                  break;
-                                case 'multiplechoice':
-                                  followUpWidget = () async {
-                                    // get the answer from the dialog
-                                    final response = await showDialog(
-                                        barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const MultipleChoiceDialog();
-                                        });
-
-                                    if (response != null && context.mounted) {
-                                      // append to answers history
-                                      showEditConfirmation(
-                                          context, answersModel, history[index], response);
-                                      //answersModel.addAnswer(question, response);
-                                    }
-                                  };
-                                  break;
+                              if (response != null && context.mounted) {
+                                // append to answers history
+                                answersModel.editAnswer(history[index], response);
                               }
-
-                              followUpWidget();
-
-
                             },
                             ),
 
@@ -237,37 +195,6 @@ class _AnswersTabState extends State<AnswersTab> {
             TextButton(
               onPressed: () {
                 answersModel.removeAnswer(answer);
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text(
-                'Confirm',
-                style: TextStyle(color: Colors.redAccent),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showEditConfirmation(
-      BuildContext context, AnswersModel answersModel, Answer answer, String response) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Answer'),
-          content: const Text('Are you sure you want to edit this answer?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                answersModel.editAnswer(answer, response);
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: const Text(
