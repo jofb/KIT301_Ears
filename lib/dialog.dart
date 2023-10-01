@@ -103,7 +103,9 @@ class YesNoDialog extends StatelessWidget {
 
 // Scale rating optional follow up dialog for questions, rates casualty pain on scale 1-5
 class ScaleRatingDialog extends StatefulWidget {
-  const ScaleRatingDialog({super.key});
+  const ScaleRatingDialog({super.key, this.initalValue});
+
+  final double? initalValue;
 
   @override
   State<ScaleRatingDialog> createState() => _ScaleRatingDialogState();
@@ -111,6 +113,12 @@ class ScaleRatingDialog extends StatefulWidget {
 
 class _ScaleRatingDialogState extends State<ScaleRatingDialog> {
   double _sliderValue = 1.0;
+
+  @override
+  void initState() {
+    _sliderValue = widget.initalValue ?? 1.0;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,19 +261,19 @@ class CustomSliderThumbCircle extends SliderComponentShape {
 
   @override
   void paint(
-      PaintingContext context,
-      Offset center, {
-        required Animation<double> activationAnimation,
-        required Animation<double> enableAnimation,
-        required bool isDiscrete,
-        required TextPainter labelPainter,
-        required RenderBox parentBox,
-        required SliderThemeData sliderTheme,
-        required TextDirection textDirection,
-        required double value,
-        required double textScaleFactor,
-        required Size sizeWithOverflow,
-      }) {
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
     final Canvas canvas = context.canvas;
 
     final paint = Paint()
@@ -279,7 +287,7 @@ class CustomSliderThumbCircle extends SliderComponentShape {
         color: sliderTheme.thumbColor, // Text Color of Value on Thumb
       ),
       text:
-      customLabel ?? getValue(value), // Use custom label or default label.
+          customLabel ?? getValue(value), // Use custom label or default label.
     );
 
     TextPainter tp = TextPainter(
@@ -288,7 +296,7 @@ class CustomSliderThumbCircle extends SliderComponentShape {
         textDirection: TextDirection.ltr);
     tp.layout();
     Offset textCenter =
-    Offset(center.dx - (tp.width / 2), center.dy - (tp.height / 2));
+        Offset(center.dx - (tp.width / 2), center.dy - (tp.height / 2));
 
     canvas.drawCircle(center, thumbRadius * 1, paint);
     tp.paint(canvas, textCenter);

@@ -6,7 +6,7 @@ import 'package:kit301_ears/providers/answers.dart';
 import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/dialog.dart';
+import 'dialog.dart';
 import 'providers/category.dart';
 import 'log.dart';
 
@@ -108,100 +108,62 @@ class _AnswersTabState extends State<AnswersTab> {
                             color: themeModel.currentTheme.primaryColor),
                       ),
                       subtitle: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 4, 8.0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 4, 8.0, 0),
                         child: Text(
                           history[index].response,
                           style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
                               color: themeModel.currentTheme.primaryColor),
                         ),
                       ),
                       trailing: Wrap(
                         spacing: 12,
-                        children: <Widget> [
+                        children: <Widget>[
                           IconButton(
                             icon: Icon(Icons.edit,
-                                color: themeModel.currentTheme.colorScheme.error),
+                                color: themeModel
+                                    .currentTheme.colorScheme.primary),
+                            onPressed: () async {
+                              // get the question type and response for use in dialogs
+                              final type = history[index].question.type;
+                              final response = history[index].response;
 
-                            onPressed: () {
-
-                              final type = history[index].type;
-                              Function followUpWidget = () {};
-                              switch (type) {
-                                case 'yesno':
-                                  followUpWidget = () async {
-                                    // get the answer from the dialog
-                                    var response = await showDialog(
-                                        barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const YesNoDialog();
-                                        });
-
-                                    if (response != null && context.mounted) {
-                                      // append to answers history
-                                      showEditConfirmation(
-                                          context, answersModel, history[index], response);
-                                      //answersModel.addAnswer(question, response);
-                                    }
-                                  };
-                                  break;
-                                case 'scalerating':
-                                  followUpWidget = () async {
-                                    // get the answer from the dialog
-                                    var response = await showDialog(
-                                        barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const ScaleRatingDialog();
-                                        });
-
-                                    if (response != null && context.mounted) {
-                                      // append to answers history
-                                      showEditConfirmation(
-                                          context, answersModel, history[index], response);
-                                      //answersModel.addAnswer(question, response);
-                                    }
-                                  };
-                                  break;
-                                case 'multiplechoice':
-                                  followUpWidget = () async {
-                                    // get the answer from the dialog
-                                    final response = await showDialog(
-                                        barrierColor:
-                                        Colors.black.withOpacity(0.75),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return const MultipleChoiceDialog();
-                                        });
-
-                                    if (response != null && context.mounted) {
-                                      // append to answers history
-                                      showEditConfirmation(
-                                          context, answersModel, history[index], response);
-                                      //answersModel.addAnswer(question, response);
-                                    }
-                                  };
-                                  break;
+                              // return an edit dialog based on type
+                              final dialogResponse = await showDialog(
+                                barrierColor: Colors.black.withOpacity(0.75),
+                                context: context,
+                                builder: (BuildContext context) {
+                                  switch (type) {
+                                    case 'yesno':
+                                      return const YesNoDialog();
+                                    case 'scalerating':
+                                      return ScaleRatingDialog(
+                                        initalValue: double.parse(response),
+                                      );
+                                    case 'multiplechoice':
+                                    default:
+                                      return const MultipleChoiceDialog();
+                                  }
+                                },
+                              );
+                              if (dialogResponse != null && context.mounted) {
+                                // append to answers history
+                                showEditConfirmation(context, answersModel,
+                                    history[index], dialogResponse);
                               }
-
-                              followUpWidget();
-
-
                             },
-                            ),
-
+                          ),
                           IconButton(
                             icon: Icon(Icons.delete,
-                                color: themeModel.currentTheme.colorScheme.error),
+                                color:
+                                    themeModel.currentTheme.colorScheme.error),
                             onPressed: () {
                               showDeleteConfirmation(
                                   context, answersModel, history[index]);
                             },
                           ),
-                        ]
+                        ],
                       ),
                     );
                   },
@@ -250,8 +212,8 @@ class _AnswersTabState extends State<AnswersTab> {
     );
   }
 
-  void showEditConfirmation(
-      BuildContext context, AnswersModel answersModel, Answer answer, String response) {
+  void showEditConfirmation(BuildContext context, AnswersModel answersModel,
+      Answer answer, String response) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -320,10 +282,12 @@ class FabWithIconsState extends State<FabWithIcons>
     buffer.writeln(
         'Answers History (${answersModel.language.split(' ')[0]}) on ${answersModel.toStringSimple()}\n');
     for (var answer in answersModel.history) {
-      buffer.writeln('Question: ${answer.question.full}\nResponse: ${answer.response}\n');
+      buffer.writeln(
+          'Question: ${answer.question.full}\nResponse: ${answer.response}\n');
     }
 
-    buffer.writeln('Casualty Seating Position: ${answersModel.carSeatToString()}');
+    buffer.writeln(
+        'Casualty Seating Position: ${answersModel.carSeatToString()}');
 
     // Share the formatted history via the share API
     Share.share(
