@@ -7,6 +7,7 @@ import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'dialog.dart';
+import 'dialog.dart';
 import 'providers/category.dart';
 import 'log.dart';
 
@@ -149,8 +150,8 @@ class _AnswersTabState extends State<AnswersTab> {
                               );
                               if (dialogResponse != null && context.mounted) {
                                 // append to answers history
-                                showEditConfirmation(context, answersModel,
-                                    history[index], dialogResponse);
+                                answersModel.editAnswer(
+                                    history[index], response);
                               }
                             },
                           ),
@@ -199,37 +200,6 @@ class _AnswersTabState extends State<AnswersTab> {
             TextButton(
               onPressed: () {
                 answersModel.removeAnswer(answer);
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text(
-                'Confirm',
-                style: TextStyle(color: Colors.redAccent),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showEditConfirmation(BuildContext context, AnswersModel answersModel,
-      Answer answer, String response) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Answer'),
-          content: const Text('Are you sure you want to edit this answer?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                answersModel.editAnswer(answer, response);
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: const Text(
