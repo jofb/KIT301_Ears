@@ -42,6 +42,10 @@ class _InvitationTabState extends State<InvitationTab> {
         logger.i('Finished recording. Predicting language...');
         await Future.delayed(const Duration(milliseconds: 400));
 
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        // TODO grab lang model to use from user prefs
+
         // get the lang index and then update the language provider
         int langIndex = await predictLanguage('my_file.wav');
         language.setLanguage(langIndex);
@@ -64,7 +68,6 @@ class _InvitationTabState extends State<InvitationTab> {
         // show snackbar using scaffold messenger
         widget.scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
 
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
         final bool? questionsNav = prefs.getBool('questionsNav');
 
         if (questionsNav ?? false) {

@@ -194,6 +194,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         ),
                       ],
                       onChanged: (value) {
+                        // TODO implement lang changing through user prefs, just pass in the model name as a string
                         Color colour = Theme.of(context).colorScheme.error;
                         showSnackbar(
                             'Language model changing unavailable', colour);
