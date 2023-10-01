@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:kit301_ears/providers/audo_downloader.dart';
-import 'firebase_options.dart';
+import 'utils/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'providers/themes.dart';
-import 'pdf_viewer.dart';
+import 'widgets/pdf_viewer.dart';
 import 'settings_screen.dart';
 import 'providers/category.dart';
 import 'answers_tab.dart';
@@ -14,7 +14,7 @@ import 'invitation_tab.dart';
 import 'questions_tab.dart';
 import 'providers/answers.dart';
 import 'providers/language.dart';
-import 'log.dart';
+import 'utils/log.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

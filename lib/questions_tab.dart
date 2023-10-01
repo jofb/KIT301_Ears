@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 
 import 'providers/category.dart';
 import 'providers/answers.dart';
-import 'log.dart';
+import 'utils/log.dart';
 import 'providers/language.dart';
-import 'dialog.dart';
+import 'widgets/dialog.dart';
 
 class QuestionsTab extends StatefulWidget {
   const QuestionsTab({super.key});

@@ -6,10 +6,10 @@ import 'package:kit301_ears/providers/answers.dart';
 import 'package:kit301_ears/providers/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'dialog.dart';
-import 'dialog.dart';
+import 'widgets/dialog.dart';
+import 'widgets/dialog.dart';
 import 'providers/category.dart';
-import 'log.dart';
+import 'utils/log.dart';
 
 class AnswersTab extends StatefulWidget {
   const AnswersTab({super.key});

@@ -13,7 +13,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:rive/rive.dart';
 
-import 'log.dart';
+import '../utils/log.dart';
 
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({super.key, required this.onFinished});
