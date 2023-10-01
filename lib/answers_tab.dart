@@ -151,7 +151,7 @@ class _AnswersTabState extends State<AnswersTab> {
                               if (dialogResponse != null && context.mounted) {
                                 // append to answers history
                                 answersModel.editAnswer(
-                                    history[index], response);
+                                    history[index], dialogResponse);
                               }
                             },
                           ),
