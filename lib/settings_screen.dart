@@ -171,8 +171,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   title: const Text('Change Model'),
                   subtitle: const Text(
                       'Change the language model used during prediction. This affects the number of languages and mean accuracy.'),
-                  trailing: SizedBox(
-                    width: 200,
+                  trailing: Expanded(
                     child: DropdownButton(
                       value: themeModel.themeIndex,
                       hint: const Text('Change language model'),
