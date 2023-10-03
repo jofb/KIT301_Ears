@@ -45,9 +45,11 @@ class _InvitationTabState extends State<InvitationTab> {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
 
         // TODO grab lang model to use from user prefs
+        final String? modelPath = prefs.getString('modelPath');
 
         // get the lang index and then update the language provider
-        int langIndex = await predictLanguage('my_file.wav');
+        int langIndex = await predictLanguage(
+            modelPath ?? '6lang_model_v2.tflite', 'my_file.wav');
         language.setLanguage(langIndex);
 
         // create new answer history for new language

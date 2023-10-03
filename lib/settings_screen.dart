@@ -171,32 +171,31 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   title: const Text('Change Model'),
                   subtitle: const Text(
                       'Change the language model used during prediction. This affects the number of languages and mean accuracy.'),
-                  trailing: Expanded(
-                    child: DropdownButton(
-                      value: themeModel.themeIndex,
+                  trailing: SizedBox(
+                    width: 200,
+                    child: DropdownButton<String>(
+                      value: userPrefs!.getString('langModel'),
                       hint: const Text('Change language model'),
                       icon: const Icon(Icons.language),
                       iconEnabledColor: themeModel.currentTheme.cardColor,
                       // map the colours list to the dropdown items
                       items: const [
                         DropdownMenuItem(
-                          value: 1,
-                          child: Text('4 Lang (80%)'),
+                          value: '4lang_model.tflite',
+                          child: Text('4 Lang - (85%)'),
                         ),
                         DropdownMenuItem(
-                          value: 2,
-                          child: Text('6 Lang (70%)'),
-                        ),
-                        DropdownMenuItem(
-                          value: 3,
-                          child: Text('Hello'),
-                        ),
+                          value: '6lang_model_v2.tflite',
+                          child: Text('6 Lang - (70%)'),
+                        )
                       ],
-                      onChanged: (value) {
-                        // TODO implement lang changing through user prefs, just pass in the model name as a string
-                        Color colour = Theme.of(context).colorScheme.error;
-                        showSnackbar(
-                            'Language model changing unavailable', colour);
+                      onChanged: (String? value) {
+                        // update language model used
+                        if (value != null) {
+                          setState(() {
+                            userPrefs!.setString('langModel', value);
+                          });
+                        }
                       },
                     ),
                   ),

@@ -72,6 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
       if (!userPrefs.containsKey('colourTheme')) {
         userPrefs.setInt('colourTheme', 1);
       }
+      if (!userPrefs.containsKey('langModel')) {
+        userPrefs.setString('langModel', '6lang_model_v2.tflite');
+      }
     });
     super.initState();
   }

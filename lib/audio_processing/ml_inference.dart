@@ -8,14 +8,14 @@ import 'package:wav/wav.dart';
 
 import 'spectrogram.dart';
 
-Future<int> predictLanguage(String audioPath) async {
+Future<int> predictLanguage(String modelPath, String audioPath) async {
   final signal = await loadAudio(audioPath);
   // TODO add the VAD filtering here
   // ...
   // create the spectrogram
   final spectrogram = melSpectrogram(signal);
   // run inference and return the index
-  int langIndex = await inference(spectrogram);
+  int langIndex = await inference(modelPath, spectrogram);
   return Future<int>.value(langIndex);
 }
 
@@ -32,10 +32,10 @@ Future<List<double>> loadAudio(String path) async {
 }
 
 // runs inference on given signal input
-Future<int> inference(Matrix inputMatrix) async {
+Future<int> inference(String modelPath, Matrix inputMatrix) async {
   // load the model from assets
   final Interpreter interpreter =
-      await Interpreter.fromAsset('assets/ml/6lang_model_v2.tflite');
+      await Interpreter.fromAsset('assets/ml/$modelPath');
 
   // resize the input tensor to match input
   interpreter.resizeInputTensor(0, [1, inputMatrix.rows.length, 40]);
