@@ -465,9 +465,9 @@ class ConfirmationDialog extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           child: Container(
             width: MediaQuery.of(context).size.width *
-                0.7, //Gets dimension of the screen * 70%
+                0.8, //Gets dimension of the screen * 80%
             height: MediaQuery.of(context).size.height *
-                0.7, //Gets dimension of the screen * 70%
+                0.8, //Gets dimension of the screen * 80%
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey, width: 2),
               borderRadius: BorderRadius.circular(8.0),
@@ -484,9 +484,13 @@ class ConfirmationDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20.0),
-                Text(
-                  question.full,
-                  style: const TextStyle(fontSize: 16.0),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      question.full,
+                      style: const TextStyle(fontSize: 20.0),
+                    ),
+                  ),
                 ),
                 if (!audioAvailable)
                   Text(

@@ -32,7 +32,7 @@ class YesNoDialog extends StatelessWidget {
                 RichText(
                   text: const TextSpan(
                     style: TextStyle(
-                      fontSize: 20.0,
+                      fontSize: 50.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),

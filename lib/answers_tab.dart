@@ -427,7 +427,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
             ),
             padding: const EdgeInsets.fromLTRB(30.0, 16.0, 30.0, 16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildCarGraphic(),
                 Row(
@@ -439,7 +439,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                          vertical: 20.0,
+                          vertical: 40.0,
                           horizontal: 60.0,
                         ),
                         shape: RoundedRectangleBorder(
@@ -458,7 +458,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 20.0,
+                            vertical: 40.0,
                             horizontal: 60.0,
                           ),
                           shape: RoundedRectangleBorder(
@@ -559,7 +559,7 @@ class _SeatPositionDialogState extends State<SeatPositionDialog> {
             ? Theme.of(context).indicatorColor
             : Theme.of(context).colorScheme.secondary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
+        padding: const EdgeInsets.all(40.0),
       ),
       child: Text(
         title,
