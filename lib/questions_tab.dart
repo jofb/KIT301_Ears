@@ -90,6 +90,7 @@ class _QuestionsTabState extends State<QuestionsTab> {
             children: <Widget>[
               Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
