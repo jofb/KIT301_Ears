@@ -336,9 +336,37 @@ class FabWithIconsState extends State<FabWithIcons>
                   //ShareButton(answersModel: answersModel);
                   shareHistory(context, answersModel);
                 } else if (widget.fabText[index] == 'Clear Answer History') {
-                  answersModel.clearHistory();
+                  await showDialog(
+                      barrierColor: Colors.black.withOpacity(0.75),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Clear Answer History'),
+                          content: const Text('Are you sure you want to clear answer history?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                answersModel.clearHistory();
+                                Navigator.of(context).pop(); // Close the dialog
+                              },
+                              child: const Text(
+                                'Confirm',
+                                style: TextStyle(color: Colors.redAccent),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                  );
                 }
               },
+              
               label: Text(
                 widget.fabText[index],
                 style: TextStyle(
