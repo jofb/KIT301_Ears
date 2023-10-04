@@ -335,7 +335,7 @@ class FabWithIconsState extends State<FabWithIcons>
                 } else if (widget.fabText[index] == 'Share Answer History') {
                   //ShareButton(answersModel: answersModel);
                   shareHistory(context, answersModel);
-                } else if (widget.fabText[index] == 'Clear Answer History') {
+                } else if (widget.fabText[index] == 'Clear Answer History' && answersModel.history.isNotEmpty) {
                   await showDialog(
                       barrierColor: Colors.black.withOpacity(0.75),
                       context: context,
@@ -366,7 +366,6 @@ class FabWithIconsState extends State<FabWithIcons>
                   );
                 }
               },
-              
               label: Text(
                 widget.fabText[index],
                 style: TextStyle(
