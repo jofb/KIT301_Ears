@@ -175,7 +175,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     width: 200,
                     child: DropdownButton<String>(
                       value: userPrefs!.getString('langModel'),
-                      hint: const Text('Change language model'),
+                      hint: const Text('Change langs models'),
                       icon: const Icon(Icons.language),
                       iconEnabledColor: themeModel.currentTheme.cardColor,
                       // map the colours list to the dropdown items
