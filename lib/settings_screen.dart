@@ -187,7 +187,23 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                         DropdownMenuItem(
                           value: '6lang_model_v2.tflite',
                           child: Text('6 Lang - (70%)'),
-                        )
+                        ),
+                        DropdownMenuItem(
+                          value: '5x_300mb_model.tflite',
+                          child: Text('5 Lang - (76%)'),
+                        ),
+                        DropdownMenuItem(
+                          value: '5x_500_model.tflite',
+                          child: Text('5 Lang - (74%)'),
+                        ),
+                        DropdownMenuItem(
+                          value: '10x_300_model.tflite',
+                          child: Text('10 Lang - (60%)'),
+                        ),
+                        DropdownMenuItem(
+                          value: '10x_500_model.tflite',
+                          child: Text('10 Lang - (61%)'),
+                        ),
                       ],
                       onChanged: (String? value) {
                         // update language model used
