@@ -79,6 +79,18 @@ class PDFViewerFromAsset extends StatelessWidget {
                     }
                   },
                 ),
+
+                FloatingActionButton(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  heroTag: '^',
+                  onPressed: () async {
+                    final PDFViewController pdfController = snapshot.data!;
+
+                    await pdfController.setPage(1); //assumes that the table of contents is on the second page
+                  },
+                  child: const Icon(Icons.list_alt),
+                ),
+
                 FloatingActionButton(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   heroTag: '>',
