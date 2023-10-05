@@ -72,10 +72,10 @@ class PDFViewerFromAsset extends StatelessWidget {
                   child: const Icon(Icons.arrow_back),
                   onPressed: () async {
                     final PDFViewController pdfController = snapshot.data!;
-                    final int currentPage =
+                    final int prevPage =
                         (await pdfController.getCurrentPage())! - 1;
-                    if (currentPage >= 0) {
-                      await pdfController.setPage(currentPage);
+                    if (prevPage >= 0) {
+                      await pdfController.setPage(prevPage);
                     }
                   },
                 ),
@@ -85,12 +85,12 @@ class PDFViewerFromAsset extends StatelessWidget {
                   child: const Icon(Icons.arrow_forward),
                   onPressed: () async {
                     final PDFViewController pdfController = snapshot.data!;
-                    final int currentPage =
+                    final int nextPage =
                         (await pdfController.getCurrentPage())! + 1;
                     final int numberOfPages =
                         await pdfController.getPageCount() ?? 0;
-                    if (numberOfPages > currentPage) {
-                      await pdfController.setPage(currentPage);
+                    if (numberOfPages > nextPage) {
+                      await pdfController.setPage(nextPage);
                     }
                   },
                 ),

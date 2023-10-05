@@ -342,7 +342,7 @@ class FabWithIconsState extends State<FabWithIcons>
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Clear Answer History'),
-                          content: const Text('Are you sure you want to clear answer history?'),
+                          content: const Text('Are you sure you want to clear all answers from the history?'),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
